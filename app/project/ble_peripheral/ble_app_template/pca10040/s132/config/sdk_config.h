@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017 - 2021, Nordic Semiconductor ASA
+ * Copyright (c) 2017 - 2019, Nordic Semiconductor ASA
  *
  * All rights reserved.
  *
@@ -69,83 +69,12 @@
 #define BLE_ADVERTISING_ENABLED 1
 #endif
 
-// <e> BLE_DTM_ENABLED - ble_dtm - Module for testing RF/PHY using DTM commands
-//==========================================================
+// <q> BLE_DTM_ENABLED  - ble_dtm - Module for testing RF/PHY using DTM commands
+ 
+
 #ifndef BLE_DTM_ENABLED
 #define BLE_DTM_ENABLED 0
 #endif
-// <o> NRF_RADIO_ANTENNA_PIN_1 - Antenna 1 GPIO pin 
-#ifndef NRF_RADIO_ANTENNA_PIN_1
-#define NRF_RADIO_ANTENNA_PIN_1 21
-#endif
-
-// <o> NRF_RADIO_ANTENNA_PIN_2 - Antenna 2 GPIO pin 
-#ifndef NRF_RADIO_ANTENNA_PIN_2
-#define NRF_RADIO_ANTENNA_PIN_2 23
-#endif
-
-// <o> NRF_RADIO_ANTENNA_PIN_3 - Antenna 3 GPIO pin 
-#ifndef NRF_RADIO_ANTENNA_PIN_3
-#define NRF_RADIO_ANTENNA_PIN_3 26
-#endif
-
-// <o> NRF_RADIO_ANTENNA_PIN_4 - Antenna 4 GPIO pin 
-#ifndef NRF_RADIO_ANTENNA_PIN_4
-#define NRF_RADIO_ANTENNA_PIN_4 27
-#endif
-
-// <o> NRF_RADIO_ANTENNA_PIN_5 - Antenna 5 GPIO pin 
-#ifndef NRF_RADIO_ANTENNA_PIN_5
-#define NRF_RADIO_ANTENNA_PIN_5 28
-#endif
-
-// <o> NRF_RADIO_ANTENNA_PIN_6 - Antenna 6 GPIO pin 
-#ifndef NRF_RADIO_ANTENNA_PIN_6
-#define NRF_RADIO_ANTENNA_PIN_6 29
-#endif
-
-// <o> NRF_RADIO_ANTENNA_PIN_7 - Antenna 7 GPIO pin 
-#ifndef NRF_RADIO_ANTENNA_PIN_7
-#define NRF_RADIO_ANTENNA_PIN_7 30
-#endif
-
-// <o> NRF_RADIO_ANTENNA_PIN_8 - Antenna 8 GPIO pin 
-#ifndef NRF_RADIO_ANTENNA_PIN_8
-#define NRF_RADIO_ANTENNA_PIN_8 31
-#endif
-
-// <o> NRF_RADIO_ANTENNA_COUNT  
-#ifndef NRF_RADIO_ANTENNA_COUNT
-#define NRF_RADIO_ANTENNA_COUNT 12
-#endif
-
-// <o> DTM_RADIO_IRQ_PRIORITY - RADIO interrupt priority 
-#ifndef DTM_RADIO_IRQ_PRIORITY
-#define DTM_RADIO_IRQ_PRIORITY 2
-#endif
-
-// <o> DTM_TIMER_IRQ_PRIORITY - DTM timer interrupt priority 
-#ifndef DTM_TIMER_IRQ_PRIORITY
-#define DTM_TIMER_IRQ_PRIORITY 3
-#endif
-
-// <o> DTM_ANOMALY_172_TIMER_IRQ_PRIORITY - DTM anomaly 172 timer interrupt priority 
-#ifndef DTM_ANOMALY_172_TIMER_IRQ_PRIORITY
-#define DTM_ANOMALY_172_TIMER_IRQ_PRIORITY 2
-#endif
-
-// <o> NRF_DTM_TIMER_INSTANCE  - DTM TIMER instance
- 
-// <0=> TIMER0 
-// <2=> TIMER2 
-// <3=> TIMER3 
-// <4=> TIMER4 
-
-#ifndef NRF_DTM_TIMER_INSTANCE
-#define NRF_DTM_TIMER_INSTANCE 0
-#endif
-
-// </e>
 
 // <q> BLE_RACP_ENABLED  - ble_racp - Record Access Control Point library
  
@@ -175,19 +104,12 @@
 
 // </e>
 
-// <e> NRF_BLE_GATT_ENABLED - nrf_ble_gatt - GATT module
-//==========================================================
+// <q> NRF_BLE_GATT_ENABLED  - nrf_ble_gatt - GATT module
+ 
+
 #ifndef NRF_BLE_GATT_ENABLED
 #define NRF_BLE_GATT_ENABLED 1
 #endif
-// <q> NRF_BLE_GATT_MTU_EXCHANGE_INITIATION_ENABLED  - Enable GATT MTU exchange initiation
- 
-
-#ifndef NRF_BLE_GATT_MTU_EXCHANGE_INITIATION_ENABLED
-#define NRF_BLE_GATT_MTU_EXCHANGE_INITIATION_ENABLED 1
-#endif
-
-// </e>
 
 // <e> NRF_BLE_QWR_ENABLED - nrf_ble_qwr - Queued writes support module (prepare/execute write)
 //==========================================================
@@ -204,7 +126,7 @@
 // <e> PEER_MANAGER_ENABLED - peer_manager - Peer Manager
 //==========================================================
 #ifndef PEER_MANAGER_ENABLED
-#define PEER_MANAGER_ENABLED 1
+#define PEER_MANAGER_ENABLED 0
 #endif
 // <o> PM_MAX_REGISTRANTS - Number of event handlers that can be registered. 
 #ifndef PM_MAX_REGISTRANTS
@@ -224,7 +146,7 @@
 // <i> Enable/disable central-specific Peer Manager functionality.
 
 #ifndef PM_CENTRAL_ENABLED
-#define PM_CENTRAL_ENABLED 0
+#define PM_CENTRAL_ENABLED 1
 #endif
 
 // <q> PM_SERVICE_CHANGED_ENABLED  - Enable/disable the service changed management for GATT server in Peer Manager.
@@ -530,7 +452,7 @@
 // <e> BLE_NUS_ENABLED - ble_nus - Nordic UART Service
 //==========================================================
 #ifndef BLE_NUS_ENABLED
-#define BLE_NUS_ENABLED 0
+#define BLE_NUS_ENABLED 1
 #endif
 // <e> BLE_NUS_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
@@ -955,7 +877,7 @@
 // <e> NRF_CRYPTO_BACKEND_MBEDTLS_ENABLED - Enable the mbed TLS backend.
 //==========================================================
 #ifndef NRF_CRYPTO_BACKEND_MBEDTLS_ENABLED
-#define NRF_CRYPTO_BACKEND_MBEDTLS_ENABLED 0
+#define NRF_CRYPTO_BACKEND_MBEDTLS_ENABLED 1
 #endif
 // <q> NRF_CRYPTO_BACKEND_MBEDTLS_AES_CBC_ENABLED  - Enable the AES CBC mode mbed TLS.
  
@@ -1207,7 +1129,7 @@
 // <i> The nRF HW backend provide access to RNG peripheral in nRF5x devices.
 //==========================================================
 #ifndef NRF_CRYPTO_BACKEND_NRF_HW_RNG_ENABLED
-#define NRF_CRYPTO_BACKEND_NRF_HW_RNG_ENABLED 0
+#define NRF_CRYPTO_BACKEND_NRF_HW_RNG_ENABLED 1
 #endif
 // <q> NRF_CRYPTO_BACKEND_NRF_HW_RNG_MBEDTLS_CTR_DRBG_ENABLED  - Enable mbed TLS CTR-DRBG algorithm.
  
@@ -1354,6 +1276,30 @@
 #endif
 
 // </e>
+
+// <h> nrf_crypto_rng - RNG Configuration
+
+//==========================================================
+// <q> NRF_CRYPTO_RNG_STATIC_MEMORY_BUFFERS_ENABLED  - Use static memory buffers for context and temporary init buffer.
+ 
+
+// <i> Always recommended when using the nRF HW RNG as the context and temporary buffers are small. Consider disabling if using the CC310 RNG in a RAM constrained application. In this case, memory must be provided to nrf_crypto_rng_init, or it can be allocated internally provided that NRF_CRYPTO_ALLOCATOR does not allocate memory on the stack.
+
+#ifndef NRF_CRYPTO_RNG_STATIC_MEMORY_BUFFERS_ENABLED
+#define NRF_CRYPTO_RNG_STATIC_MEMORY_BUFFERS_ENABLED 1
+#endif
+
+// <q> NRF_CRYPTO_RNG_AUTO_INIT_ENABLED  - Initialize the RNG module automatically when nrf_crypto is initialized.
+ 
+
+// <i> Automatic initialization is only supported with static or internally allocated context and temporary memory.
+
+#ifndef NRF_CRYPTO_RNG_AUTO_INIT_ENABLED
+#define NRF_CRYPTO_RNG_AUTO_INIT_ENABLED 1
+#endif
+
+// </h> 
+//==========================================================
 
 // </h> 
 //==========================================================
@@ -2633,7 +2579,7 @@
 // <e> NRFX_PPI_ENABLED - nrfx_ppi - PPI peripheral allocator
 //==========================================================
 #ifndef NRFX_PPI_ENABLED
-#define NRFX_PPI_ENABLED 0
+#define NRFX_PPI_ENABLED 1
 #endif
 // <e> NRFX_PPI_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
@@ -2784,7 +2730,7 @@
 // <e> NRFX_PWM_ENABLED - nrfx_pwm - PWM peripheral driver
 //==========================================================
 #ifndef NRFX_PWM_ENABLED
-#define NRFX_PWM_ENABLED 0
+#define NRFX_PWM_ENABLED 1
 #endif
 // <q> NRFX_PWM0_ENABLED  - Enable PWM0 instance
  
@@ -3215,7 +3161,7 @@
 // <e> NRFX_RTC_ENABLED - nrfx_rtc - RTC peripheral driver
 //==========================================================
 #ifndef NRFX_RTC_ENABLED
-#define NRFX_RTC_ENABLED 0
+#define NRFX_RTC_ENABLED 1
 #endif
 // <q> NRFX_RTC0_ENABLED  - Enable RTC0 instance
  
@@ -3328,7 +3274,7 @@
 // <e> NRFX_SAADC_ENABLED - nrfx_saadc - SAADC peripheral driver
 //==========================================================
 #ifndef NRFX_SAADC_ENABLED
-#define NRFX_SAADC_ENABLED 0
+#define NRFX_SAADC_ENABLED 1
 #endif
 // <o> NRFX_SAADC_CONFIG_RESOLUTION  - Resolution
  
@@ -3338,7 +3284,7 @@
 // <3=> 14 bit 
 
 #ifndef NRFX_SAADC_CONFIG_RESOLUTION
-#define NRFX_SAADC_CONFIG_RESOLUTION 1
+#define NRFX_SAADC_CONFIG_RESOLUTION 2
 #endif
 
 // <o> NRFX_SAADC_CONFIG_OVERSAMPLE  - Sample period
@@ -3361,7 +3307,7 @@
  
 
 #ifndef NRFX_SAADC_CONFIG_LP_MODE
-#define NRFX_SAADC_CONFIG_LP_MODE 0
+#define NRFX_SAADC_CONFIG_LP_MODE 1
 #endif
 
 // <o> NRFX_SAADC_CONFIG_IRQ_PRIORITY  - Interrupt priority
@@ -3435,7 +3381,7 @@
 // <e> NRFX_SPIM_ENABLED - nrfx_spim - SPIM peripheral driver
 //==========================================================
 #ifndef NRFX_SPIM_ENABLED
-#define NRFX_SPIM_ENABLED 0
+#define NRFX_SPIM_ENABLED 1
 #endif
 // <q> NRFX_SPIM0_ENABLED  - Enable SPIM0 instance
  
@@ -3675,7 +3621,7 @@
 // <e> NRFX_SPI_ENABLED - nrfx_spi - SPI peripheral driver
 //==========================================================
 #ifndef NRFX_SPI_ENABLED
-#define NRFX_SPI_ENABLED 0
+#define NRFX_SPI_ENABLED 1
 #endif
 // <q> NRFX_SPI0_ENABLED  - Enable SPI0 instance
  
@@ -3886,7 +3832,7 @@
 // <e> NRFX_TIMER_ENABLED - nrfx_timer - TIMER periperal driver
 //==========================================================
 #ifndef NRFX_TIMER_ENABLED
-#define NRFX_TIMER_ENABLED 0
+#define NRFX_TIMER_ENABLED 1
 #endif
 // <q> NRFX_TIMER0_ENABLED  - Enable TIMER0 instance
  
@@ -4031,7 +3977,7 @@
 // <e> NRFX_TWIM_ENABLED - nrfx_twim - TWIM peripheral driver
 //==========================================================
 #ifndef NRFX_TWIM_ENABLED
-#define NRFX_TWIM_ENABLED 0
+#define NRFX_TWIM_ENABLED 1
 #endif
 // <q> NRFX_TWIM0_ENABLED  - Enable TWIM0 instance
  
@@ -4283,7 +4229,7 @@
 // <e> NRFX_TWI_ENABLED - nrfx_twi - TWI peripheral driver
 //==========================================================
 #ifndef NRFX_TWI_ENABLED
-#define NRFX_TWI_ENABLED 0
+#define NRFX_TWI_ENABLED 1
 #endif
 // <q> NRFX_TWI0_ENABLED  - Enable TWI0 instance
  
@@ -4629,7 +4575,7 @@
 // <e> NRFX_WDT_ENABLED - nrfx_wdt - WDT peripheral driver
 //==========================================================
 #ifndef NRFX_WDT_ENABLED
-#define NRFX_WDT_ENABLED 0
+#define NRFX_WDT_ENABLED 1
 #endif
 // <o> NRFX_WDT_CONFIG_BEHAVIOUR  - WDT behavior in CPU SLEEP or HALT mode
  
@@ -4642,7 +4588,7 @@
 #define NRFX_WDT_CONFIG_BEHAVIOUR 1
 #endif
 
-// <o> NRFX_WDT_CONFIG_RELOAD_VALUE - Reload value in ms  <1-131072000> 
+// <o> NRFX_WDT_CONFIG_RELOAD_VALUE - Reload value  <15-4294967295> 
 
 
 #ifndef NRFX_WDT_CONFIG_RELOAD_VALUE
@@ -4867,13 +4813,13 @@
  
 
 #ifndef PPI_ENABLED
-#define PPI_ENABLED 0
+#define PPI_ENABLED 1
 #endif
 
 // <e> PWM_ENABLED - nrf_drv_pwm - PWM peripheral driver - legacy layer
 //==========================================================
 #ifndef PWM_ENABLED
-#define PWM_ENABLED 0
+#define PWM_ENABLED 1
 #endif
 // <o> PWM_DEFAULT_CONFIG_OUT0_PIN - Out0 pin  <0-31> 
 
@@ -4987,7 +4933,7 @@
  
 
 #ifndef PWM2_ENABLED
-#define PWM2_ENABLED 0
+#define PWM2_ENABLED 1
 #endif
 
 // <e> PWM_NRF52_ANOMALY_109_WORKAROUND_ENABLED - Enables nRF52 Anomaly 109 workaround for PWM.
@@ -5256,7 +5202,7 @@
 // <e> RNG_ENABLED - nrf_drv_rng - RNG peripheral driver - legacy layer
 //==========================================================
 #ifndef RNG_ENABLED
-#define RNG_ENABLED 0
+#define RNG_ENABLED 1
 #endif
 // <q> RNG_CONFIG_ERROR_CORRECTION  - Error correction
  
@@ -5292,7 +5238,7 @@
 // <e> RTC_ENABLED - nrf_drv_rtc - RTC peripheral driver - legacy layer
 //==========================================================
 #ifndef RTC_ENABLED
-#define RTC_ENABLED 0
+#define RTC_ENABLED 1
 #endif
 // <o> RTC_DEFAULT_CONFIG_FREQUENCY - Frequency  <16-32768> 
 
@@ -5343,7 +5289,7 @@
  
 
 #ifndef RTC2_ENABLED
-#define RTC2_ENABLED 0
+#define RTC2_ENABLED 1
 #endif
 
 // <o> NRF_MAXIMUM_LATENCY_US - Maximum possible time[us] in highest priority interrupt 
@@ -5356,7 +5302,7 @@
 // <e> SAADC_ENABLED - nrf_drv_saadc - SAADC peripheral driver - legacy layer
 //==========================================================
 #ifndef SAADC_ENABLED
-#define SAADC_ENABLED 0
+#define SAADC_ENABLED 1
 #endif
 // <o> SAADC_CONFIG_RESOLUTION  - Resolution
  
@@ -5389,7 +5335,7 @@
  
 
 #ifndef SAADC_CONFIG_LP_MODE
-#define SAADC_CONFIG_LP_MODE 0
+#define SAADC_CONFIG_LP_MODE 1
 #endif
 
 // <o> SAADC_CONFIG_IRQ_PRIORITY  - Interrupt priority
@@ -5507,7 +5453,7 @@
 // <e> SPI_ENABLED - nrf_drv_spi - SPI/SPIM peripheral driver - legacy layer
 //==========================================================
 #ifndef SPI_ENABLED
-#define SPI_ENABLED 0
+#define SPI_ENABLED 1
 #endif
 // <o> SPI_DEFAULT_CONFIG_IRQ_PRIORITY  - Interrupt priority
  
@@ -5539,7 +5485,7 @@
 // <e> SPI0_ENABLED - Enable SPI0 instance
 //==========================================================
 #ifndef SPI0_ENABLED
-#define SPI0_ENABLED 0
+#define SPI0_ENABLED 1
 #endif
 // <q> SPI0_USE_EASY_DMA  - Use EasyDMA
  
@@ -5597,7 +5543,7 @@
 // <e> TIMER_ENABLED - nrf_drv_timer - TIMER periperal driver - legacy layer
 //==========================================================
 #ifndef TIMER_ENABLED
-#define TIMER_ENABLED 0
+#define TIMER_ENABLED 1
 #endif
 // <o> TIMER_DEFAULT_CONFIG_FREQUENCY  - Timer frequency if in Timer mode
  
@@ -5633,7 +5579,7 @@
 // <3=> 32 bit 
 
 #ifndef TIMER_DEFAULT_CONFIG_BIT_WIDTH
-#define TIMER_DEFAULT_CONFIG_BIT_WIDTH 0
+#define TIMER_DEFAULT_CONFIG_BIT_WIDTH 3
 #endif
 
 // <o> TIMER_DEFAULT_CONFIG_IRQ_PRIORITY  - Interrupt priority
@@ -5664,7 +5610,7 @@
  
 
 #ifndef TIMER1_ENABLED
-#define TIMER1_ENABLED 0
+#define TIMER1_ENABLED 1
 #endif
 
 // <q> TIMER2_ENABLED  - Enable TIMER2 instance
@@ -5678,14 +5624,14 @@
  
 
 #ifndef TIMER3_ENABLED
-#define TIMER3_ENABLED 0
+#define TIMER3_ENABLED 1
 #endif
 
 // <q> TIMER4_ENABLED  - Enable TIMER4 instance
  
 
 #ifndef TIMER4_ENABLED
-#define TIMER4_ENABLED 0
+#define TIMER4_ENABLED 1
 #endif
 
 // </e>
@@ -5779,7 +5725,7 @@
 // <e> TWI_ENABLED - nrf_drv_twi - TWI/TWIM peripheral driver - legacy layer
 //==========================================================
 #ifndef TWI_ENABLED
-#define TWI_ENABLED 0
+#define TWI_ENABLED 1
 #endif
 // <o> TWI_DEFAULT_CONFIG_FREQUENCY  - Frequency
  
@@ -5839,7 +5785,7 @@
 // <e> TWI1_ENABLED - Enable TWI1 instance
 //==========================================================
 #ifndef TWI1_ENABLED
-#define TWI1_ENABLED 0
+#define TWI1_ENABLED 1
 #endif
 // <q> TWI1_USE_EASY_DMA  - Use EasyDMA (if present)
  
@@ -6018,7 +5964,7 @@
 // <e> WDT_ENABLED - nrf_drv_wdt - WDT peripheral driver - legacy layer
 //==========================================================
 #ifndef WDT_ENABLED
-#define WDT_ENABLED 0
+#define WDT_ENABLED 1
 #endif
 // <o> WDT_CONFIG_BEHAVIOUR  - WDT behavior in CPU SLEEP or HALT mode
  
@@ -6088,6 +6034,13 @@
 // <h> nRF_Libraries 
 
 //==========================================================
+// <q> APP_FIFO_ENABLED  - app_fifo - Software FIFO implementation
+ 
+
+#ifndef APP_FIFO_ENABLED
+#define APP_FIFO_ENABLED 1
+#endif
+
 // <q> APP_GPIOTE_ENABLED  - app_gpiote - GPIOTE events dispatcher
  
 
@@ -6099,7 +6052,7 @@
  
 
 #ifndef APP_PWM_ENABLED
-#define APP_PWM_ENABLED 0
+#define APP_PWM_ENABLED 1
 #endif
 
 // <e> APP_SCHEDULER_ENABLED - app_scheduler - Events scheduler
@@ -6260,6 +6213,21 @@
 
 // </h> 
 //==========================================================
+
+// </e>
+
+// <e> APP_UART_ENABLED - app_uart - UART driver
+//==========================================================
+#ifndef APP_UART_ENABLED
+#define APP_UART_ENABLED 1
+#endif
+// <o> APP_UART_DRIVER_INSTANCE  - UART instance used
+ 
+// <0=> 0 
+
+#ifndef APP_UART_DRIVER_INSTANCE
+#define APP_UART_DRIVER_INSTANCE 0
+#endif
 
 // </e>
 
@@ -6601,7 +6569,7 @@
  
 
 #ifndef CRC16_ENABLED
-#define CRC16_ENABLED 1
+#define CRC16_ENABLED 0
 #endif
 
 // <q> CRC32_ENABLED  - crc32 - CRC32 calculation routines
@@ -6621,7 +6589,7 @@
 // <e> FDS_ENABLED - fds - Flash data storage module
 //==========================================================
 #ifndef FDS_ENABLED
-#define FDS_ENABLED 1
+#define FDS_ENABLED 0
 #endif
 // <h> Pages - Virtual page settings
 
@@ -6852,13 +6820,13 @@
 // <e> MEM_MANAGER_ENABLED - mem_manager - Dynamic memory allocator
 //==========================================================
 #ifndef MEM_MANAGER_ENABLED
-#define MEM_MANAGER_ENABLED 0
+#define MEM_MANAGER_ENABLED 1
 #endif
 // <o> MEMORY_MANAGER_SMALL_BLOCK_COUNT - Size of each memory blocks identified as 'small' block.  <0-255> 
 
 
 #ifndef MEMORY_MANAGER_SMALL_BLOCK_COUNT
-#define MEMORY_MANAGER_SMALL_BLOCK_COUNT 1
+#define MEMORY_MANAGER_SMALL_BLOCK_COUNT 8
 #endif
 
 // <o> MEMORY_MANAGER_SMALL_BLOCK_SIZE -  Size of each memory blocks identified as 'small' block. 
@@ -6872,56 +6840,56 @@
 
 
 #ifndef MEMORY_MANAGER_MEDIUM_BLOCK_COUNT
-#define MEMORY_MANAGER_MEDIUM_BLOCK_COUNT 0
+#define MEMORY_MANAGER_MEDIUM_BLOCK_COUNT 8
 #endif
 
 // <o> MEMORY_MANAGER_MEDIUM_BLOCK_SIZE -  Size of each memory blocks identified as 'medium' block. 
 // <i>  Size of each memory blocks identified as 'medium' block. Memory block are recommended to be word-sized.
 
 #ifndef MEMORY_MANAGER_MEDIUM_BLOCK_SIZE
-#define MEMORY_MANAGER_MEDIUM_BLOCK_SIZE 256
+#define MEMORY_MANAGER_MEDIUM_BLOCK_SIZE 64
 #endif
 
 // <o> MEMORY_MANAGER_LARGE_BLOCK_COUNT - Size of each memory blocks identified as 'large' block.  <0-255> 
 
 
 #ifndef MEMORY_MANAGER_LARGE_BLOCK_COUNT
-#define MEMORY_MANAGER_LARGE_BLOCK_COUNT 0
+#define MEMORY_MANAGER_LARGE_BLOCK_COUNT 8
 #endif
 
 // <o> MEMORY_MANAGER_LARGE_BLOCK_SIZE -  Size of each memory blocks identified as 'large' block. 
 // <i>  Size of each memory blocks identified as 'large' block. Memory block are recommended to be word-sized.
 
 #ifndef MEMORY_MANAGER_LARGE_BLOCK_SIZE
-#define MEMORY_MANAGER_LARGE_BLOCK_SIZE 256
+#define MEMORY_MANAGER_LARGE_BLOCK_SIZE 128
 #endif
 
 // <o> MEMORY_MANAGER_XLARGE_BLOCK_COUNT - Size of each memory blocks identified as 'extra large' block.  <0-255> 
 
 
 #ifndef MEMORY_MANAGER_XLARGE_BLOCK_COUNT
-#define MEMORY_MANAGER_XLARGE_BLOCK_COUNT 0
+#define MEMORY_MANAGER_XLARGE_BLOCK_COUNT 2
 #endif
 
 // <o> MEMORY_MANAGER_XLARGE_BLOCK_SIZE -  Size of each memory blocks identified as 'extra large' block. 
 // <i>  Size of each memory blocks identified as 'extra large' block. Memory block are recommended to be word-sized.
 
 #ifndef MEMORY_MANAGER_XLARGE_BLOCK_SIZE
-#define MEMORY_MANAGER_XLARGE_BLOCK_SIZE 1320
+#define MEMORY_MANAGER_XLARGE_BLOCK_SIZE 256
 #endif
 
 // <o> MEMORY_MANAGER_XXLARGE_BLOCK_COUNT - Size of each memory blocks identified as 'extra extra large' block.  <0-255> 
 
 
 #ifndef MEMORY_MANAGER_XXLARGE_BLOCK_COUNT
-#define MEMORY_MANAGER_XXLARGE_BLOCK_COUNT 0
+#define MEMORY_MANAGER_XXLARGE_BLOCK_COUNT 2
 #endif
 
 // <o> MEMORY_MANAGER_XXLARGE_BLOCK_SIZE -  Size of each memory blocks identified as 'extra extra large' block. 
 // <i>  Size of each memory blocks identified as 'extra extra large' block. Memory block are recommended to be word-sized.
 
 #ifndef MEMORY_MANAGER_XXLARGE_BLOCK_SIZE
-#define MEMORY_MANAGER_XXLARGE_BLOCK_SIZE 3444
+#define MEMORY_MANAGER_XXLARGE_BLOCK_SIZE 2048
 #endif
 
 // <o> MEMORY_MANAGER_XSMALL_BLOCK_COUNT - Size of each memory blocks identified as 'extra small' block.  <0-255> 
@@ -7145,7 +7113,7 @@
 // <e> NRF_FSTORAGE_ENABLED - nrf_fstorage - Flash abstraction library
 //==========================================================
 #ifndef NRF_FSTORAGE_ENABLED
-#define NRF_FSTORAGE_ENABLED 1
+#define NRF_FSTORAGE_ENABLED 0
 #endif
 // <h> nrf_fstorage - Common settings
 
@@ -7323,7 +7291,7 @@
 // <e> NRF_QUEUE_ENABLED - nrf_queue - Queue module
 //==========================================================
 #ifndef NRF_QUEUE_ENABLED
-#define NRF_QUEUE_ENABLED 0
+#define NRF_QUEUE_ENABLED 1
 #endif
 // <q> NRF_QUEUE_CLI_CMDS  - Enable CLI commands specific to the module
  
@@ -7367,6 +7335,13 @@
 
 #ifndef NRF_TWI_MNGR_ENABLED
 #define NRF_TWI_MNGR_ENABLED 0
+#endif
+
+// <q> RETARGET_ENABLED  - retarget - Retargeting stdio functions
+ 
+
+#ifndef RETARGET_ENABLED
+#define RETARGET_ENABLED 1
 #endif
 
 // <q> SLIP_ENABLED  - slip - SLIP encoding and decoding
@@ -7600,7 +7575,7 @@
 // <e> NRF_LOG_BACKEND_RTT_ENABLED - nrf_log_backend_rtt - Log RTT backend
 //==========================================================
 #ifndef NRF_LOG_BACKEND_RTT_ENABLED
-#define NRF_LOG_BACKEND_RTT_ENABLED 0
+#define NRF_LOG_BACKEND_RTT_ENABLED 1
 #endif
 // <o> NRF_LOG_BACKEND_RTT_TEMP_BUFFER_SIZE - Size of buffer for partially processed strings. 
 // <i> Size of the buffer is a trade-off between RAM usage and processing.
@@ -7633,7 +7608,7 @@
 // <e> NRF_LOG_BACKEND_UART_ENABLED - nrf_log_backend_uart - Log UART backend
 //==========================================================
 #ifndef NRF_LOG_BACKEND_UART_ENABLED
-#define NRF_LOG_BACKEND_UART_ENABLED 1
+#define NRF_LOG_BACKEND_UART_ENABLED 0
 #endif
 // <o> NRF_LOG_BACKEND_UART_TX_PIN - UART TX pin 
 #ifndef NRF_LOG_BACKEND_UART_TX_PIN
@@ -11344,7 +11319,7 @@
 // <i> Requested BLE GAP data length to be negotiated.
 
 #ifndef NRF_SDH_BLE_GAP_DATA_LENGTH
-#define NRF_SDH_BLE_GAP_DATA_LENGTH 27
+#define NRF_SDH_BLE_GAP_DATA_LENGTH 251
 #endif
 
 // <o> NRF_SDH_BLE_PERIPHERAL_LINK_COUNT - Maximum number of peripheral links. 
@@ -11373,7 +11348,7 @@
 
 // <o> NRF_SDH_BLE_GATT_MAX_MTU_SIZE - Static maximum MTU size. 
 #ifndef NRF_SDH_BLE_GATT_MAX_MTU_SIZE
-#define NRF_SDH_BLE_GATT_MAX_MTU_SIZE 23
+#define NRF_SDH_BLE_GATT_MAX_MTU_SIZE 247
 #endif
 
 // <o> NRF_SDH_BLE_GATTS_ATTR_TAB_SIZE - Attribute Table size in bytes. The size must be a multiple of 4. 
@@ -11383,14 +11358,14 @@
 
 // <o> NRF_SDH_BLE_VS_UUID_COUNT - The number of vendor-specific UUIDs. 
 #ifndef NRF_SDH_BLE_VS_UUID_COUNT
-#define NRF_SDH_BLE_VS_UUID_COUNT 0
+#define NRF_SDH_BLE_VS_UUID_COUNT 1
 #endif
 
 // <q> NRF_SDH_BLE_SERVICE_CHANGED  - Include the Service Changed characteristic in the Attribute Table.
  
 
 #ifndef NRF_SDH_BLE_SERVICE_CHANGED
-#define NRF_SDH_BLE_SERVICE_CHANGED 1
+#define NRF_SDH_BLE_SERVICE_CHANGED 0
 #endif
 
 // </h> 
@@ -11632,6 +11607,48 @@
 
 #ifndef BSP_BTN_BLE_OBSERVER_PRIO
 #define BSP_BTN_BLE_OBSERVER_PRIO 1
+#endif
+
+// <o> NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO  
+// <i> Priority with which BLE events are dispatched to the NFC pairing library.
+
+#ifndef NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO
+#define NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO 1
+#endif
+
+// <o> NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO  
+// <i> Priority with which BLE events are dispatched to the NFC pairing library.
+
+#ifndef NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO
+#define NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO 1
+#endif
+
+// <o> NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO  
+// <i> Priority with which BLE events are dispatched to the NFC pairing library.
+
+#ifndef NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO
+#define NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO 1
+#endif
+
+// <o> NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO  
+// <i> Priority with which BLE events are dispatched to the NFC pairing library.
+
+#ifndef NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO
+#define NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO 1
+#endif
+
+// <o> NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO  
+// <i> Priority with which BLE events are dispatched to the NFC pairing library.
+
+#ifndef NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO
+#define NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO 1
+#endif
+
+// <o> NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO  
+// <i> Priority with which BLE events are dispatched to the NFC pairing library.
+
+#ifndef NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO
+#define NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO 1
 #endif
 
 // <o> NFC_BLE_PAIR_LIB_BLE_OBSERVER_PRIO  
