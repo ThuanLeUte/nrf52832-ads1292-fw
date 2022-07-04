@@ -113,6 +113,7 @@
       <file file_name="../../../source/mpu9250.c" />
       <file file_name="../../../source/mz_ble.c" />
       <file file_name="../../../source/timer.c" />
+      <file file_name="../../../source/serialflash.c" />
     </folder>
     <folder Name="nRF_Segger_RTT">
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT.c" />

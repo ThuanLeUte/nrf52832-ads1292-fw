@@ -62,6 +62,7 @@
 "Output/Release/Obj/ble_app_template_pca10040_s132/mpu9250.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/mz_ble.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/timer.o"
+"Output/Release/Obj/ble_app_template_pca10040_s132/serialflash.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/SEGGER_RTT.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/SEGGER_RTT_Syscalls_SES.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/SEGGER_RTT_printf.o"
