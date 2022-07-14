@@ -7,17 +7,15 @@ char buf[512];
 
 
 void setup(){
-  SerialUSB.begin(1000000);
-  while(!SerialUSB){};
-  delay(1000);
+  Serial.begin(1000000);
 
   //Make sure the buffer is zero'd
   zeroBuffer(buf, sizeof(buf));
   
   if(flash.begin(2) == 0){
-    SerialUSB.println("Flash init successful");
+    Serial.println("Flash init successful");
   } else {
-    SerialUSB.println("Flash init Failed");
+    Serial.println("Flash init Failed");
   }
 
   //put the strig into our flash buffer
@@ -39,7 +37,7 @@ void setup(){
   flash.read(0, buf, sizeof(buf));
 
   //Print the data read from the flash chip
-  SerialUSB.println(buf);
+  Serial.println(buf);
 }
 
 void loop(){
