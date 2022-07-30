@@ -19,7 +19,7 @@ extern "C" {
 #endif
 
 /* Includes ----------------------------------------------------------- */
-#include "bsp.h"
+#include "bsp_hw.h"
 
 /* Public defines ----------------------------------------------------- */
 #define MPU9250_I2C_ADDR                  (0x68) // 7 Bits

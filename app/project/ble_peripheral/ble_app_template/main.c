@@ -36,7 +36,7 @@
 #include "ble_acs.h"
 #include "ble_mgs.h"
 #include "ble_gys.h"
-#include "bsp.h"
+#include "bsp_hw.h"
 #include "bsp_imu.h"
 #include "nrf52832_peripherals.h"
 

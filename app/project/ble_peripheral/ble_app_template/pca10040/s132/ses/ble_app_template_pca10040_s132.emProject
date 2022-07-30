@@ -104,16 +104,15 @@
       <file file_name="../../../../../../components/libraries/bsp/bsp_btn_ble.c" />
     </folder>
     <folder Name="Application">
-      <file file_name="../../../main.c" />
+      <file file_name="../../../source/ble_acs.c" />
+      <file file_name="../../../source/ble_gys.c" />
+      <file file_name="../../../source/ble_mgs.c" />
+      <file file_name="../../../source/bsp_imu.c" />
+      <file file_name="../../../source/sys_bm.c" />
+      <file file_name="../../../source/bsp_hw.c" />
       <file file_name="../config/sdk_config.h" />
-      <file file_name="../../../source/adc.c" />
-      <file file_name="../../../source/ads1292r.c" />
-      <file file_name="../../../source/keypad.c" />
-      <file file_name="../../../source/max30205.c" />
       <file file_name="../../../source/mpu9250.c" />
-      <file file_name="../../../source/mz_ble.c" />
-      <file file_name="../../../source/timer.c" />
-      <file file_name="../../../source/serialflash.c" />
+      <file file_name="../../../main.c" />
     </folder>
     <folder Name="nRF_Segger_RTT">
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT.c" />
@@ -152,6 +151,8 @@
     </folder>
     <folder Name="nRF_BLE_Services">
       <file file_name="../../../../../../components/ble/ble_services/ble_nus/ble_nus.c" />
+      <file file_name="../../../../../../components/ble/ble_services/ble_bas/ble_bas.c" />
+      <file file_name="../../../../../../components/ble/ble_services/ble_dis/ble_dis.c" />
     </folder>
     <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_ppi.c" />
   </project>

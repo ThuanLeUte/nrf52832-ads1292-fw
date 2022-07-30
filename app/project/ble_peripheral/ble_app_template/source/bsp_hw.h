@@ -11,8 +11,8 @@
  */
 
 /* Define to prevent recursive inclusion ------------------------------ */
-#ifndef __BSP_H
-#define __BSP_H
+#ifndef __BSP_HW_H
+#define __BSP_HW_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -129,6 +129,6 @@ void bsp_gpio_write(uint8_t pin , uint8_t state);
 #ifdef __cplusplus
 } // extern "C"
 #endif
-#endif // __BSP_H
+#endif // __BSP_HW_H
 
 /* End of file -------------------------------------------------------- */
