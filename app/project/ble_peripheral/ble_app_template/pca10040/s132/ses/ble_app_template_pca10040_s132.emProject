@@ -167,6 +167,7 @@
   <configuration
     Name="Debug"
     c_preprocessor_definitions="DEBUG; DEBUG_NRF"
+    c_user_include_directories="../../../../../../components/ble/ble_link_ctx_manager;../../../../../../components/libraries/uart;../../../source"
     gcc_optimization_level="None" />
   <configuration
     Name="Common"
