@@ -28,6 +28,14 @@ extern "C" {
 #define IO_I2C1_SCL             (27)    // SCL signal pin
 #define IO_I2C1_SDA             (26)    // SDA signal pin
 
+#define IO_AFE_START            (30)    // AFE START
+#define IO_AFE_RST              (19)    // AFE RST
+#define IO_AFE_DRDY             (20)    // AFE DRDY
+#define IO_AFE_MISO             (28)    // AFE MISO
+#define IO_AFE_MOSI             (25)    // AFE MOSI
+#define IO_AFE_SCLK             (29)    // AFE SCLK
+#define IO_AFE_CS               (31)    // AFE CS
+
 /* GPIO */
 #define PS_HOLD						24 	/* OUTPUT */
 #define LDO_AVCC_EN					23	/* OUTPUT */

@@ -121,6 +121,21 @@ int bsp_i2c_write(uint8_t slave_addr, uint8_t reg_addr, uint8_t *p_data, uint32_
  */
 int bsp_i2c_read(uint8_t slave_addr, uint8_t reg_addr, uint8_t *p_data, uint32_t len);
 
+/**
+ * @brief         SPI transmit and receive
+ *
+ * @param[in]     tx_data       Transmit data
+ * @param[in]     rx_data       Receive data
+ * @param[in]     len           Data length
+ *
+ * @attention     None
+ *
+ * @return
+ * - 0      Succes
+ * - 1      Error
+ */
+int bsp_spi_transmit_receive(uint8_t *tx_data, uint8_t *rx_data, uint16_t len);
+
 void bsp_delay_ms(uint32_t ms);
 
 void bsp_gpio_write(uint8_t pin , uint8_t state);

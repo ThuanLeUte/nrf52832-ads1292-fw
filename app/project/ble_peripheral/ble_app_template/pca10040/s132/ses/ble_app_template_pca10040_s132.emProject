@@ -113,6 +113,10 @@
       <file file_name="../config/sdk_config.h" />
       <file file_name="../../../source/mpu9250.c" />
       <file file_name="../../../main.c" />
+      <file file_name="../../../source/ads1292/ads1292r.c" />
+      <file file_name="../../../source/ads1292/bsp_afe.c" />
+      <file file_name="../../../source/ads1292/ecg_res_algo.c" />
+      <file file_name="../../../source/ads1292/platform.c" />
     </folder>
     <folder Name="nRF_Segger_RTT">
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT.c" />
@@ -159,7 +163,7 @@
   <configuration
     Name="Release"
     c_preprocessor_definitions="NDEBUG"
-    c_user_include_directories="../../../../../../components/ble/ble_link_ctx_manager;../../../../../../components/libraries/uart;../../../source"
+    c_user_include_directories="../../../../../../components/ble/ble_link_ctx_manager;../../../../../../components/libraries/uart;../../../source;../../../source/ads1292"
     gcc_optimization_level="Optimize For Size"
     link_time_optimization="No"
     linker_section_placement_file="$(StudioDir)/targets/section_placement.xml"
