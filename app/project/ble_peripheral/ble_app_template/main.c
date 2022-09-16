@@ -38,6 +38,7 @@
 #include "ble_gys.h"
 #include "bsp_hw.h"
 #include "bsp_imu.h"
+#include "bsp_afe.h"
 #include "nrf52832_peripherals.h"
 
 #if defined(UART_PRESENT)
@@ -95,6 +96,8 @@ static ble_uuid_t m_adv_uuids[]          =                                      
 };
 
 uint32_t app_time;
+int16_t ecg_value;
+
 /* Private function prototypes ---------------------------------------- */
 static void timers_init(void);
 static void gap_params_init(void);
@@ -151,10 +154,18 @@ int main(void)
   advertising_start();
 
   bsp_imu_init();
+  bsp_afe_init();
 
   for (;;)
   {
-    idle_state_handle();
+    // idle_state_handle();
+
+    NRF_LOG_PROCESS();
+
+    if (bsp_afe_get_ecg(&ecg_value) == BS_OK)
+    {
+      NRF_LOG_RAW_INFO("%d\n", ecg_value);
+    }
   }
 }
 
@@ -870,7 +881,7 @@ static void battery_level_update(void)
   if (battery_cal_time >= 10)
   {
     battery_level = sum_battery_level / battery_cal_time;
-    NRF_LOG_INFO( "Battery avg : %d percent", battery_level);
+    // NRF_LOG_INFO( "Battery avg : %d percent", battery_level);
     battery_cal_time  = 0;
     sum_battery_level = 0;
 
