@@ -147,13 +147,13 @@ int main(void)
   conn_params_init();
 
   bsp_hw_init();          // Bsp init
-  // sys_bm_init();          // Battery monitor init
+  sys_bm_init();          // Battery monitor init
 
   // Start execution.
-  //application_timers_start();
-  // advertising_start();
+  application_timers_start();
+  advertising_start();
 
-  // bsp_imu_init();
+  bsp_imu_init();
   bsp_afe_init();
 
   for (;;)
@@ -881,7 +881,7 @@ static void battery_level_update(void)
   if (battery_cal_time >= 10)
   {
     battery_level = sum_battery_level / battery_cal_time;
-    NRF_LOG_INFO( "Battery avg : %d percent", battery_level);
+    // NRF_LOG_INFO( "Battery avg : %d percent", battery_level);
     battery_cal_time  = 0;
     sum_battery_level = 0;
 
