@@ -41,7 +41,7 @@ void bsp_hw_init(void)
 {
   m_bsp_i2c_init();
   m_bsp_gpio_init();
-  // m_bsp_spi_1_init();
+  m_bsp_spi_1_init();
   m_bsp_spi_2_init();
 }
 
@@ -82,8 +82,12 @@ base_status_t bsp_spi_1_transmit_receive(uint8_t *tx_data, uint8_t *rx_data, uin
 
 base_status_t bsp_spi_2_transmit_receive(uint8_t *tx_data, uint8_t *rx_data, uint16_t len)
 {
-  if (nrf_drv_spi_transfer(&m_spi_1, tx_data, len, rx_data, len) != NRF_SUCCESS)
-    return BS_ERROR;
+  data_ready = BS_FALSE;
+
+  nrf_drv_spi_transfer(&m_spi_2, tx_data, len, rx_data, len);
+  while (!data_ready)
+  {
+  }
   
   return BS_OK;
 }
@@ -140,7 +144,7 @@ static void m_bsp_spi_1_init(void)
   spi_config.mosi_pin  = IO_AFE_MOSI;
   spi_config.miso_pin  = IO_AFE_MISO;
   spi_config.sck_pin   = IO_AFE_SCLK;
-  spi_config.mode      = NRF_DRV_SPI_MODE_0;
+  spi_config.mode      = NRF_DRV_SPI_MODE_1;
   spi_config.frequency = NRF_DRV_SPI_FREQ_1M;
 
   err_code = nrf_drv_spi_init(&m_spi_1, &spi_config, NULL, NULL);
@@ -168,7 +172,7 @@ static void m_bsp_spi_2_init(void)
   spi_config.mode      = NRF_DRV_SPI_MODE_0;
   spi_config.frequency = NRF_DRV_SPI_FREQ_1M;
 
-  err_code = nrf_drv_spi_init(&m_spi_1, &spi_config, NULL, NULL);
+  err_code = nrf_drv_spi_init(&m_spi_2, &spi_config, spi_event_handler, NULL);
   APP_ERROR_CHECK(err_code);
 }
 
@@ -191,10 +195,12 @@ static void m_bsp_gpio_init(void)
   nrf_gpio_cfg_input(IO_AFE_DRDY, NRF_GPIO_PIN_PULLUP);
 
   // Output in setting
+  nrf_gpio_cfg_output(IO_FLASH_CS);
   nrf_gpio_cfg_output(IO_AFE_CS);
   nrf_gpio_cfg_output(IO_AFE_RST);
   nrf_gpio_cfg_output(IO_AFE_START);
 
+  bsp_gpio_write(IO_FLASH_CS, 1);
   bsp_gpio_write(IO_AFE_CS, 1);
   bsp_gpio_write(IO_AFE_RST, 1);
   bsp_gpio_write(IO_AFE_START, 0);

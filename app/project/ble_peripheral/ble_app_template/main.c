@@ -147,26 +147,23 @@ int main(void)
   advertising_init();
   conn_params_init();
 
-  bsp_hw_init();          // Bsp init
+  bsp_hw_init();
   bsp_nand_flash_init();
+  bsp_imu_init();
+  bsp_afe_init();
 
   // Start execution.
   application_timers_start();
   advertising_start();
 
-  // bsp_imu_init();
-  // bsp_afe_init();
-
   for (;;)
   {
-    // idle_state_handle();
-
     NRF_LOG_PROCESS();
 
-    //if (bsp_afe_get_ecg(&ecg_value) == BS_OK)
-    //{
-    //  NRF_LOG_RAW_INFO("%d\n", ecg_value);
-    //}
+    if (bsp_afe_get_ecg(&ecg_value) == BS_OK)
+    {
+     NRF_LOG_RAW_INFO("%d\n", ecg_value);
+    }
   }
 }
 
