@@ -39,6 +39,7 @@
 #include "bsp_hw.h"
 #include "bsp_imu.h"
 #include "bsp_afe.h"
+#include "bsp_nand_flash.h"
 #include "nrf52832_peripherals.h"
 
 #if defined(UART_PRESENT)
@@ -153,8 +154,9 @@ int main(void)
   application_timers_start();
   advertising_start();
 
-  bsp_imu_init();
-  bsp_afe_init();
+  bsp_nand_flash_init();
+  // bsp_imu_init();
+  // bsp_afe_init();
 
   for (;;)
   {
@@ -162,10 +164,10 @@ int main(void)
 
     NRF_LOG_PROCESS();
 
-    if (bsp_afe_get_ecg(&ecg_value) == BS_OK)
-    {
-      NRF_LOG_RAW_INFO("%d\n", ecg_value);
-    }
+    //if (bsp_afe_get_ecg(&ecg_value) == BS_OK)
+    //{
+    //  NRF_LOG_RAW_INFO("%d\n", ecg_value);
+    //}
   }
 }
 

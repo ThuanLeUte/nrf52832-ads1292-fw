@@ -69,14 +69,10 @@ void bsp_gpio_write(uint8_t pin , uint8_t state)
 }
 
 
-int bsp_spi_transmit_receive(uint8_t *tx_data, uint8_t *rx_data, uint16_t len)
+base_status_t bsp_spi_transmit_receive(uint8_t *tx_data, uint8_t *rx_data, uint16_t len)
 {
-  data_ready = BS_FALSE;
-
-  nrf_drv_spi_transfer(&m_spi, tx_data, len, rx_data, len);
-  while (!data_ready)
-  {
-  }
+  if (nrf_drv_spi_transfer(&m_spi, tx_data, len, rx_data, len) != NRF_SUCCESS)
+    return BS_ERROR;
   
   return BS_OK;
 }
@@ -133,7 +129,7 @@ static void m_bsp_spi_init(void)
   spi_config.mosi_pin  = IO_AFE_MOSI;
   spi_config.miso_pin  = IO_AFE_MISO;
   spi_config.sck_pin   = IO_AFE_SCLK;
-  spi_config.mode      = NRF_DRV_SPI_MODE_1;
+  spi_config.mode      = NRF_DRV_SPI_MODE_0;
   spi_config.frequency = NRF_DRV_SPI_FREQ_1M;
 
   err_code = nrf_drv_spi_init(&m_spi, &spi_config, spi_event_handler, NULL);

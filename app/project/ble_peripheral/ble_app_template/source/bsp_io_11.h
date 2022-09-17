@@ -31,10 +31,15 @@ extern "C" {
 #define IO_AFE_START            (30)    // AFE START
 #define IO_AFE_RST              (19)    // AFE RST
 #define IO_AFE_DRDY             (20)    // AFE DRDY
-#define IO_AFE_MISO             (28)    // AFE MISO
-#define IO_AFE_MOSI             (25)    // AFE MOSI
-#define IO_AFE_SCLK             (29)    // AFE SCLK
-#define IO_AFE_CS               (31)    // AFE CS
+// #define IO_AFE_MISO             (28)    // AFE MISO
+// #define IO_AFE_MOSI             (25)    // AFE MOSI
+// #define IO_AFE_SCLK             (29)    // AFE SCLK
+// #define IO_AFE_CS               (31)    // AFE CS
+
+#define IO_AFE_MISO             (12)    // AFE MISO
+#define IO_AFE_MOSI             (5)    // AFE MOSI
+#define IO_AFE_SCLK             (2)    // AFE SCLK
+#define IO_AFE_CS               (4)    // AFE CS
 
 /* GPIO */
 #define PS_HOLD						24 	/* OUTPUT */

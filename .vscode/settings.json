@@ -1,0 +1,5 @@
+{
+    "files.associations": {
+        "ble_conn_params.h": "c"
+    }
+}
