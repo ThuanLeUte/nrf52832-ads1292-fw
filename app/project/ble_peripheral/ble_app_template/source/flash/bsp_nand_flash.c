@@ -27,7 +27,7 @@ static uint8_t read_buf[10] = {0};
 /* Function definitions ----------------------------------------------- */
 base_status_t bsp_nand_flash_init(void)
 {
-  m_w25n01.spi_transfer = bsp_spi_transmit_receive;
+  m_w25n01.spi_transfer = bsp_spi_2_transmit_receive;
   m_w25n01.gpio_write   = bsp_gpio_write;
 
   CHECK_STATUS(w25n01_init(&m_w25n01));

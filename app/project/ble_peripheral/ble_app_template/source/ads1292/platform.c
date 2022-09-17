@@ -39,7 +39,7 @@ uint8_t platform_spi_transfer(uint8_t data)
 {
   static uint8_t receive_data;
 
-  bsp_spi_transmit_receive(&data, &receive_data, 1);
+  bsp_spi_1_transmit_receive(&data, &receive_data, 1);
 
   return receive_data;
 }

@@ -103,10 +103,10 @@ base_status_t w25n01_load_program_data(w25n01_t *me, uint16_t column_addr, uint8
   CHECK_STATUS(m_w25n01_write_enable(me, true));
 
   // Write data
-  me->gpio_write(IO_AFE_CS, 0);
+  me->gpio_write(IO_FLASH_CS, 0);
   CHECK_STATUS(me->spi_transfer(cmd_buf, NULL, sizeof(cmd_buf)));
   CHECK_STATUS(me->spi_transfer(p_data, NULL, len));
-  me->gpio_write(IO_AFE_CS, 1);
+  me->gpio_write(IO_FLASH_CS, 1);
 
   return BS_OK;
 }
@@ -148,10 +148,10 @@ base_status_t w25n01_read_data(w25n01_t *me, uint16_t column_addr, uint8_t *p_da
   uint8_t cmd_buf[4] = { W25N_OP_READ, column_high, column_low, 0x00 };
 
   // Read data
-  me->gpio_write(IO_AFE_CS, 0);
+  me->gpio_write(IO_FLASH_CS, 0);
   CHECK_STATUS(me->spi_transfer(cmd_buf, NULL, sizeof(cmd_buf)));
   CHECK_STATUS(me->spi_transfer(p_data, p_data, len));
-  me->gpio_write(IO_AFE_CS, 1);
+  me->gpio_write(IO_FLASH_CS, 1);
 
   return BS_OK;
 }
@@ -161,9 +161,9 @@ static base_status_t m_w25n01_transfer(w25n01_t *me, uint8_t *tx_data, uint8_t *
 {
   base_status_t ret;
 
-  me->gpio_write(IO_AFE_CS, 0);
+  me->gpio_write(IO_FLASH_CS, 0);
   ret = me->spi_transfer(tx_data, rx_data, len);
-  me->gpio_write(IO_AFE_CS, 1);
+  me->gpio_write(IO_FLASH_CS, 1);
 
   return ret;
 }
