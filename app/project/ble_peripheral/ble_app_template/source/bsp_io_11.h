@@ -21,6 +21,7 @@ extern "C" {
 /* Includes ----------------------------------------------------------- */
 #include <stdint.h>
 #include <stdbool.h>
+#include "device_config.h"
 
 /* Public defines ----------------------------------------------------- */
                                     // Schematic
@@ -36,10 +37,17 @@ extern "C" {
 #define IO_AFE_SCLK             (29)    // AFE SCLK
 #define IO_AFE_CS               (31)    // AFE CS
 
+#if (_CONFIG_DEVICE_DEVKIT)
 #define IO_FLASH_MISO           (12)
 #define IO_FLASH_MOSI           (5)
 #define IO_FLASH_SCLK           (2)
 #define IO_FLASH_CS             (4)
+#else
+#define IO_FLASH_MISO           (11)
+#define IO_FLASH_MOSI           (12)
+#define IO_FLASH_SCLK           (10)
+#define IO_FLASH_CS             (9)
+#endif // _CONFIG_DEVICE_DEVKIT
 
 /* Public enumerate/structure ----------------------------------------- */
 /* Public macros ------------------------------------------------------ */
