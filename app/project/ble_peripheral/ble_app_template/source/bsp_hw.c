@@ -132,7 +132,7 @@ static void m_bsp_spi_init(void)
   spi_config.mode      = NRF_DRV_SPI_MODE_0;
   spi_config.frequency = NRF_DRV_SPI_FREQ_1M;
 
-  err_code = nrf_drv_spi_init(&m_spi, &spi_config, spi_event_handler, NULL);
+  err_code = nrf_drv_spi_init(&m_spi, &spi_config, NULL, NULL);
   APP_ERROR_CHECK(err_code);
 }
 

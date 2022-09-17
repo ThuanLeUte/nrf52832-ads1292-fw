@@ -148,13 +148,12 @@ int main(void)
   conn_params_init();
 
   bsp_hw_init();          // Bsp init
-  sys_bm_init();          // Battery monitor init
+  bsp_nand_flash_init();
 
   // Start execution.
   application_timers_start();
   advertising_start();
 
-  bsp_nand_flash_init();
   // bsp_imu_init();
   // bsp_afe_init();
 
