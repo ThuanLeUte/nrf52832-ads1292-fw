@@ -67,6 +67,8 @@
 "Output/Release/Obj/ble_app_template_pca10040_s132/bsp_afe.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/ecg_res_algo.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/platform.o"
+"Output/Release/Obj/ble_app_template_pca10040_s132/bsp_nand_flash.o"
+"Output/Release/Obj/ble_app_template_pca10040_s132/w25n01.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/SEGGER_RTT.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/SEGGER_RTT_Syscalls_SES.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/SEGGER_RTT_printf.o"

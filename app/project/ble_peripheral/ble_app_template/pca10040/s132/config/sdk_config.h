@@ -3662,7 +3662,7 @@
  
 
 #ifndef NRFX_SPI2_ENABLED
-#define NRFX_SPI2_ENABLED 0
+#define NRFX_SPI2_ENABLED 1
 #endif
 
 // <o> NRFX_SPI_MISO_PULL_CFG  - MISO pin pull configuration.
@@ -5534,13 +5534,13 @@
 // <e> SPI2_ENABLED - Enable SPI2 instance
 //==========================================================
 #ifndef SPI2_ENABLED
-#define SPI2_ENABLED 0
+#define SPI2_ENABLED 1
 #endif
 // <q> SPI2_USE_EASY_DMA  - Use EasyDMA
  
 
 #ifndef SPI2_USE_EASY_DMA
-#define SPI2_USE_EASY_DMA 1
+#define SPI2_USE_EASY_DMA 0
 #endif
 
 // </e>

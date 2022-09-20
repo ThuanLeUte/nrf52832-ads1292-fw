@@ -21,6 +21,7 @@ extern "C" {
 /* Includes ----------------------------------------------------------- */
 #include <stdint.h>
 #include <stdbool.h>
+#include "device_config.h"
 
 /* Public defines ----------------------------------------------------- */
                                     // Schematic
@@ -36,22 +37,17 @@ extern "C" {
 #define IO_AFE_SCLK             (29)    // AFE SCLK
 #define IO_AFE_CS               (31)    // AFE CS
 
-/* GPIO */
-#define PS_HOLD						24 	/* OUTPUT */
-#define LDO_AVCC_EN					23	/* OUTPUT */
-#define LED1						17	/* OUTPUT */
-#define LED2						18	/* OUTPUT */
-#define BLE_CONNECT_PIN				LED1
-
-/* I2C */
-#define I2C1_SCL_PIN				27 	
-#define I2C1_SDA_PIN				26
-
-/* SPI */
-#define SPI0_SCK_PIN                29  // SPI clock GPIO pin number.
-#define SPI0_MOSI_PIN               25  // SPI Master Out Slave In GPIO pin number.
-#define SPI0_MISO_PIN               28  // SPI Master In Slave Out GPIO pin number.
-#define SPI0_SS_PIN                 22  // SPI Slave Select GPIO pin number.
+#if (_CONFIG_DEVICE_DEVKIT)
+#define IO_FLASH_MISO           (12)
+#define IO_FLASH_MOSI           (5)
+#define IO_FLASH_SCLK           (2)
+#define IO_FLASH_CS             (4)
+#else
+#define IO_FLASH_MISO           (11)
+#define IO_FLASH_MOSI           (12)
+#define IO_FLASH_SCLK           (10)
+#define IO_FLASH_CS             (9)
+#endif // _CONFIG_DEVICE_DEVKIT
 
 /* Public enumerate/structure ----------------------------------------- */
 /* Public macros ------------------------------------------------------ */
