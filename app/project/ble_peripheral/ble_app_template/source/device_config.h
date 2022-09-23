@@ -21,7 +21,7 @@ extern "C" {
 
 /* Includes ----------------------------------------------------------- */
 /* Public defines ----------------------------------------------------- */
-#define _CONFIG_DEVICE_DEVKIT (1)
+#define _CONFIG_DEVICE_DEVKIT (0)
 
 /* Public enumerate/structure ----------------------------------------- */
 /* Public macros ------------------------------------------------------ */
