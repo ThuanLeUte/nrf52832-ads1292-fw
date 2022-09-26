@@ -195,11 +195,13 @@ static void m_bsp_gpio_init(void)
   nrf_gpio_cfg_output(IO_AFE_CS);
   nrf_gpio_cfg_output(IO_AFE_RST);
   nrf_gpio_cfg_output(IO_AFE_START);
+  nrf_gpio_cfg_output(IO_AVCC_EN);
 
   bsp_gpio_write(IO_FLASH_CS, 1);
   bsp_gpio_write(IO_AFE_CS, 1);
   bsp_gpio_write(IO_AFE_RST, 1);
   bsp_gpio_write(IO_AFE_START, 0);
+  bsp_gpio_write(IO_AVCC_EN, 1);
 }
 
 /* End of file -------------------------------------------------------- */
