@@ -25,31 +25,44 @@ static uint8_t read_buf[10] = {0};
 
 /* Private function prototypes ---------------------------------------- */
 /* Function definitions ----------------------------------------------- */
-base_status_t bsp_nand_flash_init(void)
+void bsp_nand_flash_init(void)
 {
   m_w25n01.spi_transfer = bsp_spi_2_transmit_receive;
   m_w25n01.gpio_write   = bsp_gpio_write;
 
-  CHECK_STATUS(w25n01_init(&m_w25n01));
+  w25n01_init(&m_w25n01);
   bsp_delay_ms(10);
 
-  CHECK_STATUS(w25n01_block_erase(&m_w25n01, 0));
+  bsp_nand_flash_block_erase(0);
   bsp_delay_ms(10);
 
-  CHECK_STATUS(w25n01_load_program_data(&m_w25n01, 0, write_buf, 10));
+  bsp_nand_flash_write(0, write_buf, 10);
   bsp_delay_ms(10);
 
-  CHECK_STATUS(w25n01_program_execute(&m_w25n01, 0));
-  bsp_delay_ms(10);
-
-  CHECK_STATUS(w25n01_page_data_read(&m_w25n01, 0));
-  bsp_delay_ms(10);
-
-  CHECK_STATUS(w25n01_read_data(&m_w25n01, 0, read_buf, 10));
-  bsp_delay_ms(10);
-
-  return BS_OK;
+  bsp_nand_flash_read(0, read_buf, 10);
 }
+
+void bsp_nand_flash_block_erase(uint32_t page_addr)
+{
+  w25n01_block_erase(&m_w25n01, page_addr);
+}
+
+void bsp_nand_flash_write(uint32_t page_addr, uint8_t *buf, uint16_t len)
+{
+  w25n01_load_program_data(&m_w25n01, page_addr, buf, len);
+  bsp_delay_ms(10);
+
+  w25n01_program_execute(&m_w25n01, page_addr);
+}
+
+void bsp_nand_flash_read(uint32_t page_addr, uint8_t *buf, uint16_t len)
+{
+  w25n01_page_data_read(&m_w25n01, page_addr);
+  bsp_delay_ms(10);
+
+  w25n01_read_data(&m_w25n01, page_addr, buf, len);
+}
+
 
 /* Private function definitions ---------------------------------------- */
 /* End of file -------------------------------------------------------- */

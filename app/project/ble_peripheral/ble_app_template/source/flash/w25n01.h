@@ -26,11 +26,11 @@ extern "C" {
 // The entire page can be programmed at one time using the data from the 2,048-Byte internal buffer. Pages
 // can be erased in groups of 64 (128KB block erase). The W25N01GV has 1,024 erasable blocks.
 
-#define FLASH_SIZE (FLASH_PAGE_COUNT * FLASH_PAGE_SIZE) // Total device size in Bytes
 #define FLASH_PAGE_COUNT    (0x10000) // Total device size in Pages (65536 Pages)
 #define FLASH_PAGE_SIZE     (0x800)   // Total size of Pages (2048 Bytes)
 #define FLASH_BLOCK64_COUNT (0x400)   // Total device size in Block64k (1024 Blocks)
 #define FLASH_BLOCK64_SIZE  (0x20000) // Total size of Block64k (128KB = 64 pages)
+#define FLASH_SIZE          (FLASH_PAGE_COUNT * FLASH_PAGE_SIZE) // Total device size in Bytes
 
 /* Public enumerate/structure ----------------------------------------- */
 /**
