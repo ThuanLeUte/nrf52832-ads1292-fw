@@ -63,6 +63,5 @@ void bsp_nand_flash_read(uint32_t page_addr, uint8_t *buf, uint16_t len)
   w25n01_read_data(&m_w25n01, page_addr, buf, len);
 }
 
-
 /* Private function definitions ---------------------------------------- */
 /* End of file -------------------------------------------------------- */

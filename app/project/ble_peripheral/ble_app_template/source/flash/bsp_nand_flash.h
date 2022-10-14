@@ -26,18 +26,10 @@ extern "C" {
 /* Public macros ------------------------------------------------------ */
 /* Public variables --------------------------------------------------- */
 /* Public function prototypes ----------------------------------------- */
-/**
- * @brief         BSP Nand Flash init
- *
- * @param[in]     None
- *
- * @attention     None
- *
- * @return
- * - BS_OK
- * - BS_ERROR
- */
-base_status_t bsp_nand_flash_init(void);
+void bsp_nand_flash_init(void);
+void bsp_nand_flash_block_erase(uint32_t page_addr);
+void bsp_nand_flash_write(uint32_t page_addr, uint8_t *buf, uint16_t len);
+void bsp_nand_flash_read(uint32_t page_addr, uint8_t *buf, uint16_t len);
 
 /* -------------------------------------------------------------------------- */
 #ifdef __cplusplus
