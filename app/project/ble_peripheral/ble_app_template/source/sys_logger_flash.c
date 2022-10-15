@@ -70,8 +70,12 @@ void sys_logger_flash_write(void)
   logger_data_t logger_data;
   uint16_t block_writer = 0;
 
+  NRF_LOG_INFO("sys_logger_flash_write");
+
   while (1)
   {
+    NRF_LOG_PROCESS();
+
     // Simulate logger data
     logger_data.ecg_value++;
 
@@ -82,7 +86,6 @@ void sys_logger_flash_write(void)
     switch (logger_status)
     {
     case LOGGER_WRITE_BLOCK_ON_PROCESS:
-      NRF_LOG_INFO("LOGGER_WRITE_BLOCK_ON_PROCESS");
       break;
 
     case LOGGER_WRITE_PAGE_FINISHED:
@@ -107,7 +110,7 @@ void sys_logger_flash_write(void)
   }
 
 _LBL_END_:
-     NRF_LOG_INFO("_LBL_END_");
+  NRF_LOG_INFO("_LBL_END_");
 }
 
 void sys_logger_flash_read(void)
@@ -116,29 +119,33 @@ void sys_logger_flash_read(void)
   logger_data_t logger_data;
   uint16_t block_reader = 0;
 
+  NRF_LOG_INFO("sys_logger_flash_read");
+
   while (1)
   {
+    NRF_LOG_PROCESS();
+
     // Read data at block_reader
     logger_status = sys_logger_flash_read_block(block_reader, (uint8_t *)&logger_data, sizeof(logger_data));
 
+#if (_CONFIG_ENABLE_DETAIL_LOG)
     // Send the data via UART or BLE
-    NRF_LOG_PROCESS();
     NRF_LOG_INFO("++++++++++++++++++++++++++++++++++++");
     NRF_LOG_INFO("ECG data  : %d", logger_data.ecg_value);
     NRF_LOG_INFO("Acc X Axis: %d", logger_data.acc_data.x);
     NRF_LOG_INFO("Acc Y Axis: %d", logger_data.acc_data.y);
     NRF_LOG_INFO("Acc Z Axis: %d", logger_data.acc_data.z);
     NRF_LOG_INFO("-----------------------------------");
+#endif
 
     // Check read logger status
     switch (logger_status)
     {
     case LOGGER_READ_BLOCK_ON_PROCESS:
-      NRF_LOG_INFO("LOGGER_READ_BLOCK_ON_PROCESS");
       break;
 
     case LOGGER_READ_PAGE_FINISHED:
-      NRF_LOG_INFO("LOGGER_WRITE_BLOCK_FINISHED");
+      NRF_LOG_INFO("LOGGER_READ_PAGE_FINISHED");
       break;
 
     case LOGGER_READ_BLOCK_FINISHED:
@@ -157,7 +164,7 @@ void sys_logger_flash_read(void)
   }
 
 _LBL_END_:
-     NRF_LOG_INFO("_LBL_END_");
+  NRF_LOG_INFO("_LBL_END_");
 }
 
 logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint8_t *data, uint16_t len)
@@ -214,7 +221,7 @@ logger_status_t sys_logger_flash_read_block(uint16_t block_id, uint8_t *data, ui
   }
 
   // Copy the data of the page
-  memcpy(&data, &logger_ram.buf[logger_ram.reader], len);
+  memcpy(data, &logger_ram.buf[logger_ram.reader], len);
 
   // Increase reader
   logger_ram.reader += len;
