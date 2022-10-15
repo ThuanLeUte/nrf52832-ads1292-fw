@@ -166,7 +166,7 @@ static void m_bsp_spi_2_init(void)
   spi_config.miso_pin  = IO_FLASH_MISO;
   spi_config.sck_pin   = IO_FLASH_SCLK;
   spi_config.mode      = NRF_DRV_SPI_MODE_0;
-  spi_config.frequency = NRF_DRV_SPI_FREQ_1M;
+  spi_config.frequency = NRF_DRV_SPI_FREQ_8M;
 
   err_code = nrf_drv_spi_init(&m_spi_2, &spi_config, NULL, NULL);
   APP_ERROR_CHECK(err_code);

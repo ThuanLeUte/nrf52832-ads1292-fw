@@ -69,7 +69,7 @@ base_status_t w25n01_init(w25n01_t *me)
   {
     if ((uint16_t)(jedec[3] << 8 | jedec[4]) == W25N01GV_DEV_ID)
     {
-      CHECK_STATUS(m_w25n01_set_status_register(me, W25N_REG_PROT, 0x00));
+      //CHECK_STATUS(m_w25n01_set_status_register(me, W25N_REG_PROT, 0x00));
       return BS_OK;
     }
   }

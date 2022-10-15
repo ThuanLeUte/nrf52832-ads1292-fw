@@ -18,13 +18,14 @@
 #define LOGGER_META_DATA_START_ADDR   (0)
 #define LOGGER_DATA_START_ADDR        (FLASH_BLOCK64_SIZE)  // First block is for saving meta data
 #define NUMBER_OF_PAGE_EACH_BLOCK     (64)                  // 64 pages per block
+#define MAX_FLASH_PAGE_SIZE_SUPPORT   (FLASH_PAGE_SIZE - 1)
 
 /* Private enumerate/structure ---------------------------------------- */
 static struct
 {
   uint16_t writer;
   uint16_t reader;
-  uint8_t buf[FLASH_PAGE_SIZE];
+  uint8_t buf[MAX_FLASH_PAGE_SIZE_SUPPORT];
 }logger_ram;
 
 /* Private macros ----------------------------------------------------- */
@@ -41,6 +42,8 @@ void sys_logger_flash_init(void)
   // Reset ram logger
   memset(&logger_ram, 0, sizeof(logger_ram));
  
+  bsp_nand_flash_block_erase(LOGGER_META_DATA_START_ADDR);
+
   // Read the meta data
   bsp_nand_flash_read(LOGGER_META_DATA_START_ADDR, (uint8_t *)&g_logger_meta_data, sizeof(g_logger_meta_data));
 
@@ -68,9 +71,14 @@ void sys_logger_flash_write(void)
 {
   logger_status_t logger_status;
   logger_data_t logger_data;
+  uint32_t block_addr;
   uint16_t block_writer = 0;
 
   NRF_LOG_INFO("sys_logger_flash_write");
+
+  // Erase block before write data
+  block_addr = LOGGER_DATA_START_ADDR + (block_writer * FLASH_BLOCK64_SIZE);
+  bsp_nand_flash_block_erase(block_addr);
 
   while (1)
   {
@@ -90,13 +98,13 @@ void sys_logger_flash_write(void)
 
     case LOGGER_WRITE_PAGE_FINISHED:
       NRF_LOG_INFO("LOGGER_WRITE_PAGE_FINISHED");
-      logger_flash_save_meta_data();
+      // logger_flash_save_meta_data();
 
       break;
       
     case LOGGER_WRITE_BLOCK_FINISHED:
       NRF_LOG_INFO("LOGGER_WRITE_BLOCK_FINISHED");
-      logger_flash_save_meta_data();
+      // logger_flash_save_meta_data();
       goto _LBL_END_;
       break;
 
@@ -130,12 +138,8 @@ void sys_logger_flash_read(void)
 
 #if (_CONFIG_ENABLE_DETAIL_LOG)
     // Send the data via UART or BLE
-    NRF_LOG_INFO("++++++++++++++++++++++++++++++++++++");
     NRF_LOG_INFO("ECG data  : %d", logger_data.ecg_value);
-    NRF_LOG_INFO("Acc X Axis: %d", logger_data.acc_data.x);
-    NRF_LOG_INFO("Acc Y Axis: %d", logger_data.acc_data.y);
-    NRF_LOG_INFO("Acc Z Axis: %d", logger_data.acc_data.z);
-    NRF_LOG_INFO("-----------------------------------");
+    nrf_delay_ms(10);
 #endif
 
     // Check read logger status
@@ -177,15 +181,16 @@ logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint8_t *data, u
   logger_ram.writer += len;
 
   // Enough 1 page to write to flash
-  if (logger_ram.writer >= FLASH_PAGE_SIZE)
+  if (logger_ram.writer >= MAX_FLASH_PAGE_SIZE_SUPPORT)
   {
     // Prepare address
     block_addr = LOGGER_DATA_START_ADDR + (block_id * FLASH_BLOCK64_SIZE);
     page_addr  = block_addr +  g_logger_meta_data.page_writer[block_id] * FLASH_BLOCK64_SIZE;
 
     // Write data to flash
-    bsp_nand_flash_block_erase(block_addr);
-    bsp_nand_flash_write(page_addr, logger_ram.buf, FLASH_PAGE_SIZE);
+    bsp_nand_flash_write(page_addr, logger_ram.buf, MAX_FLASH_PAGE_SIZE_SUPPORT);
+    memset(logger_ram.buf, 0, MAX_FLASH_PAGE_SIZE_SUPPORT);
+    bsp_nand_flash_read(page_addr, logger_ram.buf, MAX_FLASH_PAGE_SIZE_SUPPORT);
 
     // Reset ram logger
     memset(&logger_ram, 0, sizeof(logger_ram));
@@ -217,7 +222,7 @@ logger_status_t sys_logger_flash_read_block(uint16_t block_id, uint8_t *data, ui
   {
     block_addr = LOGGER_DATA_START_ADDR + (block_id * FLASH_BLOCK64_SIZE);
     page_addr  = block_addr + page_reader * FLASH_BLOCK64_SIZE;
-    bsp_nand_flash_read(page_addr, logger_ram.buf, FLASH_PAGE_SIZE);
+    bsp_nand_flash_read(page_addr, logger_ram.buf, MAX_FLASH_PAGE_SIZE_SUPPORT);
   }
 
   // Copy the data of the page
@@ -227,7 +232,7 @@ logger_status_t sys_logger_flash_read_block(uint16_t block_id, uint8_t *data, ui
   logger_ram.reader += len;
 
   // Read page finished
-  if (logger_ram.reader > FLASH_PAGE_SIZE)
+  if (logger_ram.reader > MAX_FLASH_PAGE_SIZE_SUPPORT)
   {
     // Reset ram logger
     memset(&logger_ram, 0, sizeof(logger_ram));
