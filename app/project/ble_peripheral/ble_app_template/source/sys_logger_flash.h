@@ -24,10 +24,23 @@ extern "C" {
 
 /* Public defines ----------------------------------------------------- */
 /* Public enumerate/structure ----------------------------------------- */
+typedef enum
+{
+   LOGGER_WRITE_BLOCK_FINISHED
+  ,LOGGER_WRITE_BLOCK_ON_PROCESS
+  ,LOGGER_WRITE_PAGE_FINISHED
+  ,LOGGER_WRITE_BLOCK_ERROR
+
+  ,LOGGER_READ_BLOCK_FINISHED
+  ,LOGGER_READ_BLOCK_ON_PROCESS
+  ,LOGGER_READ_PAGE_FINISHED
+  ,LOGGER_READ_BLOCK_ERROR
+}
+logger_status_t;
 typedef struct
 {
-  uint16_t writer; // (0 -> 1024) One block
-  uint8_t page_index[FLASH_BLOCK64_COUNT]; // (0 -> 64)
+  uint16_t block_writer;                    // (0 -> 1024) One block
+  uint8_t page_writer[FLASH_BLOCK64_COUNT]; // (0 -> 64)
 }
 logger_meta_data_t;
 
