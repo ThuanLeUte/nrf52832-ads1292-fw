@@ -120,6 +120,7 @@
       <file file_name="../../../source/ads1292/platform.c" />
       <file file_name="../../../source/flash/bsp_nand_flash.c" />
       <file file_name="../../../source/flash/w25n01.c" />
+      <file file_name="../../../source/sys_logger_flash.c" />
     </folder>
     <folder Name="nRF_Segger_RTT">
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT.c" />

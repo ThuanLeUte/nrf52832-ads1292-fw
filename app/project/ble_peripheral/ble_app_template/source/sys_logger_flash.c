@@ -12,6 +12,7 @@
 
 /* Includes ----------------------------------------------------------- */
 #include "sys_logger_flash.h"
+#include "nrf_log.h"
 
 /* Private defines ---------------------------------------------------- */
 #define LOGGER_META_DATA_START_ADDR   (0)
@@ -41,20 +42,25 @@ void sys_logger_flash_init(void)
   memset(&logger_ram, 0, sizeof(logger_ram));
  
   // Read the meta data
-  bsp_nand_flash_read(LOGGER_META_DATA_START_ADDR, &g_logger_meta_data, sizeof(g_logger_meta_data));
+  bsp_nand_flash_read(LOGGER_META_DATA_START_ADDR, (uint8_t *)&g_logger_meta_data, sizeof(g_logger_meta_data));
 
   // Emty data --> Erase all
   if (g_logger_meta_data.block_writer == 0xFFFF)
   {
+    NRF_LOG_INFO("Logger empty, delete meta data");
+
     memset(&g_logger_meta_data, 0, sizeof(g_logger_meta_data));
     logger_flash_save_meta_data();
   }
   else
   {
+
     // Reset ram logger
     memset(&logger_ram, 0, sizeof(logger_ram));
 
     // Print info of the block
+    NRF_LOG_INFO("Logger meta data:");
+    NRF_LOG_INFO("Block writer: %d", g_logger_meta_data.block_writer);
   }
 }
 
@@ -66,18 +72,27 @@ void sys_logger_flash_write(void)
 
   while (1)
   {
+    // Simulate logger data
+    logger_data.ecg_value++;
+
     // Write data to block
-    logger_status = sys_logger_flash_write_block(block_writer, &logger_data, sizeof(logger_data));
+    logger_status = sys_logger_flash_write_block(block_writer, (uint8_t *)&logger_data, sizeof(logger_data));
 
     // Check write logger status
     switch (logger_status)
     {
     case LOGGER_WRITE_BLOCK_ON_PROCESS:
+      NRF_LOG_INFO("LOGGER_WRITE_BLOCK_ON_PROCESS");
       break;
 
-    case LOGGER_WRITE_PAGE_FINISHED: // Fall down
+    case LOGGER_WRITE_PAGE_FINISHED:
+      NRF_LOG_INFO("LOGGER_WRITE_PAGE_FINISHED");
+      logger_flash_save_meta_data();
+
+      break;
+      
     case LOGGER_WRITE_BLOCK_FINISHED:
-      // Save meta data to flash
+      NRF_LOG_INFO("LOGGER_WRITE_BLOCK_FINISHED");
       logger_flash_save_meta_data();
       goto _LBL_END_;
       break;
@@ -92,6 +107,7 @@ void sys_logger_flash_write(void)
   }
 
 _LBL_END_:
+     NRF_LOG_INFO("_LBL_END_");
 }
 
 void sys_logger_flash_read(void)
@@ -103,20 +119,30 @@ void sys_logger_flash_read(void)
   while (1)
   {
     // Read data at block_reader
-    logger_status = sys_logger_flash_read_block(block_reader, &logger_data, sizeof(logger_data));
+    logger_status = sys_logger_flash_read_block(block_reader, (uint8_t *)&logger_data, sizeof(logger_data));
 
     // Send the data via UART or BLE
+    NRF_LOG_PROCESS();
+    NRF_LOG_INFO("++++++++++++++++++++++++++++++++++++");
+    NRF_LOG_INFO("ECG data  : %d", logger_data.ecg_value);
+    NRF_LOG_INFO("Acc X Axis: %d", logger_data.acc_data.x);
+    NRF_LOG_INFO("Acc Y Axis: %d", logger_data.acc_data.y);
+    NRF_LOG_INFO("Acc Z Axis: %d", logger_data.acc_data.z);
+    NRF_LOG_INFO("-----------------------------------");
 
     // Check read logger status
     switch (logger_status)
     {
     case LOGGER_READ_BLOCK_ON_PROCESS:
+      NRF_LOG_INFO("LOGGER_READ_BLOCK_ON_PROCESS");
       break;
 
     case LOGGER_READ_PAGE_FINISHED:
+      NRF_LOG_INFO("LOGGER_WRITE_BLOCK_FINISHED");
       break;
 
     case LOGGER_READ_BLOCK_FINISHED:
+      NRF_LOG_INFO("LOGGER_READ_BLOCK_FINISHED");
       sys_logger_flash_erase_block(block_reader);
       goto _LBL_END_;
       break;
@@ -131,6 +157,7 @@ void sys_logger_flash_read(void)
   }
 
 _LBL_END_:
+     NRF_LOG_INFO("_LBL_END_");
 }
 
 logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint8_t *data, uint16_t len)
@@ -205,7 +232,7 @@ logger_status_t sys_logger_flash_read_block(uint16_t block_id, uint8_t *data, ui
     if (page_reader > g_logger_meta_data.page_writer[block_id])
     {
       page_reader = 0;
-      return LOGGER_READ_BLOCK_FINISHED
+      return LOGGER_READ_BLOCK_FINISHED;
     }
 
     return LOGGER_READ_PAGE_FINISHED;
@@ -230,7 +257,7 @@ void sys_logger_flash_erase_block(uint16_t block_id)
 static void logger_flash_save_meta_data(void)
 {
   bsp_nand_flash_block_erase(LOGGER_META_DATA_START_ADDR);
-  bsp_nand_flash_write(LOGGER_META_DATA_START_ADDR, &g_logger_meta_data, sizeof(g_logger_meta_data));
+  bsp_nand_flash_write(LOGGER_META_DATA_START_ADDR, (uint8_t *)&g_logger_meta_data, sizeof(g_logger_meta_data));
 }
 
 /* End of file -------------------------------------------------------- */

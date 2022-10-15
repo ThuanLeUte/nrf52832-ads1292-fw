@@ -41,6 +41,7 @@
 #include "bsp_afe.h"
 #include "bsp_nand_flash.h"
 #include "nrf52832_peripherals.h"
+#include "sys_logger_flash.h"
 
 #if defined(UART_PRESENT)
 #include "nrf_uart.h"
@@ -151,6 +152,12 @@ int main(void)
   bsp_nand_flash_init();
   bsp_imu_init();
   bsp_afe_init();
+
+  sys_logger_flash_init();
+
+  sys_logger_flash_write();
+
+  sys_logger_flash_read();
 
   // Start execution.
   application_timers_start();

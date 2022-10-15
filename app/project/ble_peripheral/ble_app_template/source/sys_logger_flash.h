@@ -21,6 +21,7 @@ extern "C" {
 /* Includes ----------------------------------------------------------- */
 #include "device_config.h"
 #include "bsp_nand_flash.h"
+#include "bsp_imu.h"
 
 /* Public defines ----------------------------------------------------- */
 /* Public enumerate/structure ----------------------------------------- */
@@ -55,8 +56,11 @@ logger_data_t;
 /* Public variables --------------------------------------------------- */
 /* Public function prototypes ----------------------------------------- */
 void sys_logger_flash_init(void);
-void sys_logger_flash_write(logger_t *logger);
-void sys_logger_flash_read(logger_t *logger);
+void sys_logger_flash_write(void);
+void sys_logger_flash_read(void);
+logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint8_t *data, uint16_t len);
+logger_status_t sys_logger_flash_read_block(uint16_t block_id, uint8_t *data, uint16_t len);
+void sys_logger_flash_erase_block(uint16_t block_id);
 
 /* -------------------------------------------------------------------------- */
 #ifdef __cplusplus
