@@ -69,18 +69,24 @@ void sys_logger_flash_init(void)
   }
 }
 
-void sys_logger_flash_write(void)
+void sys_logger_flash_write(uint8_t logger_id)
 {
+#define PATIENT g_logger_meta_data.patient_info[logger_id]
+
   logger_status_t logger_status;
   logger_data_t logger_data;
   uint32_t block_addr;
-  uint16_t block_writer = 0;
 
   NRF_LOG_INFO("sys_logger_flash_write");
 
   // Erase block before write data
-  block_addr = LOGGER_DATA_START_ADDR + (block_writer * FLASH_BLOCK64_SIZE);
+  block_addr = LOGGER_DATA_START_ADDR + (g_logger_meta_data.block_writer * FLASH_BLOCK64_SIZE);
   bsp_nand_flash_block_erase(block_addr);
+
+  // Save meta data
+  PATIENT.block_start = g_logger_meta_data.block_writer;
+  PATIENT.block_stop  = g_logger_meta_data.block_writer;
+  PATIENT.page_writer = 0;
 
   while (1)
   {
@@ -90,7 +96,7 @@ void sys_logger_flash_write(void)
     logger_data.ecg_value++;
 
     // Write data to block
-    logger_status = sys_logger_flash_write_block(block_writer, (uint8_t *)&logger_data, sizeof(logger_data));
+    logger_status = sys_logger_flash_write_block(g_logger_meta_data.block_writer, PATIENT.page_writer, (uint8_t *)&logger_data, sizeof(logger_data));
 
     // Check write logger status
     switch (logger_status)
@@ -99,21 +105,42 @@ void sys_logger_flash_write(void)
       break;
 
     case LOGGER_WRITE_PAGE_FINISHED:
-      NRF_LOG_INFO("LOGGER_WRITE_PAGE_FINISHED");
-      // logger_flash_save_meta_data();
+    {
+      NRF_LOG_INFO("LOGGER_WRITE_PAGE_FINISHED: %d", PATIENT.page_writer);
 
-      break;
-      
-    case LOGGER_WRITE_BLOCK_FINISHED:
-      NRF_LOG_INFO("LOGGER_WRITE_BLOCK_FINISHED");
+      // Move on to the next page
+      PATIENT.page_writer++;
+      NRF_LOG_INFO("Move on the next page: %d", PATIENT.page_writer);
+
       // logger_flash_save_meta_data();
-      goto _LBL_END_;
-      break;
+    }
+    break;
+
+    case LOGGER_WRITE_BLOCK_FINISHED:
+    {
+      NRF_LOG_INFO("LOGGER_WRITE_BLOCK_FINISHED: %d", g_logger_meta_data.block_writer);
+
+      // Reset page writer
+      PATIENT.block_stop  = g_logger_meta_data.block_writer;
+      PATIENT.page_writer = 0;
+
+      // Move to the next block
+      g_logger_meta_data.block_writer++;
+      NRF_LOG_INFO("Move on the next block: %d", g_logger_meta_data.block_writer);
+
+      // Erase block before write data
+      block_addr = LOGGER_DATA_START_ADDR + (g_logger_meta_data.block_writer * FLASH_BLOCK64_SIZE);
+      bsp_nand_flash_block_erase(block_addr);
+
+      // logger_flash_save_meta_data();
+    }
+    break;
 
     case LOGGER_WRITE_BLOCK_ERROR:
+      NRF_LOG_INFO("LOGGER_WRITE_BLOCK_ERROR");
       goto _LBL_END_;
-
       break;
+
     default:
       break;
     }
@@ -121,22 +148,29 @@ void sys_logger_flash_write(void)
 
 _LBL_END_:
   NRF_LOG_INFO("_LBL_END_");
+
+#undef PATIENT
 }
 
-void sys_logger_flash_read(void)
+void sys_logger_flash_read(uint8_t logger_id)
 {
+#define PATIENT g_logger_meta_data.patient_info[logger_id]
+
   logger_status_t logger_status;
   logger_data_t logger_data;
-  uint16_t block_reader = 0;
+  uint16_t block_reader = PATIENT.block_start;
 
   NRF_LOG_INFO("sys_logger_flash_read");
+
+  // Save meta data
+  PATIENT.page_reader = 0;
 
   while (1)
   {
     NRF_LOG_PROCESS();
 
     // Read data at block_reader
-    logger_status = sys_logger_flash_read_block(block_reader, (uint8_t *)&logger_data, sizeof(logger_data));
+    logger_status = sys_logger_flash_read_block(block_reader, PATIENT.page_reader, (uint8_t *)&logger_data, sizeof(logger_data));
 
 #if (_CONFIG_ENABLE_DETAIL_LOG)
     // Send the data via UART or BLE
@@ -151,19 +185,37 @@ void sys_logger_flash_read(void)
       break;
 
     case LOGGER_READ_PAGE_FINISHED:
-      NRF_LOG_INFO("LOGGER_READ_PAGE_FINISHED");
-      break;
+    {
+      NRF_LOG_INFO("LOGGER_READ_PAGE_FINISHED: %d", PATIENT.page_reader);
+
+      // Move on to the next page
+      PATIENT.page_reader++;
+      NRF_LOG_INFO("Move on the next page: %d", PATIENT.page_reader);
+
+      // logger_flash_save_meta_data();
+    }
+    break;
 
     case LOGGER_READ_BLOCK_FINISHED:
-      NRF_LOG_INFO("LOGGER_READ_BLOCK_FINISHED");
-      sys_logger_flash_erase_block(block_reader);
-      goto _LBL_END_;
-      break;
+    {
+      NRF_LOG_INFO("LOGGER_READ_BLOCK_FINISHED: %d", block_reader);
+
+      // Reset page reader
+      PATIENT.page_reader = 0;
+
+      // Move to the next block
+      block_reader++;
+      NRF_LOG_INFO("Move on the next block: %d", block_reader);
+
+      // logger_flash_save_meta_data();
+    }
+    break;
 
     case LOGGER_READ_BLOCK_ERROR:
+      NRF_LOG_INFO("LOGGER_READ_BLOCK_ERROR");
       goto _LBL_END_;
-
       break;
+
     default:
       break;
     }
@@ -171,12 +223,33 @@ void sys_logger_flash_read(void)
 
 _LBL_END_:
   NRF_LOG_INFO("_LBL_END_");
+
+#undef PATIENT
 }
 
-logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint8_t *data, uint16_t len)
+void sys_logger_flash_erase(uint8_t logger_id)
+{
+#define PATIENT g_logger_meta_data.patient_info[logger_id]
+
+  for (uint16_t i = PATIENT.block_start; i < PATIENT.block_stop; i++)
+  {
+    sys_logger_flash_erase_block(i)
+  }
+
+  // Erase meta data
+  memset(&PATIENT, 0, sizeof(PATIENT));;
+  logger_flash_save_meta_data()
+
+#undef PATIENT
+}
+
+logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint8_t page_id, uint8_t *data, uint16_t len)
 {
   uint32_t block_addr;
   uint32_t page_addr;
+
+  if (page_id >= NUMBER_OF_PAGE_EACH_BLOCK)
+    return LOGGER_WRITE_BLOCK_ERROR;
 
   // Save data to the RAM buffer (2048 Bytes - 1 page)
   memcpy(&logger_ram.buf[logger_ram.writer], data, len);
@@ -187,7 +260,7 @@ logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint8_t *data, u
   {
     // Prepare address
     block_addr = LOGGER_DATA_START_ADDR + (block_id * FLASH_BLOCK64_SIZE);
-    page_addr  = block_addr +  g_logger_meta_data.page_writer[block_id] * FLASH_BLOCK64_SIZE;
+    page_addr  = block_addr +  page_id * FLASH_BLOCK64_SIZE;
 
     // Write data to flash
     bsp_nand_flash_write(page_addr, logger_ram.buf, MAX_FLASH_PAGE_SIZE_SUPPORT);
@@ -197,15 +270,9 @@ logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint8_t *data, u
     // Reset ram logger
     memset(&logger_ram, 0, sizeof(logger_ram));
 
-    // Move on to the next page
-    g_logger_meta_data.page_writer[block_id]++;
-
     // Write block finished
-    if (g_logger_meta_data.page_writer[block_id] > NUMBER_OF_PAGE_EACH_BLOCK)
-    {
-      g_logger_meta_data.page_writer[block_id] = NUMBER_OF_PAGE_EACH_BLOCK;
+    if (page_id == (NUMBER_OF_PAGE_EACH_BLOCK - 1))
       return LOGGER_WRITE_BLOCK_FINISHED;
-    }
 
     return LOGGER_WRITE_PAGE_FINISHED;
   }
@@ -213,17 +280,19 @@ logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint8_t *data, u
   return LOGGER_WRITE_BLOCK_ON_PROCESS;
 }
 
-logger_status_t sys_logger_flash_read_block(uint16_t block_id, uint8_t *data, uint16_t len)
+logger_status_t sys_logger_flash_read_block(uint16_t block_id, uint8_t page_id, uint8_t *data, uint16_t len)
 {
   uint32_t block_addr;
   uint32_t page_addr;
-  static uint8_t page_reader = 0;
+
+  if (page_id >= NUMBER_OF_PAGE_EACH_BLOCK)
+    return LOGGER_READ_BLOCK_ERROR;
 
   // Read the data of the page
   if (logger_ram.reader == 0) // Read page data at the first time
   {
     block_addr = LOGGER_DATA_START_ADDR + (block_id * FLASH_BLOCK64_SIZE);
-    page_addr  = block_addr + page_reader * FLASH_BLOCK64_SIZE;
+    page_addr  = block_addr + page_id * FLASH_BLOCK64_SIZE;
     bsp_nand_flash_read(page_addr, logger_ram.buf, MAX_FLASH_PAGE_SIZE_SUPPORT);
   }
 
@@ -239,15 +308,9 @@ logger_status_t sys_logger_flash_read_block(uint16_t block_id, uint8_t *data, ui
     // Reset ram logger
     memset(&logger_ram, 0, sizeof(logger_ram));
 
-    // Move on to the next page
-    page_reader++;
-
     // Read block finished
-    if (page_reader > g_logger_meta_data.page_writer[block_id])
-    {
-      page_reader = 0;
+    if (page_id == (NUMBER_OF_PAGE_EACH_BLOCK - 1))
       return LOGGER_READ_BLOCK_FINISHED;
-    }
 
     return LOGGER_READ_PAGE_FINISHED;
   }
@@ -261,10 +324,6 @@ void sys_logger_flash_erase_block(uint16_t block_id)
 
   // Erase block
   bsp_nand_flash_block_erase(block_addr);
-
-  // Save meta data to flash
-  g_logger_meta_data.page_writer[block_id] = 0;
-  logger_flash_save_meta_data();
 }
 
 /* Private function definitions ---------------------------------------- */

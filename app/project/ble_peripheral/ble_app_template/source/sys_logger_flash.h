@@ -24,6 +24,8 @@ extern "C" {
 #include "bsp_imu.h"
 
 /* Public defines ----------------------------------------------------- */
+#define MAX_RECORD_SUPPORTED  (FLASH_BLOCK64_COUNT)
+
 /* Public enumerate/structure ----------------------------------------- */
 typedef enum
 {
@@ -38,10 +40,20 @@ typedef enum
   ,LOGGER_READ_BLOCK_ERROR
 }
 logger_status_t;
+
+typedef struct
+{
+  uint16_t block_start;                   // (0 -> 1024) Blocks
+  uint16_t block_stop;                    // (0 -> 1024) Blocks
+  uint8_t page_writer;                    // (0 -> 64) Pages
+  uint8_t page_reader;                    // (0 -> 64) Pages
+}
+logger_patient_info_t;
+
 typedef struct
 {
   uint16_t block_writer;                    // (0 -> 1024) One block
-  uint8_t page_writer[FLASH_BLOCK64_COUNT]; // (0 -> 64)
+  logger_patient_info_t patient_info[MAX_RECORD_SUPPORTED];
 }
 logger_meta_data_t;
 
@@ -56,10 +68,11 @@ logger_data_t;
 /* Public variables --------------------------------------------------- */
 /* Public function prototypes ----------------------------------------- */
 void sys_logger_flash_init(void);
-void sys_logger_flash_write(void);
-void sys_logger_flash_read(void);
-logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint8_t *data, uint16_t len);
-logger_status_t sys_logger_flash_read_block(uint16_t block_id, uint8_t *data, uint16_t len);
+void sys_logger_flash_write(uint8_t logger_id);
+void sys_logger_flash_read(uint8_t logger_id);
+void sys_logger_flash_erase(uint8_t logger_id);
+logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint8_t page_id, uint8_t *data, uint16_t len);
+logger_status_t sys_logger_flash_read_block(uint16_t block_id, uint8_t page_id, uint8_t *data, uint16_t len);
 void sys_logger_flash_erase_block(uint16_t block_id);
 
 /* -------------------------------------------------------------------------- */
