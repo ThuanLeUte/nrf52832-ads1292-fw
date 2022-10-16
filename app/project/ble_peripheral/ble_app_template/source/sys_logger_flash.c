@@ -15,10 +15,12 @@
 #include "nrf_log.h"
 
 /* Private defines ---------------------------------------------------- */
-#define LOGGER_META_DATA_START_ADDR   (0)
-#define LOGGER_DATA_START_ADDR        (FLASH_BLOCK64_SIZE)  // First block is for saving meta data
-#define NUMBER_OF_PAGE_EACH_BLOCK     (64)                  // 64 pages per block
-#define MAX_FLASH_PAGE_SIZE_SUPPORT   (FLASH_PAGE_SIZE - 1)
+#define LOGGER_META_DATA_START_BLOCK   (FLASH_BLOCK64_COUNT - 1) // Block at the end of the flash
+#define LOGGER_META_DATA_START_ADDR    (LOGGER_META_DATA_START_BLOCK * FLASH_BLOCK64_SIZE)
+#define LOGGER_DATA_START_ADDR         (0)
+#define NUMBER_OF_PAGE_EACH_BLOCK      (64)                      // 64 pages per block
+#define MAX_FLASH_PAGE_SIZE_SUPPORT    (FLASH_PAGE_SIZE - 1)
+
 
 /* Private enumerate/structure ---------------------------------------- */
 static struct
@@ -255,7 +257,7 @@ logger_status_t sys_logger_flash_read_block(uint16_t block_id, uint8_t *data, ui
 
 void sys_logger_flash_erase_block(uint16_t block_id)
 {
-  uint32_t block_addr = LOGGER_DATA_START_ADDR + (block_id * FLASH_BLOCK64_SIZE);;
+  uint32_t block_addr = LOGGER_DATA_START_ADDR + (block_id * FLASH_BLOCK64_SIZE);
 
   // Erase block
   bsp_nand_flash_block_erase(block_addr);
