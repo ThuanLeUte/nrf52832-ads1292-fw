@@ -233,12 +233,12 @@ void sys_logger_flash_erase(uint8_t logger_id)
 
   for (uint16_t i = PATIENT.block_start; i < PATIENT.block_stop; i++)
   {
-    sys_logger_flash_erase_block(i)
+    sys_logger_flash_erase_block(i);
   }
 
   // Erase meta data
   memset(&PATIENT, 0, sizeof(PATIENT));;
-  logger_flash_save_meta_data()
+  logger_flash_save_meta_data();
 
 #undef PATIENT
 }

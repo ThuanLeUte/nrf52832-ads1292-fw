@@ -155,10 +155,6 @@ int main(void)
 
   sys_logger_flash_init();
 
-  sys_logger_flash_write();
-
-  sys_logger_flash_read();
-
   while (1)
   {
     NRF_LOG_PROCESS();
