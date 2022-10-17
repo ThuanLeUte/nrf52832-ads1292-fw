@@ -163,6 +163,9 @@
       <file file_name="../../../../../../components/ble/ble_services/ble_dis/ble_dis.c" />
     </folder>
     <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_ppi.c" />
+    <configuration
+      Name="Release"
+      c_preprocessor_definitions="CONFIG_NFCT_PINS_AS_GPIOS = 1" />
   </project>
   <configuration
     Name="Release"
