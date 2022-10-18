@@ -121,6 +121,7 @@
       <file file_name="../../../source/flash/bsp_nand_flash.c" />
       <file file_name="../../../source/flash/w25n01.c" />
       <file file_name="../../../source/sys_logger_flash.c" />
+      <file file_name="../../../source/ble_ecg.c" />
     </folder>
     <folder Name="nRF_Segger_RTT">
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT.c" />

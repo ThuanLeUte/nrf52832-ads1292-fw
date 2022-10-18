@@ -70,6 +70,7 @@
 "Output/Release/Obj/ble_app_template_pca10040_s132/bsp_nand_flash.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/w25n01.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/sys_logger_flash.o"
+"Output/Release/Obj/ble_app_template_pca10040_s132/ble_ecg.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/SEGGER_RTT.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/SEGGER_RTT_Syscalls_SES.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/SEGGER_RTT_printf.o"
