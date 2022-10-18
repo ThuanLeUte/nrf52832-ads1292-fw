@@ -102,6 +102,7 @@
 "Output/Release/Obj/ble_app_template_pca10040_s132/ble_bas.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/ble_dis.o"
 "Output/Release/Obj/ble_app_template_pca10040_s132/nrfx_ppi.o"
+"Output/Release/Obj/ble_app_template_pca10040_s132/ble_sts.o"
 "C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 5.42/lib/libm_v7em_fpv4_sp_d16_hard_t_le_eabi.a"
 "C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 5.42/lib/libc_v7em_fpv4_sp_d16_hard_t_le_eabi.a"
 "C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 5.42/lib/libdebugio_v7em_fpv4_sp_d16_hard_t_le_eabi.a"

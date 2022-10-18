@@ -37,6 +37,7 @@
 #include "ble_mgs.h"
 #include "ble_gys.h"
 #include "ble_ecg.h"
+#include "ble_sts.h"
 #include "bsp_hw.h"
 #include "bsp_imu.h"
 #include "bsp_afe.h"
@@ -84,6 +85,7 @@ BLE_ACS_DEF(m_acs);                                                             
 BLE_MGS_DEF(m_mgs);                                                                 /**< BLE MGS service instance. */
 BLE_GYS_DEF(m_gys);                                                                 /**< BLE GYS service instance. */
 BLE_ECG_DEF(m_ecg);                                                                 /**< BLE GYS service instance. */
+BLE_STS_DEF(m_sts);                                                                 /**< BLE GYS service instance. */
 BLE_BAS_DEF(m_bas);                                                                 /**< Structure used to identify the battery service. */
 NRF_BLE_GATT_DEF(m_gatt);                                                           /**< GATT module instance. */
 NRF_BLE_QWR_DEF(m_qwr);                                                             /**< Context for the Queued Write module.*/
@@ -128,6 +130,7 @@ static void sensors_value_update(void);
 
 static void acs_service_init(void);
 static void ecg_service_init(void);
+static void sts_service_init(void);
 static void mgs_service_init(void);
 static void bas_service_init(void);
 static void dis_service_init(void);
@@ -168,7 +171,7 @@ int main(void)
 
     if (bsp_afe_get_ecg(&ecg_data) == BS_OK)
     {
-      NRF_LOG_RAW_INFO("%d\n", ecg_data.raw_data);
+      // NRF_LOG_RAW_INFO("%d\n", ecg_data.raw_data);
       
       ble_ecg_update(&m_ecg, (int16_t)ecg_data.raw_data, BLE_CONN_HANDLE_ALL, BLE_ECG_RAW_DATA_CHAR);
       ble_ecg_update(&m_ecg, (int16_t)ecg_data.heart_rate, BLE_CONN_HANDLE_ALL, BLE_ECG_HEART_RATE_CHAR);
@@ -324,6 +327,35 @@ static void ecg_service_init(void)
 }
 
 /**
+ * @brief         Function for ECG service init
+ *
+ * @param[in]     None
+ *
+ * @attention     None
+ *
+ * @return        None
+ */
+static void sts_service_init(void)
+{
+  uint32_t           err_code;
+  ble_sts_init_t     sts_init;
+
+  // Initialize ECG
+  memset(&sts_init, 0, sizeof(sts_init));
+
+  sts_init.evt_handler          = NULL;
+  sts_init.support_notification = true;
+  sts_init.p_report_ref         = NULL;
+
+  sts_init.bl_rd_sec        = SEC_OPEN;
+  sts_init.bl_cccd_wr_sec   = SEC_OPEN;
+  sts_init.bl_report_rd_sec = SEC_OPEN;
+
+  err_code = ble_sts_init(&m_sts, &sts_init);
+  APP_ERROR_CHECK(err_code);
+}
+
+/**
  * @brief         Function for GYS service init
  *
  * @param[in]     None
@@ -462,6 +494,7 @@ static void services_init(void)
   mgs_service_init();
   gys_service_init();
   ecg_service_init();
+  sts_service_init();
 
   // Initialize Battery Service.
   bas_service_init();
@@ -942,16 +975,16 @@ static void sensors_value_update(void)
 
   bsp_gyro_accel_get(&acc_data, &gyr_data);
 
-  NRF_LOG_INFO("++++++++++++++++++++++++++++++++++++");
-  NRF_LOG_INFO("Acc X Axis: %d", acc_data.x);
-  NRF_LOG_INFO("Acc Y Axis: %d", acc_data.y);
-  NRF_LOG_INFO("Acc Z Axis: %d", acc_data.z);
-  NRF_LOG_INFO("-----------------------------------");
-  NRF_LOG_INFO("Gyr X Axis: %d", gyr_data.x);
-  NRF_LOG_INFO("Gyr Y Axis: %d", gyr_data.y);
-  NRF_LOG_INFO("Gyr Z Axis: %d", gyr_data.z);
-  NRF_LOG_INFO("++++++++++++++++++++++++++++++++++++");
-  NRF_LOG_INFO("");
+  // NRF_LOG_INFO("++++++++++++++++++++++++++++++++++++");
+  // NRF_LOG_INFO("Acc X Axis: %d", acc_data.x);
+  // NRF_LOG_INFO("Acc Y Axis: %d", acc_data.y);
+  // NRF_LOG_INFO("Acc Z Axis: %d", acc_data.z);
+  // NRF_LOG_INFO("-----------------------------------");
+  // NRF_LOG_INFO("Gyr X Axis: %d", gyr_data.x);
+  // NRF_LOG_INFO("Gyr Y Axis: %d", gyr_data.y);
+  // NRF_LOG_INFO("Gyr Z Axis: %d", gyr_data.z);
+  // NRF_LOG_INFO("++++++++++++++++++++++++++++++++++++");
+  // NRF_LOG_INFO("");
 
   ble_acs_acc_update(&m_acs, (uint16_t)acc_data.x, BLE_CONN_HANDLE_ALL, BLE_ACS_AXIS_X_CHAR);
   ble_acs_acc_update(&m_acs, (uint16_t)acc_data.y, BLE_CONN_HANDLE_ALL, BLE_ACS_AXIS_Y_CHAR);

@@ -167,6 +167,7 @@
     <configuration
       Name="Release"
       c_preprocessor_definitions="CONFIG_NFCT_PINS_AS_GPIOS = 1" />
+    <file file_name="../../../source/ble_sts.c" />
   </project>
   <configuration
     Name="Release"
