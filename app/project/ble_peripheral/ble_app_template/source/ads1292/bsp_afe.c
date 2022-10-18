@@ -32,7 +32,7 @@ base_status_t bsp_afe_init(void)
   return ads1292_init(IO_AFE_CS, IO_AFE_RST, IO_AFE_START);
 }
 
-base_status_t bsp_afe_get_ecg(int16_t *ecg_data)
+base_status_t bsp_afe_get_ecg(ecg_data_t *ecg_data)
 {
   ads1292_output_value_t ecg_values;
 
@@ -50,6 +50,7 @@ base_status_t bsp_afe_get_ecg(int16_t *ecg_data)
 
       // Calculate
       QRS_Algorithm_Interface(ecg_filter_out, &global_heart_rate);
+      RESP_Algorithm_Interface(ecg_filter_out, &global_respiration_rate);
     }
     else
     {
@@ -57,7 +58,9 @@ base_status_t bsp_afe_get_ecg(int16_t *ecg_data)
       resp_filter_out = 0;
     }
 
-    *ecg_data = ecg_filter_out;
+    ecg_data->raw_data         = ecg_filter_out;
+    ecg_data->heart_rate       = global_heart_rate;
+    ecg_data->respiration_rate = global_respiration_rate;
   }
 
   return ret;

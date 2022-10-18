@@ -36,6 +36,7 @@
 #include "ble_acs.h"
 #include "ble_mgs.h"
 #include "ble_gys.h"
+#include "ble_ecg.h"
 #include "bsp_hw.h"
 #include "bsp_imu.h"
 #include "bsp_afe.h"
@@ -56,9 +57,9 @@
 #define SENSORS_MEAS_INTERVAL           APP_TIMER_TICKS(2000)                      /**< Sensors measurement interval (ticks). */
 #define BATT_LEVEL_MEAS_INTERVAL        APP_TIMER_TICKS(20000)                     /**< Battery level measurement interval (ticks). */
 
-#define DEVICE_NAME                     "imu-lcd"                                  /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                     "ECG-Device"                                  /**< Name of device. Will be included in the advertising data. */
 
-#define MANUFACTURER_NAME               "miBEAT"                                   /**< Manufacturer. Will be passed to Device Information Service. */
+#define MANUFACTURER_NAME               "Hydratech"                                   /**< Manufacturer. Will be passed to Device Information Service. */
 
 #define ACS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN                  /**< UUID type for the Nordic UART Service (vendor specific). */
 
@@ -82,6 +83,7 @@
 BLE_ACS_DEF(m_acs);                                                                 /**< BLE ACS service instance. */
 BLE_MGS_DEF(m_mgs);                                                                 /**< BLE MGS service instance. */
 BLE_GYS_DEF(m_gys);                                                                 /**< BLE GYS service instance. */
+BLE_ECG_DEF(m_ecg);                                                                 /**< BLE GYS service instance. */
 BLE_BAS_DEF(m_bas);                                                                 /**< Structure used to identify the battery service. */
 NRF_BLE_GATT_DEF(m_gatt);                                                           /**< GATT module instance. */
 NRF_BLE_QWR_DEF(m_qwr);                                                             /**< Context for the Queued Write module.*/
@@ -98,7 +100,7 @@ static ble_uuid_t m_adv_uuids[]          =                                      
 };
 
 uint32_t app_time;
-int16_t ecg_value;
+ecg_data_t ecg_data;
 
 /* Private function prototypes ---------------------------------------- */
 static void timers_init(void);
@@ -125,6 +127,7 @@ static void battery_level_update(void);
 static void sensors_value_update(void);
 
 static void acs_service_init(void);
+static void ecg_service_init(void);
 static void mgs_service_init(void);
 static void bas_service_init(void);
 static void dis_service_init(void);
@@ -155,12 +158,6 @@ int main(void)
 
   sys_logger_flash_init();
 
-  while (1)
-  {
-    NRF_LOG_PROCESS();
-  }
-  
-
   // Start execution.
   application_timers_start();
   advertising_start();
@@ -169,9 +166,12 @@ int main(void)
   {
     NRF_LOG_PROCESS();
 
-    if (bsp_afe_get_ecg(&ecg_value) == BS_OK)
+    if (bsp_afe_get_ecg(&ecg_data) == BS_OK)
     {
-     NRF_LOG_RAW_INFO("%d\n", ecg_value);
+      NRF_LOG_RAW_INFO("%d\n", ecg_data.raw_data);
+      
+      ble_ecg_update(&m_ecg, (int16_t)ecg_data.raw_data, BLE_CONN_HANDLE_ALL, BLE_ECG_RAW_DATA_CHAR);
+      ble_ecg_update(&m_ecg, (int16_t)ecg_data.heart_rate, BLE_CONN_HANDLE_ALL, BLE_ECG_HEART_RATE_CHAR);
     }
   }
 }
@@ -291,6 +291,35 @@ static void acs_service_init(void)
   acs_init.bl_report_rd_sec = SEC_OPEN;
 
   err_code = ble_acs_init(&m_acs, &acs_init);
+  APP_ERROR_CHECK(err_code);
+}
+
+/**
+ * @brief         Function for ECG service init
+ *
+ * @param[in]     None
+ *
+ * @attention     None
+ *
+ * @return        None
+ */
+static void ecg_service_init(void)
+{
+  uint32_t           err_code;
+  ble_ecg_init_t     ecg_init;
+
+  // Initialize ECG
+  memset(&ecg_init, 0, sizeof(ecg_init));
+
+  ecg_init.evt_handler          = NULL;
+  ecg_init.support_notification = true;
+  ecg_init.p_report_ref         = NULL;
+
+  ecg_init.bl_rd_sec        = SEC_OPEN;
+  ecg_init.bl_cccd_wr_sec   = SEC_OPEN;
+  ecg_init.bl_report_rd_sec = SEC_OPEN;
+
+  err_code = ble_ecg_init(&m_ecg, &ecg_init);
   APP_ERROR_CHECK(err_code);
 }
 
@@ -432,6 +461,7 @@ static void services_init(void)
   acs_service_init();
   mgs_service_init();
   gys_service_init();
+  ecg_service_init();
 
   // Initialize Battery Service.
   bas_service_init();
