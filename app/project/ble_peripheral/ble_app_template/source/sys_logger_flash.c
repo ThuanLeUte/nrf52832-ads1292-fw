@@ -59,7 +59,6 @@ void sys_logger_flash_init(void)
   }
   else
   {
-
     // Reset ram logger
     memset(&logger_ram, 0, sizeof(logger_ram));
 
@@ -76,7 +75,6 @@ void sys_logger_flash_write(void)
   logger_status_t logger_status;
   logger_data_t logger_data;
   uint32_t block_addr;
-
 
   // Erase block before write data
   block_addr = LOGGER_DATA_START_ADDR + (g_logger_meta_data.block_writer * FLASH_BLOCK64_SIZE);
@@ -107,7 +105,12 @@ void sys_logger_flash_write(void)
 
     // Force to stop the record
     if (g_device.record.start_write == false)
+    {
+      // Move to the next block
+      g_logger_meta_data.block_writer++;
+
       goto _LBL_END_;
+    }
 
     // Check write logger status
     switch (logger_status)
@@ -171,6 +174,8 @@ _LBL_END_:
 
   // logger_flash_save_meta_data();
 
+  g_device.record.start_write = false;
+
 #undef PATIENT
 }
 
@@ -182,6 +187,7 @@ void sys_logger_flash_read(uint8_t logger_id)
   logger_data_t logger_data;
   uint16_t block_reader = PATIENT.block_start;
 
+  NRF_LOG_INFO("Current logger ID: %d", g_logger_meta_data.logger_id);
   NRF_LOG_INFO("Flash read start at logger ID: %d", logger_id);
   NRF_LOG_INFO("Block start : %d", PATIENT.block_start);
   NRF_LOG_INFO("Block stop  : %d", PATIENT.block_stop);
@@ -224,8 +230,6 @@ void sys_logger_flash_read(uint8_t logger_id)
       // Move on to the next page
       PATIENT.page_reader++;
 
-      // logger_flash_save_meta_data();
-
       // Check block reader and page reader
       if ((block_reader == PATIENT.block_stop) && (PATIENT.page_reader == PATIENT.page_writer))
       {
@@ -244,8 +248,6 @@ void sys_logger_flash_read(uint8_t logger_id)
 
       // Move to the next block
       block_reader++;
-
-      // logger_flash_save_meta_data();
 
       // Check block reader
       if (block_reader > PATIENT.block_stop)
@@ -268,26 +270,59 @@ void sys_logger_flash_read(uint8_t logger_id)
 
 _LBL_END_:
   NRF_LOG_INFO("_LBL_END_");
-
-  // logger_flash_save_meta_data();
+  g_device.record.start_read = false;
 
 #undef PATIENT
 }
 
-void sys_logger_flash_erase(uint8_t logger_id)
+void sys_logger_flash_erase_all_record(void)
 {
-#define PATIENT g_logger_meta_data.patient_info[logger_id]
+  NRF_LOG_WARNING("Erase all records");
 
-  for (uint16_t i = PATIENT.block_start; i < PATIENT.block_stop; i++)
+  if (g_device.record.start_read || g_device.record.start_write)
   {
-    sys_logger_flash_erase_block(i);
+    NRF_LOG_WARNING("Device is one the writing or reading process, can not erase all records");
+    return;
   }
 
   // Erase meta data
-  memset(&PATIENT, 0, sizeof(PATIENT));;
+  memset(&g_logger_meta_data, 0, sizeof(g_logger_meta_data));
   logger_flash_save_meta_data();
+}
 
-#undef PATIENT
+void sys_logger_flash_start_writing_record(void)
+{
+  g_device.record.start_write = true;
+  g_device.record.start_read  = false;
+}
+
+void sys_logger_flash_start_reading_record(uint8_t record_id)
+{
+  g_device.record.id_read     = record_id;
+  g_device.record.start_read  = true;
+  g_device.record.start_write = false;
+}
+
+void sys_logger_flash_stop_record(void)
+{
+  g_device.record.start_read  = false;
+  g_device.record.start_write = false;
+}
+
+bool sys_logger_flash_is_reading_record(void)
+{
+  if ((g_device.record.start_read == true) && (g_device.record.start_write == false))
+    return true;
+
+  return false;
+}
+
+bool sys_logger_flash_is_writing_record(void)
+{
+  if ((g_device.record.start_read == false) && (g_device.record.start_write == true))
+    return true;
+
+  return false;
 }
 
 logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint8_t page_id, uint8_t *data, uint16_t len)

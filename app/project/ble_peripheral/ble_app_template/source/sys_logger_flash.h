@@ -74,7 +74,13 @@ extern logger_meta_data_t g_logger_meta_data;
 void sys_logger_flash_init(void);
 void sys_logger_flash_write(void);
 void sys_logger_flash_read(uint8_t logger_id);
-void sys_logger_flash_erase(uint8_t logger_id);
+void sys_logger_flash_erase_all_record(void);
+void sys_logger_flash_start_writing_record(void);
+void sys_logger_flash_start_reading_record(uint8_t record_id);
+void sys_logger_flash_stop_record(void);
+bool sys_logger_flash_is_reading_record(void);
+bool sys_logger_flash_is_writing_record(void);
+
 logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint8_t page_id, uint8_t *data, uint16_t len);
 logger_status_t sys_logger_flash_read_block(uint16_t block_id, uint8_t page_id, uint8_t *data, uint16_t len);
 void sys_logger_flash_erase_block(uint16_t block_id);

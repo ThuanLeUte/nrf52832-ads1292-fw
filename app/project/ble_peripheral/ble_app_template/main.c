@@ -174,7 +174,7 @@ int main(void)
 
     if (g_device.mode == SYS_MODE_RECORD_DATA)
     {
-      if ((g_device.record.start_read == true) && (g_device.record.start_write == false))
+      if (sys_logger_flash_is_reading_record())
       {
         // Read record from the flash
         sys_logger_flash_read(g_device.record.id_read);
@@ -182,7 +182,7 @@ int main(void)
         // Reset trigger
         memset(&g_device.record, 0, sizeof(g_device.record));
       }
-      else if ((g_device.record.start_read == false) && (g_device.record.start_write == true))
+      else if (sys_logger_flash_is_writing_record())
       {
         // Write record to the flash
         sys_logger_flash_write();

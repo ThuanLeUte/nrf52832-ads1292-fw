@@ -168,7 +168,6 @@ static ret_code_t m_ble_sts_add_char(ble_sts_t *p_sts, const ble_sts_init_t *p_s
   add_char_params.uuid              = BLE_UUID_CHAR[charac];
   add_char_params.max_len           = sizeof(uint8_t);
   add_char_params.init_len          = sizeof(uint8_t);
-  add_char_params.char_props.read   = 1;
   add_char_params.cccd_write_access = SEC_OPEN;
   add_char_params.write_access      = SEC_OPEN;
   add_char_params.read_access       = SEC_OPEN;
@@ -179,18 +178,21 @@ static ret_code_t m_ble_sts_add_char(ble_sts_t *p_sts, const ble_sts_init_t *p_s
     add_char_params.char_props.notify        = 0;
     add_char_params.char_props.write         = 1;
     add_char_params.char_props.write_wo_resp = 1;
+    add_char_params.char_props.read          = 0;
     break;
   
   case BLE_STS_START_STOP_RECORD_CHAR:
     add_char_params.char_props.notify        = 0;
     add_char_params.char_props.write         = 1;
     add_char_params.char_props.write_wo_resp = 1;
+    add_char_params.char_props.read          = 0;
     break;
 
   case BLE_STS_CURRENT_RECORD_INDEX_CHAR:
     add_char_params.char_props.notify        = p_sts->is_notification_supported;
     add_char_params.char_props.write         = 0;
     add_char_params.char_props.write_wo_resp = 0;
+    add_char_params.char_props.read          = 1;
     break;
   default:
     break;
@@ -253,33 +255,37 @@ static void m_ble_sts_on_connect(ble_sts_t *p_sts, ble_evt_t const *p_ble_evt)
 static void m_ble_sts_on_write(ble_sts_t *p_sts, ble_evt_t const *p_ble_evt)
 {
   ble_gatts_evt_write_t const *p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
+  uint8_t data_receive = p_evt_write->data[0];
 
-  NRF_LOG_INFO("Receive data: %d, on UUID: %x", p_evt_write->data[0], p_evt_write->uuid.uuid);
+  NRF_LOG_INFO("Receive data: %d, on UUID: %x", data_receive, p_evt_write->uuid.uuid);
 
   switch (p_evt_write->uuid.uuid)
   {
   case BLE_UUID_STS_GET_RECORD_CHARACTERISTIC:
   {
     // Start reading the record
-    g_device.record.id_read     = p_evt_write->data[0];
-    g_device.record.start_read  = true;
-    g_device.record.start_write = false;
+    sys_logger_flash_start_reading_record(data_receive);
   }
   break;
 
   case BLE_UUID_STS_START_STOP_RECORD_CHARACTERISTIC:
   {
-    if (p_evt_write->data[0] != 0)
+    switch (data_receive)
     {
-      // Start recording data
-      g_device.record.start_read  = false;
-      g_device.record.start_write = true;
-    }
-    else
-    {
-      // Stop the record
-      g_device.record.start_read  = false;
-      g_device.record.start_write = false;
+    case 0: // Stop recording
+      sys_logger_flash_stop_record();
+      break;
+
+    case 1: // Start recording
+      sys_logger_flash_start_writing_record();
+      break;
+
+    case 3: // Erase all recordings
+      sys_logger_flash_erase_all_record();
+      break;
+
+    default:
+      break;
     }
   }
   break;
