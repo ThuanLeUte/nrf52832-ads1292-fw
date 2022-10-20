@@ -44,6 +44,7 @@
 #include "bsp_nand_flash.h"
 #include "nrf52832_peripherals.h"
 #include "sys_logger_flash.h"
+#include "damos_ram.h"
 
 #if defined(UART_PRESENT)
 #include "nrf_uart.h"
@@ -165,17 +166,47 @@ int main(void)
   application_timers_start();
   advertising_start();
 
+  g_device.mode = SYS_MODE_RECORD_DATA;
+
   for (;;)
   {
     NRF_LOG_PROCESS();
 
-    if (bsp_afe_get_ecg(&ecg_data) == BS_OK)
+    if (g_device.mode == SYS_MODE_RECORD_DATA)
     {
-      // NRF_LOG_RAW_INFO("%d\n", ecg_data.raw_data);
-      
-      ble_ecg_update(&m_ecg, (int16_t)ecg_data.raw_data, BLE_CONN_HANDLE_ALL, BLE_ECG_RAW_DATA_CHAR);
-      ble_ecg_update(&m_ecg, (int16_t)ecg_data.heart_rate, BLE_CONN_HANDLE_ALL, BLE_ECG_HEART_RATE_CHAR);
+      if ((g_device.record.start_read == true) && (g_device.record.start_write == false))
+      {
+        // Read record from the flash
+        sys_logger_flash_read(g_device.record.id_read);
+
+        // Reset trigger
+        memset(&g_device.record, 0, sizeof(g_device.record));
+      }
+      else if ((g_device.record.start_read == false) && (g_device.record.start_write == true))
+      {
+        // Write record to the flash
+        sys_logger_flash_write();
+
+        // Reset trigger
+        memset(&g_device.record, 0, sizeof(g_device.record));
+      }
+      else
+      {
+        // Do not thing
+      }
     }
+    else // SYS_MODE_STREAM_DATA
+    {
+      if (bsp_afe_get_ecg(&ecg_data) == BS_OK)
+      {
+        NRF_LOG_RAW_INFO("%d\n", ecg_data.raw_data);
+
+        ble_ecg_update(&m_ecg, (int16_t)ecg_data.raw_data, BLE_CONN_HANDLE_ALL, BLE_ECG_RAW_DATA_CHAR);
+        ble_ecg_update(&m_ecg, (int16_t)ecg_data.heart_rate, BLE_CONN_HANDLE_ALL, BLE_ECG_HEART_RATE_CHAR);
+      }
+    }
+
+    
   }
 }
 

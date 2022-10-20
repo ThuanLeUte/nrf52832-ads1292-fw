@@ -32,7 +32,9 @@
  */
 typedef enum
 {
+  BLE_STS_START_STOP_RECORD_CHAR,
   BLE_STS_GET_RECORD_CHAR,
+  BLE_STS_CURRENT_RECORD_INDEX_CHAR,
   BLE_STS_MAX_CHAR
 } 
 ble_sts_charaterictic_t;

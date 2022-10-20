@@ -13,6 +13,7 @@
 /* Includes ----------------------------------------------------------- */
 #include "sys_logger_flash.h"
 #include "nrf_log.h"
+#include "damos_ram.h"
 
 /* Private defines ---------------------------------------------------- */
 #define LOGGER_META_DATA_START_BLOCK   (FLASH_BLOCK64_COUNT - 1) // Block at the end of the flash
@@ -20,7 +21,6 @@
 #define LOGGER_DATA_START_ADDR         (0)
 #define NUMBER_OF_PAGE_EACH_BLOCK      (64)                      // 64 pages per block
 #define MAX_FLASH_PAGE_SIZE_SUPPORT    (FLASH_PAGE_SIZE - 1)
-
 
 /* Private enumerate/structure ---------------------------------------- */
 static struct
@@ -69,15 +69,14 @@ void sys_logger_flash_init(void)
   }
 }
 
-void sys_logger_flash_write(uint8_t logger_id)
+void sys_logger_flash_write(void)
 {
-#define PATIENT g_logger_meta_data.patient_info[logger_id]
+#define PATIENT g_logger_meta_data.patient_info[g_logger_meta_data.logger_id]
 
   logger_status_t logger_status;
   logger_data_t logger_data;
   uint32_t block_addr;
 
-  NRF_LOG_INFO("sys_logger_flash_write");
 
   // Erase block before write data
   block_addr = LOGGER_DATA_START_ADDR + (g_logger_meta_data.block_writer * FLASH_BLOCK64_SIZE);
@@ -87,6 +86,14 @@ void sys_logger_flash_write(uint8_t logger_id)
   PATIENT.block_start = g_logger_meta_data.block_writer;
   PATIENT.block_stop  = g_logger_meta_data.block_writer;
   PATIENT.page_writer = 0;
+  PATIENT.is_logged   = 1;
+
+  NRF_LOG_INFO("Flash write start at logger ID: %d", g_logger_meta_data.logger_id);
+  NRF_LOG_INFO("Block start : %d", PATIENT.block_start);
+  NRF_LOG_INFO("Block stop  : %d", PATIENT.block_stop);
+  NRF_LOG_INFO("Pager writer: %d", PATIENT.page_writer);
+  NRF_LOG_INFO("Pager reader: %d", PATIENT.page_reader);
+  NRF_LOG_INFO("Is logged   : %d", PATIENT.is_logged);
 
   while (1)
   {
@@ -97,6 +104,10 @@ void sys_logger_flash_write(uint8_t logger_id)
 
     // Write data to block
     logger_status = sys_logger_flash_write_block(g_logger_meta_data.block_writer, PATIENT.page_writer, (uint8_t *)&logger_data, sizeof(logger_data));
+
+    // Force to stop the record
+    if (g_device.record.start_write == false)
+      goto _LBL_END_;
 
     // Check write logger status
     switch (logger_status)
@@ -110,7 +121,6 @@ void sys_logger_flash_write(uint8_t logger_id)
 
       // Move on to the next page
       PATIENT.page_writer++;
-      NRF_LOG_INFO("Move on the next page: %d", PATIENT.page_writer);
 
       // logger_flash_save_meta_data();
     }
@@ -118,15 +128,14 @@ void sys_logger_flash_write(uint8_t logger_id)
 
     case LOGGER_WRITE_BLOCK_FINISHED:
     {
-      NRF_LOG_INFO("LOGGER_WRITE_BLOCK_FINISHED: %d", g_logger_meta_data.block_writer);
+      NRF_LOG_WARNING("LOGGER_WRITE_BLOCK_FINISHED: %d", g_logger_meta_data.block_writer);
+
+      // Move to the next block
+      g_logger_meta_data.block_writer++;
 
       // Reset page writer
       PATIENT.block_stop  = g_logger_meta_data.block_writer;
       PATIENT.page_writer = 0;
-
-      // Move to the next block
-      g_logger_meta_data.block_writer++;
-      NRF_LOG_INFO("Move on the next block: %d", g_logger_meta_data.block_writer);
 
       // Erase block before write data
       block_addr = LOGGER_DATA_START_ADDR + (g_logger_meta_data.block_writer * FLASH_BLOCK64_SIZE);
@@ -138,7 +147,7 @@ void sys_logger_flash_write(uint8_t logger_id)
 
     case LOGGER_WRITE_BLOCK_ERROR:
       NRF_LOG_INFO("LOGGER_WRITE_BLOCK_ERROR");
-      goto _LBL_END_;
+      return;
       break;
 
     default:
@@ -148,6 +157,19 @@ void sys_logger_flash_write(uint8_t logger_id)
 
 _LBL_END_:
   NRF_LOG_INFO("_LBL_END_");
+
+  NRF_LOG_INFO("Flash write stop at logger ID: %d", g_logger_meta_data.logger_id);
+  NRF_LOG_INFO("Block start : %d", PATIENT.block_start);
+  NRF_LOG_INFO("Block stop  : %d", PATIENT.block_stop);
+  NRF_LOG_INFO("Page  writer: %d", PATIENT.page_writer);
+  NRF_LOG_INFO("Page  reader: %d", PATIENT.page_reader);
+  NRF_LOG_INFO("Is logged   : %d", PATIENT.is_logged);
+
+  // Check logger id
+  if (g_logger_meta_data.logger_id++ > MAX_RECORD_SUPPORTED)
+    g_logger_meta_data.logger_id = 0;
+
+  // logger_flash_save_meta_data();
 
 #undef PATIENT
 }
@@ -160,7 +182,18 @@ void sys_logger_flash_read(uint8_t logger_id)
   logger_data_t logger_data;
   uint16_t block_reader = PATIENT.block_start;
 
-  NRF_LOG_INFO("sys_logger_flash_read");
+  NRF_LOG_INFO("Flash read start at logger ID: %d", logger_id);
+  NRF_LOG_INFO("Block start : %d", PATIENT.block_start);
+  NRF_LOG_INFO("Block stop  : %d", PATIENT.block_stop);
+  NRF_LOG_INFO("Pager writer: %d", PATIENT.page_writer);
+  NRF_LOG_INFO("Pager reader: %d", PATIENT.page_reader);
+  NRF_LOG_INFO("Is logged   : %d", PATIENT.is_logged);
+
+  if (PATIENT.is_logged == 0)
+  {
+    NRF_LOG_WARNING("Patient with ID: %d has no data", logger_id);
+    return;
+  }
 
   // Save meta data
   PATIENT.page_reader = 0;
@@ -190,24 +223,36 @@ void sys_logger_flash_read(uint8_t logger_id)
 
       // Move on to the next page
       PATIENT.page_reader++;
-      NRF_LOG_INFO("Move on the next page: %d", PATIENT.page_reader);
 
       // logger_flash_save_meta_data();
+
+      // Check block reader and page reader
+      if ((block_reader == PATIENT.block_stop) && (PATIENT.page_reader == PATIENT.page_writer))
+      {
+        NRF_LOG_INFO("Finish read all data in record: %d", logger_id);
+        goto _LBL_END_;
+      }
     }
     break;
 
     case LOGGER_READ_BLOCK_FINISHED:
     {
-      NRF_LOG_INFO("LOGGER_READ_BLOCK_FINISHED: %d", block_reader);
+      NRF_LOG_WARNING("LOGGER_READ_BLOCK_FINISHED: %d", block_reader);
 
       // Reset page reader
       PATIENT.page_reader = 0;
 
       // Move to the next block
       block_reader++;
-      NRF_LOG_INFO("Move on the next block: %d", block_reader);
 
       // logger_flash_save_meta_data();
+
+      // Check block reader
+      if (block_reader > PATIENT.block_stop)
+      {
+        NRF_LOG_INFO("Finish read all data in record: %d", logger_id);
+        goto _LBL_END_;
+      }
     }
     break;
 
@@ -223,6 +268,8 @@ void sys_logger_flash_read(uint8_t logger_id)
 
 _LBL_END_:
   NRF_LOG_INFO("_LBL_END_");
+
+  // logger_flash_save_meta_data();
 
 #undef PATIENT
 }

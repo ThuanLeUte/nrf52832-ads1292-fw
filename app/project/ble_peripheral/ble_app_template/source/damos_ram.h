@@ -1,19 +1,18 @@
-
 /**
- * @file       device_config.h
- * @copyright  Copyright (C) 2020 Hydratech. All rights reserved.
- * @license    This project is released under the Hydratech License.
+ * @file       damos_ram.h
+ * @copyright  Copyright (C) 2020 ThuanLe. All rights reserved.
+ * @license    This project is released under the ThuanLe License.
  * @version    1.0.0
- * @date       2021-09-05
+ * @date       2021-01-24
  * @author     Thuan Le
- * @brief      Device config
+ * @brief      Damos RAM
  * @note       None
  * @example    None
  */
 
 /* Define to prevent recursive inclusion ------------------------------ */
-#ifndef __DEVICE_CONFIG_H
-#define __DEVICE_CONFIG_H
+#ifndef _DAMOS_RAM_H
+#define _DAMOS_RAM_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,20 +23,37 @@ extern "C" {
 #include <stdbool.h>
 
 /* Public defines ----------------------------------------------------- */
-#define _CONFIG_DEVICE_DEVKIT         (1)
-#define _CONFIG_ENABLE_DETAIL_LOG     (0)
-#define _CONFIG_ENABLE_TEST_FLASH     (1)
-
 /* Public enumerate/structure ----------------------------------------- */
+typedef enum
+{
+   SYS_MODE_STREAM_DATA
+  ,SYS_MODE_RECORD_DATA
+}
+system_mode_t;
+
+typedef struct
+{
+  system_mode_t mode;
+  struct
+  {
+    uint8_t id_read;
+    bool start_write;
+    bool start_read;
+  }
+  record;
+}
+system_t;
+
 /* Public macros ------------------------------------------------------ */
 /* Public variables --------------------------------------------------- */
+extern system_t g_device;
+
 /* Public function prototypes ----------------------------------------- */
 
 /* -------------------------------------------------------------------------- */
 #ifdef __cplusplus
 } // extern "C"
 #endif
-#endif // __DEVICE_CONFIG_H
+#endif // _DAMOS_RAM_H
 
 /* End of file -------------------------------------------------------- */
-
