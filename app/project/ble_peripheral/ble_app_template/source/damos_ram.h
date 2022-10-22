@@ -41,6 +41,8 @@ typedef struct
     bool start_read;
   }
   record;
+
+  bool led_blink_enable;
 }
 system_t;
 

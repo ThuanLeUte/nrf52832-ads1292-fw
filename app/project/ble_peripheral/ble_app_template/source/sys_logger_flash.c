@@ -175,6 +175,7 @@ _LBL_END_:
   // logger_flash_save_meta_data();
 
   g_device.record.start_write = false;
+  g_device.led_blink_enable   = false;
 
 #undef PATIENT
 }
@@ -271,6 +272,7 @@ void sys_logger_flash_read(uint8_t logger_id)
 _LBL_END_:
   NRF_LOG_INFO("_LBL_END_");
   g_device.record.start_read = false;
+  g_device.led_blink_enable  = false;
 
 #undef PATIENT
 }
@@ -281,7 +283,7 @@ void sys_logger_flash_erase_all_record(void)
 
   if (g_device.record.start_read || g_device.record.start_write)
   {
-    NRF_LOG_WARNING("Device is one the writing or reading process, can not erase all records");
+    NRF_LOG_WARNING("Device is on the writing or reading process, can not erase all records");
     return;
   }
 
@@ -294,6 +296,7 @@ void sys_logger_flash_start_writing_record(void)
 {
   g_device.record.start_write = true;
   g_device.record.start_read  = false;
+  g_device.led_blink_enable   = true;
 }
 
 void sys_logger_flash_start_reading_record(uint8_t record_id)
@@ -301,12 +304,14 @@ void sys_logger_flash_start_reading_record(uint8_t record_id)
   g_device.record.id_read     = record_id;
   g_device.record.start_read  = true;
   g_device.record.start_write = false;
+  g_device.led_blink_enable   = true;
 }
 
 void sys_logger_flash_stop_record(void)
 {
   g_device.record.start_read  = false;
   g_device.record.start_write = false;
+  g_device.led_blink_enable   = false;
 }
 
 bool sys_logger_flash_is_reading_record(void)

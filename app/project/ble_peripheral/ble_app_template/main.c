@@ -58,6 +58,7 @@
 
 #define SENSORS_MEAS_INTERVAL           APP_TIMER_TICKS(2000)                      /**< Sensors measurement interval (ticks). */
 #define BATT_LEVEL_MEAS_INTERVAL        APP_TIMER_TICKS(20000)                     /**< Battery level measurement interval (ticks). */
+#define LED_BLINK_INTERVAL              APP_TIMER_TICKS(500)                     /**< Battery level measurement interval (ticks). */
 
 #define DEVICE_NAME                     "ECG-Device"                                  /**< Name of device. Will be included in the advertising data. */
 
@@ -93,6 +94,7 @@ NRF_BLE_QWR_DEF(m_qwr);                                                         
 BLE_ADVERTISING_DEF(m_advertising);                                                 /**< Advertising module instance. */
 APP_TIMER_DEF(m_sensors_timer_id);                                                  /**< Sensor measurement timer. */
 APP_TIMER_DEF(m_battery_timer_id);                                                  /**< Battery timer. */
+APP_TIMER_DEF(m_led_blink_timer_id);                                                /**< Battery timer. */
 
 /* Private variables -------------------------------------------------- */
 static uint16_t   m_conn_handle          = BLE_CONN_HANDLE_INVALID;                 /**< Handle of the current connection. */
@@ -125,6 +127,7 @@ static void advertising_start(void);
 
 static void battery_level_meas_timeout_handler(void * p_context);
 static void sensors_meas_timeout_handler(void * p_context);
+static void led_blink_timeout_handler(void * p_context);
 
 static void battery_level_update(void);
 static void sensors_value_update(void);
@@ -249,6 +252,11 @@ static void timers_init(void)
   err_code = app_timer_create(&m_battery_timer_id,
                               APP_TIMER_MODE_REPEATED,
                               battery_level_meas_timeout_handler);
+  APP_ERROR_CHECK(err_code);
+
+  err_code = app_timer_create(&m_led_blink_timer_id,
+                              APP_TIMER_MODE_REPEATED,
+                              led_blink_timeout_handler);
   APP_ERROR_CHECK(err_code);
 }
 
@@ -946,6 +954,34 @@ static void battery_level_meas_timeout_handler(void * p_context)
 }
 
 /**
+ * @brief         Function for handling the Battery measurement timer timeout.
+ *
+ * @param[in]     p_context   Pointer to context
+ *
+ * @attention     None
+ *
+ * @return        None
+ */
+static void led_blink_timeout_handler(void * p_context)
+{
+  static led_status = false;
+
+  if ((!g_device.led_blink_enable) && (led_status == true))
+    return;
+
+  if (led_status)
+  {
+    bsp_gpio_write(IO_LED_1, 1); // LED off
+    led_status = false;
+  }
+  else
+  {
+    bsp_gpio_write(IO_LED_1, 0); // LED on
+    led_status = true;
+  }
+}
+
+/**
  * @brief         Function for handling the Body temperature measurement timer timeout.
  *
  * @param[in]     p_context   Pointer to context
@@ -1047,9 +1083,11 @@ static void application_timers_start(void)
   err_code = app_timer_start(m_sensors_timer_id, SENSORS_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
 
-
   err_code =  app_timer_start(m_battery_timer_id, BATT_LEVEL_MEAS_INTERVAL, NULL);
-    APP_ERROR_CHECK(err_code);
+  APP_ERROR_CHECK(err_code);
+
+  err_code = app_timer_start(m_led_blink_timer_id, LED_BLINK_INTERVAL, NULL);
+  APP_ERROR_CHECK(err_code);
 }
 
 /* End of fi le -------------------------------------------------------- */
