@@ -33,6 +33,15 @@
 
 /* Private enumerate/structure ---------------------------------------- */
 /* Private macros ----------------------------------------------------- */
+static enum
+{
+   STOP_RECORD = 0
+  ,STAR_RECORD
+  ,ERASE_ALL_RECORDS
+  ,STREAM_MODE
+  ,RECORD_MODE
+};
+
 /* Public variables --------------------------------------------------- */
 /* Private variables -------------------------------------------------- */
 static const uint16_t BLE_UUID_CHAR[] = {
@@ -272,18 +281,28 @@ static void m_ble_sts_on_write(ble_sts_t *p_sts, ble_evt_t const *p_ble_evt)
   {
     switch (data_receive)
     {
-    case 0: // Stop recording
+    case STOP_RECORD: // Stop recording
       sys_logger_flash_stop_record();
       break;
 
-    case 1: // Start recording
+    case STAR_RECORD: // Start recording
       sys_logger_flash_start_writing_record();
       break;
 
-    case 3: // Erase all recordings
+    case ERASE_ALL_RECORDS: // Erase all recordings
       sys_logger_flash_erase_all_record();
       break;
-
+    
+    case STREAM_MODE:
+      NRF_LOG_INFO("SYS_MODE_STREAM_DATA");
+      g_device.mode = SYS_MODE_STREAM_DATA;
+      break;
+    
+    case RECORD_MODE:
+      NRF_LOG_INFO("SYS_MODE_RECORD_DATA");
+      g_device.mode = SYS_MODE_RECORD_DATA;
+      break;
+    
     default:
       break;
     }
@@ -293,7 +312,6 @@ static void m_ble_sts_on_write(ble_sts_t *p_sts, ble_evt_t const *p_ble_evt)
   default:
     break;
   }
-
 }
 
 /* End of file -------------------------------------------------------- */

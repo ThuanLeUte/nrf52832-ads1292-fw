@@ -169,6 +169,7 @@ int main(void)
   application_timers_start();
   advertising_start();
 
+  // Set default mode to record data
   g_device.mode = SYS_MODE_RECORD_DATA;
 
   for (;;)
