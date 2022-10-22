@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "ble_conn_params.h": "c"
+        "ble_conn_params.h": "c",
+        "bsp_hw.h": "c",
+        "nrfx_systick.h": "c"
     }
 }

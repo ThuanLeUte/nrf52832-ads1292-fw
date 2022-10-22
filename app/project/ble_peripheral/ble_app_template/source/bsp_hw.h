@@ -141,6 +141,8 @@ void bsp_delay_ms(uint32_t ms);
 
 void bsp_gpio_write(uint8_t pin , uint8_t state);
 
+void bsp_power_on_device(bool enable);
+
 /* -------------------------------------------------------------------------- */
 #ifdef __cplusplus
 } // extern "C"

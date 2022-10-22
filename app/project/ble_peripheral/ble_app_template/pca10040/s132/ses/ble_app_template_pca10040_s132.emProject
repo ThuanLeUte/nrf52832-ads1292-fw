@@ -123,6 +123,9 @@
       <file file_name="../../../source/sys_logger_flash.c" />
       <file file_name="../../../source/ble_ecg.c" />
       <file file_name="../../../source/damos_ram.c" />
+      <file file_name="../../../source/one_button/one_button.c" />
+      <file file_name="../../../source/sys_button.c" />
+      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_systick.c" />
     </folder>
     <folder Name="nRF_Segger_RTT">
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT.c" />
@@ -172,8 +175,8 @@
   </project>
   <configuration
     Name="Release"
-    c_preprocessor_definitions="NDEBUG"
-    c_user_include_directories="../../../../../../components/ble/ble_link_ctx_manager;../../../../../../components/libraries/uart;../../../source;../../../source/ads1292;../../../source/flash"
+    c_preprocessor_definitions="NDEBUG;SYSTICK_ENABLED"
+    c_user_include_directories="../../../../../../components/ble/ble_link_ctx_manager;../../../../../../components/libraries/uart;../../../source;../../../source/ads1292;../../../source/flash;../../../source/one_button"
     gcc_optimization_level="None"
     link_time_optimization="No"
     linker_section_placement_file="$(StudioDir)/targets/section_placement.xml"

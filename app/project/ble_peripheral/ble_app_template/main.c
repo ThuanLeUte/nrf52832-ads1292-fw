@@ -44,6 +44,7 @@
 #include "bsp_nand_flash.h"
 #include "nrf52832_peripherals.h"
 #include "sys_logger_flash.h"
+#include "sys_button.h"
 #include "damos_ram.h"
 
 #if defined(UART_PRESENT)
@@ -147,6 +148,8 @@ static void application_timers_start(void);
  */
 int main(void)
 {
+  g_device.is_device_on = false;
+
   // Initialize.
   log_init();
   timers_init();
@@ -159,6 +162,7 @@ int main(void)
   conn_params_init();
 
   bsp_hw_init();
+  sys_button_init();
   bsp_nand_flash_init();
   bsp_imu_init();
   bsp_afe_init();

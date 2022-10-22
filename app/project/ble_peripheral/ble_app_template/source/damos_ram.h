@@ -43,6 +43,8 @@ typedef struct
   record;
 
   bool led_blink_enable;
+  uint64_t sys_tick;
+  bool is_device_on;
 }
 system_t;
 
