@@ -82,9 +82,20 @@ base_status_t bsp_spi_1_transmit_receive(uint8_t *tx_data, uint8_t *rx_data, uin
 
 base_status_t bsp_spi_2_transmit_receive(uint8_t *tx_data, uint8_t *rx_data, uint16_t len)
 {
-  if (nrf_drv_spi_transfer(&m_spi_2, tx_data, len, rx_data, len) != NRF_SUCCESS)
-    return BS_ERROR;
-  
+  uint16_t byte_to_transmit;
+
+  while (len != 0)
+  {
+    byte_to_transmit = MIN(len, 255);
+
+    if (nrf_drv_spi_transfer(&m_spi_2, tx_data, byte_to_transmit, rx_data, byte_to_transmit) != NRF_SUCCESS)
+      return BS_ERROR;
+
+    len     -= byte_to_transmit;
+    rx_data += byte_to_transmit;
+    tx_data += byte_to_transmit;
+  }
+
   return BS_OK;
 }
 

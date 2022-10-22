@@ -41,25 +41,25 @@ void bsp_nand_flash_init(void)
 void bsp_nand_flash_block_erase(uint32_t page_addr)
 {
   w25n01_block_erase(&m_w25n01, page_addr);
-  bsp_delay_ms(1000);  // Delay at least 1ms
+  nrf_delay_ms(1);
 }
 
 void bsp_nand_flash_write(uint32_t page_addr, uint8_t *buf, uint16_t len)
 {
   w25n01_load_program_data(&m_w25n01, page_addr, buf, len);
-  bsp_delay_ms(100); // Delay at least 100us
+  nrf_delay_ms(1); // Delay at least 100us
 
   w25n01_program_execute(&m_w25n01, page_addr);
-  bsp_delay_ms(100);   // Delay at least 1ms
+  nrf_delay_ms(1);
 }
 
 void bsp_nand_flash_read(uint32_t page_addr, uint8_t *buf, uint16_t len)
 {
   w25n01_page_data_read(&m_w25n01, page_addr);
-  bsp_delay_ms(100); // Delay at least 100us
+  nrf_delay_ms(1); // Delay at least 100us
 
   w25n01_read_data(&m_w25n01, page_addr, buf, len);
-  bsp_delay_ms(100);   // Delay at least 1ms
+  nrf_delay_ms(1);
 }
 
 /* Private function definitions ---------------------------------------- */
@@ -68,25 +68,42 @@ void bsp_nand_flash_test(void)
 {
 #define FLASH_PAGE_SIZE_SUPPORT (FLASH_PAGE_SIZE - 1)
 
-  uint32_t block_addr = FLASH_BLOCK64_SIZE * 10;
+  uint32_t block_addr = 0;
   uint8_t w_buf[FLASH_PAGE_SIZE_SUPPORT];
   uint8_t r_buf[FLASH_PAGE_SIZE_SUPPORT];
+  uint8_t w_value = 0;
 
   // Prepare the buffer
   for(uint16_t i = 0; i < FLASH_PAGE_SIZE_SUPPORT; i++)
   {
-    w_buf[i] = i;
+    if ((i % 100) == 0)
+    {
+      w_value++;
+    }
+    w_buf[i] = w_value;
     r_buf[i] = 0;
   }
 
   // Must erase the block first
-  bsp_nand_flash_block_erase(block_addr);
 
-  bsp_nand_flash_read(block_addr, r_buf, FLASH_PAGE_SIZE_SUPPORT);
+  for (uint8_t i = 0; i < 1000; i++)
+  {
+    bsp_nand_flash_block_erase(block_addr);
 
-  bsp_nand_flash_write(block_addr, w_buf, FLASH_PAGE_SIZE_SUPPORT);
+    bsp_nand_flash_write(block_addr , w_buf, FLASH_PAGE_SIZE_SUPPORT);
 
-  bsp_nand_flash_read(block_addr, r_buf, FLASH_PAGE_SIZE_SUPPORT);
+    bsp_nand_flash_read(block_addr , r_buf, FLASH_PAGE_SIZE_SUPPORT);
+
+    if (memcmp(r_buf, w_buf, sizeof(w_buf)) == 0)
+    {
+      NRF_LOG_INFO("Flash read and write success");
+    }
+    else
+    {
+      NRF_LOG_ERROR("Flash read and write error");
+    }
+    NRF_LOG_PROCESS();
+  }
 
 #undef FLASH_PAGE_SIZE_SUPPORT
 }

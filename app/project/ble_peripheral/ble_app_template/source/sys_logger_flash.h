@@ -61,8 +61,8 @@ logger_meta_data_t;
 
 typedef struct 
 {
-  int16_t ecg_value;
-  mpu9250_scaled_data_t acc_data;
+  uint8_t ecg_value;
+  // mpu9250_scaled_data_t acc_data;
 }
 logger_data_t;
 

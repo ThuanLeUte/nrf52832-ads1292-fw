@@ -43,8 +43,8 @@ void sys_logger_flash_init(void)
 {
   // Reset ram logger
   memset(&logger_ram, 0, sizeof(logger_ram));
- 
-  bsp_nand_flash_block_erase(LOGGER_META_DATA_START_ADDR);
+
+  sys_logger_flash_erase_block(LOGGER_META_DATA_START_BLOCK);
 
   // Read the meta data
   bsp_nand_flash_read(LOGGER_META_DATA_START_ADDR, (uint8_t *)&g_logger_meta_data, sizeof(g_logger_meta_data));
@@ -55,7 +55,7 @@ void sys_logger_flash_init(void)
     NRF_LOG_INFO("Logger empty, delete meta data");
 
     memset(&g_logger_meta_data, 0, sizeof(g_logger_meta_data));
-    logger_flash_save_meta_data();
+    // logger_flash_save_meta_data();
   }
   else
   {
@@ -74,11 +74,9 @@ void sys_logger_flash_write(void)
 
   logger_status_t logger_status;
   logger_data_t logger_data;
-  uint32_t block_addr;
 
   // Erase block before write data
-  block_addr = LOGGER_DATA_START_ADDR + (g_logger_meta_data.block_writer * FLASH_BLOCK64_SIZE);
-  bsp_nand_flash_block_erase(block_addr);
+  sys_logger_flash_erase_block(g_logger_meta_data.block_writer);
 
   // Save meta data
   PATIENT.block_start = g_logger_meta_data.block_writer;
@@ -93,12 +91,15 @@ void sys_logger_flash_write(void)
   NRF_LOG_INFO("Pager reader: %d", PATIENT.page_reader);
   NRF_LOG_INFO("Is logged   : %d", PATIENT.is_logged);
 
+  logger_data.ecg_value = 0;
+
   while (1)
   {
     NRF_LOG_PROCESS();
 
     // Simulate logger data
-    logger_data.ecg_value++;
+    if (logger_data.ecg_value++ >= 250)
+      logger_data.ecg_value = 0;
 
     // Write data to block
     logger_status = sys_logger_flash_write_block(g_logger_meta_data.block_writer, PATIENT.page_writer, (uint8_t *)&logger_data, sizeof(logger_data));
@@ -141,8 +142,7 @@ void sys_logger_flash_write(void)
       PATIENT.page_writer = 0;
 
       // Erase block before write data
-      block_addr = LOGGER_DATA_START_ADDR + (g_logger_meta_data.block_writer * FLASH_BLOCK64_SIZE);
-      bsp_nand_flash_block_erase(block_addr);
+      sys_logger_flash_erase_block(g_logger_meta_data.block_writer);
 
       // logger_flash_save_meta_data();
     }
@@ -218,6 +218,12 @@ void sys_logger_flash_read(uint8_t logger_id)
     nrf_delay_ms(10);
 #endif
 
+    // Force to stop read the record
+    if (g_device.record.start_read == false)
+    {
+      goto _LBL_END_;
+    }
+
     // Check read logger status
     switch (logger_status)
     {
@@ -289,7 +295,7 @@ void sys_logger_flash_erase_all_record(void)
 
   // Erase meta data
   memset(&g_logger_meta_data, 0, sizeof(g_logger_meta_data));
-  logger_flash_save_meta_data();
+  // logger_flash_save_meta_data();
 }
 
 void sys_logger_flash_start_writing_record(void)
@@ -347,7 +353,7 @@ logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint8_t page_id,
   {
     // Prepare address
     block_addr = LOGGER_DATA_START_ADDR + (block_id * FLASH_BLOCK64_SIZE);
-    page_addr  = block_addr +  page_id * FLASH_BLOCK64_SIZE;
+    page_addr  = block_addr +  page_id * FLASH_PAGE_SIZE;
 
     // Write data to flash
     bsp_nand_flash_write(page_addr, logger_ram.buf, MAX_FLASH_PAGE_SIZE_SUPPORT);
@@ -379,7 +385,7 @@ logger_status_t sys_logger_flash_read_block(uint16_t block_id, uint8_t page_id, 
   if (logger_ram.reader == 0) // Read page data at the first time
   {
     block_addr = LOGGER_DATA_START_ADDR + (block_id * FLASH_BLOCK64_SIZE);
-    page_addr  = block_addr + page_id * FLASH_BLOCK64_SIZE;
+    page_addr  = block_addr + page_id * FLASH_PAGE_SIZE;
     bsp_nand_flash_read(page_addr, logger_ram.buf, MAX_FLASH_PAGE_SIZE_SUPPORT);
   }
 
