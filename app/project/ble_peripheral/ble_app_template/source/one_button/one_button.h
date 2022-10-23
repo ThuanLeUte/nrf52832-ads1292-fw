@@ -4,7 +4,7 @@
 * @license    This project is released under the Hydratech License.
 * @version    01.00.00
 * @date       2020-08-13
-* @author     Khang Vo
+* @author     Thuan Le
 * @brief      One button library to handle button event
 * @note       None
 * @example    None
