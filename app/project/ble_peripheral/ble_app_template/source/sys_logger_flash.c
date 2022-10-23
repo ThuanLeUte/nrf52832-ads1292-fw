@@ -55,7 +55,7 @@ void sys_logger_flash_init(void)
     NRF_LOG_INFO("Logger empty, delete meta data");
 
     memset(&g_logger_meta_data, 0, sizeof(g_logger_meta_data));
-    // logger_flash_save_meta_data();
+    logger_flash_save_meta_data();
   }
   else
   {
@@ -81,6 +81,7 @@ void sys_logger_flash_write(void)
   // Save meta data
   PATIENT.block_start = g_logger_meta_data.block_writer;
   PATIENT.block_stop  = g_logger_meta_data.block_writer;
+  PATIENT.page_writer = PATIENT.block_start * NUMBER_OF_PAGE_EACH_BLOCK;
   PATIENT.is_logged   = 1;
 
   NRF_LOG_INFO("Flash write start at logger ID: %d", g_logger_meta_data.logger_id);
@@ -91,6 +92,9 @@ void sys_logger_flash_write(void)
   NRF_LOG_INFO("Is logged   : %d", PATIENT.is_logged);
 
   logger_data.ecg_value = 0;
+
+  // Reset ram logger
+  memset(&logger_ram, 0, sizeof(logger_ram));
 
   while (1)
   {
@@ -125,7 +129,7 @@ void sys_logger_flash_write(void)
       // Move on to the next page
       PATIENT.page_writer++;
 
-      // logger_flash_save_meta_data();
+      logger_flash_save_meta_data();
     }
     break;
 
@@ -144,7 +148,7 @@ void sys_logger_flash_write(void)
       // Erase block before write data
       sys_logger_flash_erase_block(g_logger_meta_data.block_writer);
 
-      // logger_flash_save_meta_data();
+      logger_flash_save_meta_data();
     }
     break;
 
@@ -172,7 +176,7 @@ _LBL_END_:
   if (g_logger_meta_data.logger_id++ > MAX_RECORD_SUPPORTED)
     g_logger_meta_data.logger_id = 0;
 
-  // logger_flash_save_meta_data();
+  logger_flash_save_meta_data();
 
   g_device.record.start_write = false;
   g_device.led_blink_enable   = false;
@@ -294,7 +298,7 @@ void sys_logger_flash_erase_all_record(void)
 
   // Erase meta data
   memset(&g_logger_meta_data, 0, sizeof(g_logger_meta_data));
-  // logger_flash_save_meta_data();
+  logger_flash_save_meta_data();
 }
 
 void sys_logger_flash_start_writing_record(void)
