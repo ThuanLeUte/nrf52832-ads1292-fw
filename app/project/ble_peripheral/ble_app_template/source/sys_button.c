@@ -97,7 +97,7 @@ void sys_button_callback(int pin, one_button_event_t evt)
   }
   else if (OB_EVT_LONG_PRESS_START == evt)
   {
-    NRF_LOG_RAW_INFO("Button long press stop \n");
+    NRF_LOG_RAW_INFO("Button long press start \n");
     if (g_device.is_device_on)
     {
       // Power off device

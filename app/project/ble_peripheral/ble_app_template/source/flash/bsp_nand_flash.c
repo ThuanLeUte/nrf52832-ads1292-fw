@@ -38,27 +38,27 @@ void bsp_nand_flash_init(void)
 #endif // _CONFIG_ENABLE_TEST_FLASH
 }
 
-void bsp_nand_flash_block_erase(uint32_t page_addr)
+void bsp_nand_flash_block_erase(uint32_t page_num)
 {
-  w25n01_block_erase(&m_w25n01, page_addr);
+  w25n01_block_erase(&m_w25n01, page_num);
   nrf_delay_ms(1);
 }
 
-void bsp_nand_flash_write(uint32_t page_addr, uint8_t *buf, uint16_t len)
+void bsp_nand_flash_write(uint32_t page_num, uint8_t *buf, uint16_t len)
 {
-  w25n01_load_program_data(&m_w25n01, page_addr, buf, len);
+  w25n01_load_program_data(&m_w25n01, page_num, buf, len);
   nrf_delay_ms(1); // Delay at least 100us
 
-  w25n01_program_execute(&m_w25n01, page_addr);
+  w25n01_program_execute(&m_w25n01, page_num);
   nrf_delay_ms(1);
 }
 
-void bsp_nand_flash_read(uint32_t page_addr, uint8_t *buf, uint16_t len)
+void bsp_nand_flash_read(uint32_t page_num, uint8_t *buf, uint16_t len)
 {
-  w25n01_page_data_read(&m_w25n01, page_addr);
+  w25n01_page_data_read(&m_w25n01, page_num);
   nrf_delay_ms(1); // Delay at least 100us
 
-  w25n01_read_data(&m_w25n01, page_addr, buf, len);
+  w25n01_read_data(&m_w25n01, page_num, buf, len);
   nrf_delay_ms(1);
 }
 

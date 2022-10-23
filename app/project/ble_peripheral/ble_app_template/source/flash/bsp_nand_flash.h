@@ -27,9 +27,9 @@ extern "C" {
 /* Public variables --------------------------------------------------- */
 /* Public function prototypes ----------------------------------------- */
 void bsp_nand_flash_init(void);
-void bsp_nand_flash_block_erase(uint32_t page_addr);
-void bsp_nand_flash_write(uint32_t page_addr, uint8_t *buf, uint16_t len);
-void bsp_nand_flash_read(uint32_t page_addr, uint8_t *buf, uint16_t len);
+void bsp_nand_flash_block_erase(uint32_t page_num);
+void bsp_nand_flash_write(uint32_t page_num, uint8_t *buf, uint16_t len);
+void bsp_nand_flash_read(uint32_t page_num, uint8_t *buf, uint16_t len);
 
 /* -------------------------------------------------------------------------- */
 #ifdef __cplusplus

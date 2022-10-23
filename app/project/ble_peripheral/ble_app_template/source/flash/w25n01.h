@@ -54,7 +54,7 @@ base_status_t w25n01_init(w25n01_t *me);
  * The 128KB Block Erase instruction sets all memory within a specified block (64-Pages, 128K-Bytes) to the
  * erased state of all 1s (FFh).
  */
-base_status_t w25n01_block_erase(w25n01_t *me, uint32_t page_addr);
+base_status_t w25n01_block_erase(w25n01_t *me, uint32_t page_num);
 
 /**
  * @brief W25N01 load program data
@@ -72,13 +72,13 @@ base_status_t w25n01_load_program_data(w25n01_t *me, uint16_t column_addr, uint8
  * instruction will program the Data Buffer content into the physical memory page that is specified in the
  * instruction
  */
-base_status_t w25n01_program_execute(w25n01_t *me, uint32_t page_addr);
+base_status_t w25n01_program_execute(w25n01_t *me, uint32_t page_num);
 
 /**
  * @brief W25N01 page data read
  * The Page Data Read instruction will transfer the data of the specified memory page into the 2,112-Byte Data Buffer
  */
-base_status_t w25n01_page_data_read(w25n01_t *me, uint32_t page_addr);
+base_status_t w25n01_page_data_read(w25n01_t *me, uint32_t page_num);
 
 /**
  * @brief W25N01 read data

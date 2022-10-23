@@ -106,12 +106,14 @@ void bsp_power_on_device(bool enable)
     bsp_gpio_write(IO_AVCC_EN, 1);
     bsp_gpio_write(IO_PS_HOLD, 1);
     bsp_gpio_write(IO_LED_1, 0);
+    NRF_LOG_INFO("Power on device");
   }
   else
   {
     bsp_gpio_write(IO_AVCC_EN, 0);
     bsp_gpio_write(IO_PS_HOLD, 0);
     bsp_gpio_write(IO_LED_1, 1);
+    NRF_LOG_INFO("Power off device");
   }
 }
 

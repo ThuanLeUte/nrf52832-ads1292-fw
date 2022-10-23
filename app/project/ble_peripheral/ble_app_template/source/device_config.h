@@ -26,7 +26,7 @@ extern "C" {
 /* Public defines ----------------------------------------------------- */
 #define _CONFIG_DEVICE_DEVKIT         (1)
 #define _CONFIG_ENABLE_DETAIL_LOG     (1)
-#define _CONFIG_ENABLE_TEST_FLASH     (1)
+#define _CONFIG_ENABLE_TEST_FLASH     (0)
 
 /* Public enumerate/structure ----------------------------------------- */
 /* Public macros ------------------------------------------------------ */

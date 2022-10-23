@@ -45,8 +45,8 @@ typedef struct
 {
   uint16_t block_start;                   // (0 -> 1024) Blocks
   uint16_t block_stop;                    // (0 -> 1024) Blocks
-  uint8_t page_writer;                    // (0 -> 64) Pages
-  uint8_t page_reader;                    // (0 -> 64) Pages
+  uint16_t page_writer;                    // (0 -> 64) Pages
+  uint16_t page_reader;                    // (0 -> 64) Pages
   uint8_t is_logged;                      // (0 -> 64) Pages
 }
 logger_patient_info_t;
@@ -81,8 +81,8 @@ void sys_logger_flash_stop_record(void);
 bool sys_logger_flash_is_reading_record(void);
 bool sys_logger_flash_is_writing_record(void);
 
-logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint8_t page_id, uint8_t *data, uint16_t len);
-logger_status_t sys_logger_flash_read_block(uint16_t block_id, uint8_t page_id, uint8_t *data, uint16_t len);
+logger_status_t sys_logger_flash_write_block(uint16_t block_id, uint32_t page_id, uint8_t *data, uint16_t len);
+logger_status_t sys_logger_flash_read_block(uint16_t block_id, uint32_t page_id, uint8_t *data, uint16_t len);
 void sys_logger_flash_erase_block(uint16_t block_id);
 
 /* -------------------------------------------------------------------------- */
