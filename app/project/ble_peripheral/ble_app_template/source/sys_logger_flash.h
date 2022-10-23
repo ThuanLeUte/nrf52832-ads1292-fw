@@ -22,6 +22,7 @@ extern "C" {
 #include "device_config.h"
 #include "bsp_nand_flash.h"
 #include "bsp_imu.h"
+#include "bsp_afe.h"
 
 /* Public defines ----------------------------------------------------- */
 #define MAX_RECORD_SUPPORTED  (200)
@@ -61,8 +62,8 @@ logger_meta_data_t;
 
 typedef struct 
 {
-  uint8_t ecg_value;
-  // mpu9250_scaled_data_t acc_data;
+  ecg_data_t ecg_data;
+  mpu9250_scaled_data_t acc_data;
 }
 logger_data_t;
 

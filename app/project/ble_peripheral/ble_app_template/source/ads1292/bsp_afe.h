@@ -25,8 +25,8 @@ extern "C" {
 typedef struct
 {
   int16_t raw_data;
-  uint16_t heart_rate;
-  uint16_t respiration_rate;
+  uint8_t heart_rate;
+  uint8_t respiration_rate;
 }
 ecg_data_t;
 

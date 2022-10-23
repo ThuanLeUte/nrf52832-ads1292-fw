@@ -91,7 +91,7 @@ void sys_logger_flash_write(void)
   NRF_LOG_INFO("Pager reader: %d", PATIENT.page_reader);
   NRF_LOG_INFO("Is logged   : %d", PATIENT.is_logged);
 
-  logger_data.ecg_value = 0;
+  logger_data.ecg_data.heart_rate = 0;
 
   // Reset ram logger
   memset(&logger_ram, 0, sizeof(logger_ram));
@@ -100,9 +100,14 @@ void sys_logger_flash_write(void)
   {
     NRF_LOG_PROCESS();
 
+#if (_CONFIG_ENABLE_SIMULATE_ECG_DATA)
     // Simulate logger data
-    if (logger_data.ecg_value++ >= 250)
-      logger_data.ecg_value = 0;
+    if (logger_data.ecg_data.heart_rate++ >= 250)
+      logger_data.ecg_data.heart_rate = 0;
+#else
+    bsp_afe_get_ecg(&logger_data.ecg_data);
+    // bsp_gyro_accel_get(&logger_data.acc_data, NULL);
+#endif // _CONFIG_ENABLE_SIMULATE_ECG_DATA
 
     // Write data to block
     logger_status = sys_logger_flash_write_block(g_logger_meta_data.block_writer, PATIENT.page_writer, (uint8_t *)&logger_data, sizeof(logger_data));
@@ -218,7 +223,7 @@ void sys_logger_flash_read(uint8_t logger_id)
 
 #if (_CONFIG_ENABLE_DETAIL_LOG)
     // Send the data via UART or BLE
-    NRF_LOG_INFO("ECG data  : %d", logger_data.ecg_value);
+    NRF_LOG_INFO("ECG heart rate  : %d", logger_data.ecg_data.heart_rate);
     nrf_delay_ms(10);
 #endif
 

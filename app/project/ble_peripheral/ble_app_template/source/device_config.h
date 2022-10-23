@@ -24,9 +24,10 @@ extern "C" {
 #include <stdbool.h>
 
 /* Public defines ----------------------------------------------------- */
-#define _CONFIG_DEVICE_DEVKIT         (1)
-#define _CONFIG_ENABLE_DETAIL_LOG     (1)
-#define _CONFIG_ENABLE_TEST_FLASH     (0)
+#define _CONFIG_DEVICE_DEVKIT                (1)
+#define _CONFIG_ENABLE_DETAIL_LOG            (1)
+#define _CONFIG_ENABLE_TEST_FLASH            (0)
+#define _CONFIG_ENABLE_SIMULATE_ECG_DATA     (1)
 
 /* Public enumerate/structure ----------------------------------------- */
 /* Public macros ------------------------------------------------------ */
