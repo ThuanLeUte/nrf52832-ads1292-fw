@@ -82,10 +82,39 @@ base_status_t bsp_spi_1_transmit_receive(uint8_t *tx_data, uint8_t *rx_data, uin
 
 base_status_t bsp_spi_2_transmit_receive(uint8_t *tx_data, uint8_t *rx_data, uint16_t len)
 {
-  if (nrf_drv_spi_transfer(&m_spi_2, tx_data, len, rx_data, len) != NRF_SUCCESS)
-    return BS_ERROR;
-  
+  uint16_t byte_to_transmit;
+
+  while (len != 0)
+  {
+    byte_to_transmit = MIN(len, 255);
+
+    if (nrf_drv_spi_transfer(&m_spi_2, tx_data, byte_to_transmit, rx_data, byte_to_transmit) != NRF_SUCCESS)
+      return BS_ERROR;
+
+    len     -= byte_to_transmit;
+    rx_data += byte_to_transmit;
+    tx_data += byte_to_transmit;
+  }
+
   return BS_OK;
+}
+
+void bsp_power_on_device(bool enable)
+{
+  if (enable)
+  {
+    bsp_gpio_write(IO_AVCC_EN, 1);
+    bsp_gpio_write(IO_PS_HOLD, 1);
+    bsp_gpio_write(IO_LED_1, 0);
+    NRF_LOG_INFO("Power on device");
+  }
+  else
+  {
+    bsp_gpio_write(IO_AVCC_EN, 0);
+    bsp_gpio_write(IO_PS_HOLD, 0);
+    bsp_gpio_write(IO_LED_1, 1);
+    NRF_LOG_INFO("Power off device");
+  }
 }
 
 /* Private function definitions ---------------------------------------- */
@@ -166,7 +195,7 @@ static void m_bsp_spi_2_init(void)
   spi_config.miso_pin  = IO_FLASH_MISO;
   spi_config.sck_pin   = IO_FLASH_SCLK;
   spi_config.mode      = NRF_DRV_SPI_MODE_0;
-  spi_config.frequency = NRF_DRV_SPI_FREQ_1M;
+  spi_config.frequency = NRF_DRV_SPI_FREQ_8M;
 
   err_code = nrf_drv_spi_init(&m_spi_2, &spi_config, NULL, NULL);
   APP_ERROR_CHECK(err_code);
@@ -189,6 +218,7 @@ static void m_bsp_gpio_init(void)
   APP_ERROR_CHECK(err_code);
 
   nrf_gpio_cfg_input(IO_AFE_DRDY, NRF_GPIO_PIN_PULLUP);
+  nrf_gpio_cfg_input(IO_SW1, NRF_GPIO_PIN_NOPULL);
 
   // Output in setting
   nrf_gpio_cfg_output(IO_FLASH_CS);
@@ -196,12 +226,18 @@ static void m_bsp_gpio_init(void)
   nrf_gpio_cfg_output(IO_AFE_RST);
   nrf_gpio_cfg_output(IO_AFE_START);
   nrf_gpio_cfg_output(IO_AVCC_EN);
+  nrf_gpio_cfg_output(IO_LED_1);
+  nrf_gpio_cfg_output(IO_PS_HOLD);
 
   bsp_gpio_write(IO_FLASH_CS, 1);
   bsp_gpio_write(IO_AFE_CS, 1);
   bsp_gpio_write(IO_AFE_RST, 1);
   bsp_gpio_write(IO_AFE_START, 0);
-  bsp_gpio_write(IO_AVCC_EN, 1);
+  bsp_gpio_write(IO_LED_1, 1);
+
+  // Disable power
+  bsp_gpio_write(IO_AVCC_EN, 0);
+  bsp_gpio_write(IO_PS_HOLD, 0);
 }
 
 /* End of file -------------------------------------------------------- */

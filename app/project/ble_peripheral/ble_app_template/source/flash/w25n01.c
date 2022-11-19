@@ -77,12 +77,12 @@ base_status_t w25n01_init(w25n01_t *me)
   return BS_ERROR;
 }
 
-base_status_t w25n01_block_erase(w25n01_t *me, uint32_t page_addr)
+base_status_t w25n01_block_erase(w25n01_t *me, uint32_t page_num)
 {
-  ASSERT(page_addr <= W25N01GV_MAX_PAGE);
+  ASSERT(page_num <= W25N01GV_MAX_PAGE);
   
-  uint8_t page_high  = (page_addr & 0xFF00) >> 8;
-  uint8_t page_low   = page_addr;
+  uint8_t page_high  = (page_num & 0xFF00) >> 8;
+  uint8_t page_low   = page_num;
   uint8_t cmd_buf[4] = { W25N_OP_BLOCK_ERASE, 0x00, page_high, page_low };
 
   CHECK_STATUS(m_w25n01_write_enable(me, true));
@@ -111,12 +111,12 @@ base_status_t w25n01_load_program_data(w25n01_t *me, uint16_t column_addr, uint8
   return BS_OK;
 }
 
-base_status_t w25n01_program_execute(w25n01_t *me, uint32_t page_addr)
+base_status_t w25n01_program_execute(w25n01_t *me, uint32_t page_num)
 {
-  ASSERT(page_addr <= W25N01GV_MAX_PAGE);
+  ASSERT(page_num <= W25N01GV_MAX_PAGE);
 
-  uint8_t page_high  = (page_addr & 0xFF00) >> 8;
-  uint8_t page_low   = page_addr;
+  uint8_t page_high  = (page_num & 0xFF00) >> 8;
+  uint8_t page_low   = page_num;
   uint8_t cmd_buf[4] = { W25N_OP_PROG_EXECUTE, 0x00, page_high, page_low };
 
   CHECK_STATUS(m_w25n01_write_enable(me, true));
@@ -125,12 +125,12 @@ base_status_t w25n01_program_execute(w25n01_t *me, uint32_t page_addr)
   return BS_OK;
 }
 
-base_status_t w25n01_page_data_read(w25n01_t *me, uint32_t page_addr)
+base_status_t w25n01_page_data_read(w25n01_t *me, uint32_t page_num)
 {
-  ASSERT(page_addr <= W25N01GV_MAX_PAGE);
+  ASSERT(page_num <= W25N01GV_MAX_PAGE);
 
-  uint8_t page_high  = (page_addr & 0xFF00) >> 8;
-  uint8_t page_low   = page_addr;
+  uint8_t page_high  = (page_num & 0xFF00) >> 8;
+  uint8_t page_low   = page_num;
   uint8_t cmd_buf[4] = { W25N_OP_PAGE_DATA_READ, 0x00, page_high, page_low };
 
   CHECK_STATUS(m_w25n01_transfer(me, cmd_buf, NULL, sizeof(cmd_buf)));

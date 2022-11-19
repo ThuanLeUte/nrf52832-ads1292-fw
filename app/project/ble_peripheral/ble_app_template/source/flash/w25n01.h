@@ -26,11 +26,11 @@ extern "C" {
 // The entire page can be programmed at one time using the data from the 2,048-Byte internal buffer. Pages
 // can be erased in groups of 64 (128KB block erase). The W25N01GV has 1,024 erasable blocks.
 
-#define FLASH_SIZE (FLASH_PAGE_COUNT * FLASH_PAGE_SIZE) // Total device size in Bytes
 #define FLASH_PAGE_COUNT    (0x10000) // Total device size in Pages (65536 Pages)
 #define FLASH_PAGE_SIZE     (0x800)   // Total size of Pages (2048 Bytes)
 #define FLASH_BLOCK64_COUNT (0x400)   // Total device size in Block64k (1024 Blocks)
 #define FLASH_BLOCK64_SIZE  (0x20000) // Total size of Block64k (128KB = 64 pages)
+#define FLASH_SIZE          (FLASH_PAGE_COUNT * FLASH_PAGE_SIZE) // Total device size in Bytes
 
 /* Public enumerate/structure ----------------------------------------- */
 /**
@@ -54,7 +54,7 @@ base_status_t w25n01_init(w25n01_t *me);
  * The 128KB Block Erase instruction sets all memory within a specified block (64-Pages, 128K-Bytes) to the
  * erased state of all 1s (FFh).
  */
-base_status_t w25n01_block_erase(w25n01_t *me, uint32_t page_addr);
+base_status_t w25n01_block_erase(w25n01_t *me, uint32_t page_num);
 
 /**
  * @brief W25N01 load program data
@@ -72,13 +72,13 @@ base_status_t w25n01_load_program_data(w25n01_t *me, uint16_t column_addr, uint8
  * instruction will program the Data Buffer content into the physical memory page that is specified in the
  * instruction
  */
-base_status_t w25n01_program_execute(w25n01_t *me, uint32_t page_addr);
+base_status_t w25n01_program_execute(w25n01_t *me, uint32_t page_num);
 
 /**
  * @brief W25N01 page data read
  * The Page Data Read instruction will transfer the data of the specified memory page into the 2,112-Byte Data Buffer
  */
-base_status_t w25n01_page_data_read(w25n01_t *me, uint32_t page_addr);
+base_status_t w25n01_page_data_read(w25n01_t *me, uint32_t page_num);
 
 /**
  * @brief W25N01 read data

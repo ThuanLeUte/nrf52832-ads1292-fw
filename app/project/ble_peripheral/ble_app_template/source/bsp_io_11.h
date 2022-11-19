@@ -37,17 +37,21 @@ extern "C" {
 #define IO_AFE_SCLK             (29)    // AFE SCLK
 #define IO_AFE_CS               (31)    // AFE CS
 #define IO_AVCC_EN              (23)
+#define IO_SW1                  (13)
+#define IO_PS_HOLD              (24)
 
 #if (_CONFIG_DEVICE_DEVKIT)
 #define IO_FLASH_MISO           (12)
 #define IO_FLASH_MOSI           (5)
 #define IO_FLASH_SCLK           (2)
 #define IO_FLASH_CS             (4)
+#define IO_LED_1                (18)
 #else
 #define IO_FLASH_MISO           (11)
 #define IO_FLASH_MOSI           (12)
 #define IO_FLASH_SCLK           (10)
 #define IO_FLASH_CS             (9)
+#define IO_LED_1                (17)
 #endif // _CONFIG_DEVICE_DEVKIT
 
 /* Public enumerate/structure ----------------------------------------- */

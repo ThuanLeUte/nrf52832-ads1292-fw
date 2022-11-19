@@ -36,11 +36,16 @@
 #include "ble_acs.h"
 #include "ble_mgs.h"
 #include "ble_gys.h"
+#include "ble_ecg.h"
+#include "ble_sts.h"
 #include "bsp_hw.h"
 #include "bsp_imu.h"
 #include "bsp_afe.h"
 #include "bsp_nand_flash.h"
 #include "nrf52832_peripherals.h"
+#include "sys_logger_flash.h"
+#include "sys_button.h"
+#include "damos_ram.h"
 
 #if defined(UART_PRESENT)
 #include "nrf_uart.h"
@@ -54,10 +59,11 @@
 
 #define SENSORS_MEAS_INTERVAL           APP_TIMER_TICKS(2000)                      /**< Sensors measurement interval (ticks). */
 #define BATT_LEVEL_MEAS_INTERVAL        APP_TIMER_TICKS(20000)                     /**< Battery level measurement interval (ticks). */
+#define LED_BLINK_INTERVAL              APP_TIMER_TICKS(500)                     /**< Battery level measurement interval (ticks). */
 
-#define DEVICE_NAME                     "imu-lcd"                                  /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                     "ECG-Device"                                  /**< Name of device. Will be included in the advertising data. */
 
-#define MANUFACTURER_NAME               "miBEAT"                                   /**< Manufacturer. Will be passed to Device Information Service. */
+#define MANUFACTURER_NAME               "Hydratech"                                   /**< Manufacturer. Will be passed to Device Information Service. */
 
 #define ACS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN                  /**< UUID type for the Nordic UART Service (vendor specific). */
 
@@ -81,12 +87,15 @@
 BLE_ACS_DEF(m_acs);                                                                 /**< BLE ACS service instance. */
 BLE_MGS_DEF(m_mgs);                                                                 /**< BLE MGS service instance. */
 BLE_GYS_DEF(m_gys);                                                                 /**< BLE GYS service instance. */
+BLE_ECG_DEF(m_ecg);                                                                 /**< BLE GYS service instance. */
+BLE_STS_DEF(m_sts);                                                                 /**< BLE GYS service instance. */
 BLE_BAS_DEF(m_bas);                                                                 /**< Structure used to identify the battery service. */
 NRF_BLE_GATT_DEF(m_gatt);                                                           /**< GATT module instance. */
 NRF_BLE_QWR_DEF(m_qwr);                                                             /**< Context for the Queued Write module.*/
 BLE_ADVERTISING_DEF(m_advertising);                                                 /**< Advertising module instance. */
 APP_TIMER_DEF(m_sensors_timer_id);                                                  /**< Sensor measurement timer. */
 APP_TIMER_DEF(m_battery_timer_id);                                                  /**< Battery timer. */
+APP_TIMER_DEF(m_led_blink_timer_id);                                                /**< Battery timer. */
 
 /* Private variables -------------------------------------------------- */
 static uint16_t   m_conn_handle          = BLE_CONN_HANDLE_INVALID;                 /**< Handle of the current connection. */
@@ -97,7 +106,7 @@ static ble_uuid_t m_adv_uuids[]          =                                      
 };
 
 uint32_t app_time;
-int16_t ecg_value;
+ecg_data_t ecg_data;
 
 /* Private function prototypes ---------------------------------------- */
 static void timers_init(void);
@@ -119,11 +128,14 @@ static void advertising_start(void);
 
 static void battery_level_meas_timeout_handler(void * p_context);
 static void sensors_meas_timeout_handler(void * p_context);
+static void led_blink_timeout_handler(void * p_context);
 
 static void battery_level_update(void);
 static void sensors_value_update(void);
 
 static void acs_service_init(void);
+static void ecg_service_init(void);
+static void sts_service_init(void);
 static void mgs_service_init(void);
 static void bas_service_init(void);
 static void dis_service_init(void);
@@ -136,6 +148,8 @@ static void application_timers_start(void);
  */
 int main(void)
 {
+  g_device.is_device_on = false;
+
   // Initialize.
   log_init();
   timers_init();
@@ -148,22 +162,59 @@ int main(void)
   conn_params_init();
 
   bsp_hw_init();
+  sys_button_init();
   bsp_nand_flash_init();
   bsp_imu_init();
   bsp_afe_init();
+
+  sys_logger_flash_init();
 
   // Start execution.
   application_timers_start();
   advertising_start();
 
+  // Set default mode to record data
+  g_device.mode = SYS_MODE_RECORD_DATA;
+
   for (;;)
   {
     NRF_LOG_PROCESS();
 
-    if (bsp_afe_get_ecg(&ecg_value) == BS_OK)
+    if (g_device.mode == SYS_MODE_RECORD_DATA)
     {
-     NRF_LOG_RAW_INFO("%d\n", ecg_value);
+      if (sys_logger_flash_is_reading_record())
+      {
+        // Read record from the flash
+        sys_logger_flash_read(g_device.record.id_read);
+
+        // Reset trigger
+        memset(&g_device.record, 0, sizeof(g_device.record));
+      }
+      else if (sys_logger_flash_is_writing_record())
+      {
+        // Write record to the flash
+        sys_logger_flash_write();
+
+        // Reset trigger
+        memset(&g_device.record, 0, sizeof(g_device.record));
+      }
+      else
+      {
+        // Do not thing
+      }
     }
+    else // SYS_MODE_STREAM_DATA
+    {
+      if (bsp_afe_get_ecg(&ecg_data) == BS_OK)
+      {
+        NRF_LOG_RAW_INFO("%d\n", ecg_data.raw_data);
+
+        ble_ecg_update(&m_ecg, (int16_t)ecg_data.raw_data, BLE_CONN_HANDLE_ALL, BLE_ECG_RAW_DATA_CHAR);
+        ble_ecg_update(&m_ecg, (int16_t)ecg_data.heart_rate, BLE_CONN_HANDLE_ALL, BLE_ECG_HEART_RATE_CHAR);
+      }
+    }
+
+    
   }
 }
 
@@ -206,6 +257,11 @@ static void timers_init(void)
   err_code = app_timer_create(&m_battery_timer_id,
                               APP_TIMER_MODE_REPEATED,
                               battery_level_meas_timeout_handler);
+  APP_ERROR_CHECK(err_code);
+
+  err_code = app_timer_create(&m_led_blink_timer_id,
+                              APP_TIMER_MODE_REPEATED,
+                              led_blink_timeout_handler);
   APP_ERROR_CHECK(err_code);
 }
 
@@ -282,6 +338,64 @@ static void acs_service_init(void)
   acs_init.bl_report_rd_sec = SEC_OPEN;
 
   err_code = ble_acs_init(&m_acs, &acs_init);
+  APP_ERROR_CHECK(err_code);
+}
+
+/**
+ * @brief         Function for ECG service init
+ *
+ * @param[in]     None
+ *
+ * @attention     None
+ *
+ * @return        None
+ */
+static void ecg_service_init(void)
+{
+  uint32_t           err_code;
+  ble_ecg_init_t     ecg_init;
+
+  // Initialize ECG
+  memset(&ecg_init, 0, sizeof(ecg_init));
+
+  ecg_init.evt_handler          = NULL;
+  ecg_init.support_notification = true;
+  ecg_init.p_report_ref         = NULL;
+
+  ecg_init.bl_rd_sec        = SEC_OPEN;
+  ecg_init.bl_cccd_wr_sec   = SEC_OPEN;
+  ecg_init.bl_report_rd_sec = SEC_OPEN;
+
+  err_code = ble_ecg_init(&m_ecg, &ecg_init);
+  APP_ERROR_CHECK(err_code);
+}
+
+/**
+ * @brief         Function for ECG service init
+ *
+ * @param[in]     None
+ *
+ * @attention     None
+ *
+ * @return        None
+ */
+static void sts_service_init(void)
+{
+  uint32_t           err_code;
+  ble_sts_init_t     sts_init;
+
+  // Initialize ECG
+  memset(&sts_init, 0, sizeof(sts_init));
+
+  sts_init.evt_handler          = NULL;
+  sts_init.support_notification = true;
+  sts_init.p_report_ref         = NULL;
+
+  sts_init.bl_rd_sec        = SEC_OPEN;
+  sts_init.bl_cccd_wr_sec   = SEC_OPEN;
+  sts_init.bl_report_rd_sec = SEC_OPEN;
+
+  err_code = ble_sts_init(&m_sts, &sts_init);
   APP_ERROR_CHECK(err_code);
 }
 
@@ -423,6 +537,8 @@ static void services_init(void)
   acs_service_init();
   mgs_service_init();
   gys_service_init();
+  ecg_service_init();
+  sts_service_init();
 
   // Initialize Battery Service.
   bas_service_init();
@@ -843,6 +959,34 @@ static void battery_level_meas_timeout_handler(void * p_context)
 }
 
 /**
+ * @brief         Function for handling the Battery measurement timer timeout.
+ *
+ * @param[in]     p_context   Pointer to context
+ *
+ * @attention     None
+ *
+ * @return        None
+ */
+static void led_blink_timeout_handler(void * p_context)
+{
+  static led_status = false;
+
+  if ((!g_device.led_blink_enable) && (led_status == true))
+    return;
+
+  if (led_status)
+  {
+    bsp_gpio_write(IO_LED_1, 1); // LED off
+    led_status = false;
+  }
+  else
+  {
+    bsp_gpio_write(IO_LED_1, 0); // LED on
+    led_status = true;
+  }
+}
+
+/**
  * @brief         Function for handling the Body temperature measurement timer timeout.
  *
  * @param[in]     p_context   Pointer to context
@@ -903,16 +1047,16 @@ static void sensors_value_update(void)
 
   bsp_gyro_accel_get(&acc_data, &gyr_data);
 
-  NRF_LOG_INFO("++++++++++++++++++++++++++++++++++++");
-  NRF_LOG_INFO("Acc X Axis: %d", acc_data.x);
-  NRF_LOG_INFO("Acc Y Axis: %d", acc_data.y);
-  NRF_LOG_INFO("Acc Z Axis: %d", acc_data.z);
-  NRF_LOG_INFO("-----------------------------------");
-  NRF_LOG_INFO("Gyr X Axis: %d", gyr_data.x);
-  NRF_LOG_INFO("Gyr Y Axis: %d", gyr_data.y);
-  NRF_LOG_INFO("Gyr Z Axis: %d", gyr_data.z);
-  NRF_LOG_INFO("++++++++++++++++++++++++++++++++++++");
-  NRF_LOG_INFO("");
+  // NRF_LOG_INFO("++++++++++++++++++++++++++++++++++++");
+  // NRF_LOG_INFO("Acc X Axis: %d", acc_data.x);
+  // NRF_LOG_INFO("Acc Y Axis: %d", acc_data.y);
+  // NRF_LOG_INFO("Acc Z Axis: %d", acc_data.z);
+  // NRF_LOG_INFO("-----------------------------------");
+  // NRF_LOG_INFO("Gyr X Axis: %d", gyr_data.x);
+  // NRF_LOG_INFO("Gyr Y Axis: %d", gyr_data.y);
+  // NRF_LOG_INFO("Gyr Z Axis: %d", gyr_data.z);
+  // NRF_LOG_INFO("++++++++++++++++++++++++++++++++++++");
+  // NRF_LOG_INFO("");
 
   ble_acs_acc_update(&m_acs, (uint16_t)acc_data.x, BLE_CONN_HANDLE_ALL, BLE_ACS_AXIS_X_CHAR);
   ble_acs_acc_update(&m_acs, (uint16_t)acc_data.y, BLE_CONN_HANDLE_ALL, BLE_ACS_AXIS_Y_CHAR);
@@ -944,9 +1088,11 @@ static void application_timers_start(void)
   err_code = app_timer_start(m_sensors_timer_id, SENSORS_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
 
-
   err_code =  app_timer_start(m_battery_timer_id, BATT_LEVEL_MEAS_INTERVAL, NULL);
-    APP_ERROR_CHECK(err_code);
+  APP_ERROR_CHECK(err_code);
+
+  err_code = app_timer_start(m_led_blink_timer_id, LED_BLINK_INTERVAL, NULL);
+  APP_ERROR_CHECK(err_code);
 }
 
 /* End of fi le -------------------------------------------------------- */

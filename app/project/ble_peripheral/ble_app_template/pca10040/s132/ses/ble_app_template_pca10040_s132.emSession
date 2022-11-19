@@ -70,7 +70,7 @@
  </Watch4>
  <Files>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="55" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/util/sdk_common.h" selected="0" top="34" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="779" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../main.c" selected="0" top="765" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="2" y="157" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../main.c" selected="0" top="151" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="71" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../../../../components/ble/ble_services/ble_nus/ble_nus.h" selected="0" top="35" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="71" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/include/nrfx_timer.h" selected="0" top="53" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="12020" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../config/sdk_config.h" selected="0" top="12020" codecName="Default"/>
@@ -87,7 +87,8 @@
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="71" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/mdk/ses_startup_nrf52.s" selected="0" top="57" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="32" useTextEdit="1" openedFrom="C:/Users/Admin/Desktop/nrf52832-ads1292-fw/app/project/ble_peripheral/ble_app_template/main.c" useBinaryEdit="0" left="0" path="../../../source/flash/bsp_nand_flash.c" selected="0" top="15" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="62" useTextEdit="1" openedFrom="C:/Users/Admin/Desktop/nrf52832-ads1292-fw/app/project/ble_peripheral/ble_app_template/source/flash/bsp_nand_flash.c" useBinaryEdit="0" left="0" path="../../../source/flash/w25n01.c" selected="0" top="51" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="31" useTextEdit="1" openedFrom="C:/Users/Admin/Desktop/nrf52832-ads1292-fw/app/project/ble_peripheral/ble_app_template/source/flash/w25n01.c" useBinaryEdit="0" left="0" path="../../../source/flash/w25n01.h" selected="1" top="58" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="31" useTextEdit="1" openedFrom="C:/Users/Admin/Desktop/nrf52832-ads1292-fw/app/project/ble_peripheral/ble_app_template/source/flash/w25n01.c" useBinaryEdit="0" left="0" path="../../../source/flash/w25n01.h" selected="0" top="58" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="32" y="240" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="../../../source/sys_logger_flash.c" selected="1" top="219" codecName="Default"/>
  </Files>
  <ARMCrossStudioWindow activeProject="ble_app_template_pca10040_s132" fileDialogDefaultFilter="*.c;*.cpp;*.cxx;*.cc;*.h;*.hpp;*.hxx" autoConnectTarget="J-Link" buildConfiguration="Release" sessionSettings="" debugSearchFileMap="C:/Users/Admin/Desktop/nrf52832-ads1292-fw/app/project/ble_peripheral/ble_app_template/source/nrf_sdh_ble.c&#xa;" fileDialogInitialDirectory="C:/Users/Admin/Desktop/nrf52832-ads1292-fw/app/project/ble_peripheral/ble_app_template/source/flash" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>

@@ -1,40 +1,63 @@
 /**
- * @file       bsp_nand_flash.h
- * @copyright  Copyright (C) 2020 Hydratech. All rights reserved.
- * @license    This project is released under the Hydratech License.
+ * @file       damos_ram.h
+ * @copyright  Copyright (C) 2020 ThuanLe. All rights reserved.
+ * @license    This project is released under the ThuanLe License.
  * @version    1.0.0
- * @date       2021-09-05
+ * @date       2021-01-24
  * @author     Thuan Le
- * @brief      Board Support Package for Nand Flash
+ * @brief      Damos RAM
  * @note       None
  * @example    None
  */
 
 /* Define to prevent recursive inclusion ------------------------------ */
-#ifndef __BSP_NAND_FLASH_H
-#define __BSP_NAND_FLASH_H
+#ifndef _DAMOS_RAM_H
+#define _DAMOS_RAM_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Includes ----------------------------------------------------------- */
-#include "w25n01.h"
+#include <stdint.h>
+#include <stdbool.h>
 
 /* Public defines ----------------------------------------------------- */
 /* Public enumerate/structure ----------------------------------------- */
+typedef enum
+{
+   SYS_MODE_STREAM_DATA
+  ,SYS_MODE_RECORD_DATA
+}
+system_mode_t;
+
+typedef struct
+{
+  system_mode_t mode;
+  struct
+  {
+    uint8_t id_read;
+    bool start_write;
+    bool start_read;
+  }
+  record;
+
+  bool led_blink_enable;
+  uint64_t sys_tick;
+  bool is_device_on;
+}
+system_t;
+
 /* Public macros ------------------------------------------------------ */
 /* Public variables --------------------------------------------------- */
+extern system_t g_device;
+
 /* Public function prototypes ----------------------------------------- */
-void bsp_nand_flash_init(void);
-void bsp_nand_flash_block_erase(uint32_t page_num);
-void bsp_nand_flash_write(uint32_t page_num, uint8_t *buf, uint16_t len);
-void bsp_nand_flash_read(uint32_t page_num, uint8_t *buf, uint16_t len);
 
 /* -------------------------------------------------------------------------- */
 #ifdef __cplusplus
 } // extern "C"
 #endif
-#endif // __BSP_NAND_FLASH_H
+#endif // _DAMOS_RAM_H
 
 /* End of file -------------------------------------------------------- */
