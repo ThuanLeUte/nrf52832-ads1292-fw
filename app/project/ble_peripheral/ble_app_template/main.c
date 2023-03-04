@@ -46,6 +46,7 @@
 #include "sys_logger_flash.h"
 #include "sys_button.h"
 #include "damos_ram.h"
+#include "bsp_bno.h"
 
 #if defined(UART_PRESENT)
 #include "nrf_uart.h"
@@ -162,6 +163,14 @@ int main(void)
   conn_params_init();
 
   bsp_hw_init();
+
+  bsp_bno_init();
+
+  while (1)
+  {
+    bsp_delay_ms(1000);
+  }
+
   sys_button_init();
   bsp_nand_flash_init();
   bsp_imu_init();
@@ -969,7 +978,7 @@ static void battery_level_meas_timeout_handler(void * p_context)
  */
 static void led_blink_timeout_handler(void * p_context)
 {
-  static led_status = false;
+  static bool led_status = false;
 
   if ((!g_device.led_blink_enable) && (led_status == true))
     return;

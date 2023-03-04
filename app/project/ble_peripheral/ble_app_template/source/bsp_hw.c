@@ -62,6 +62,23 @@ int bsp_i2c_read(uint8_t slave_addr, uint8_t reg_addr, uint8_t *p_data, uint32_t
   return nrf_drv_twi_rx(&m_twi, slave_addr, p_data, len);
 }
 
+signed char bsp_i2c_1_write(uint8_t slave_addr, uint8_t reg_addr, uint8_t *p_data, uint8_t len)
+{
+  uint8_t buffer[10];
+
+  memcpy(buffer, &reg_addr, 1);
+  memcpy(buffer + 1, p_data, len);
+
+  return nrf_drv_twi_tx(&m_twi, slave_addr, buffer, len + 1, false);
+}
+
+signed char bsp_i2c_1_read(uint8_t slave_addr, uint8_t reg_addr, uint8_t *p_data, uint8_t len)
+{
+  nrf_drv_twi_tx(&m_twi, slave_addr, (uint8_t *)&reg_addr, 1, true);
+
+  return nrf_drv_twi_rx(&m_twi, slave_addr, p_data, len);
+}
+
 void bsp_delay_ms(uint32_t ms)
 {
   nrf_delay_ms(ms);

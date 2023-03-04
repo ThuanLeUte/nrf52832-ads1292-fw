@@ -40,7 +40,8 @@ static enum
   ,ERASE_ALL_RECORDS
   ,STREAM_MODE
   ,RECORD_MODE
-};
+}
+mode;
 
 /* Public variables --------------------------------------------------- */
 /* Private variables -------------------------------------------------- */
