@@ -50,3 +50,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+app/project/ble_peripheral/ble_app_template/pca10040/s132/ses/Output/Release/Exe
+app/project/ble_peripheral/ble_app_template/pca10040/s132/ses/Output/Release/Exe/ble_app_template_pca10040_s132.hex
