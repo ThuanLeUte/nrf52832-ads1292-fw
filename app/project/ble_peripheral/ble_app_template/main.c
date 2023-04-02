@@ -164,6 +164,8 @@ int main(void)
 
   bsp_hw_init();
 
+  
+  application_timers_start();
   bsp_bno_init();
 
   while (1)
