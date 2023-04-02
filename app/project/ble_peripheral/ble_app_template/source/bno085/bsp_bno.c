@@ -28,6 +28,9 @@ static int bsp_bno_hal_i2c_write(sh2_Hal_t *self, uint8_t *buf, unsigned len);
 static uint32_t bsp_bno_hal_get_time_us(sh2_Hal_t *self);
 static void hal_callback(void *cookie, sh2_AsyncEvent_t *pEvent);
 static void sensorHandler(void *cookie, sh2_SensorEvent_t *event);
+static int i2chal_open(sh2_Hal_t *self);
+static void i2chal_close(sh2_Hal_t *self);
+
 
 /* Function definitions ----------------------------------------------- */
 base_status_t bsp_bno_init(void)
@@ -36,8 +39,8 @@ base_status_t bsp_bno_init(void)
   sh2_ProductIds_t prodIds;
 
   // Init
-  m_bno085.open      = NULL;
-  m_bno085.close     = NULL;
+  m_bno085.open      = i2chal_open;
+  m_bno085.close     = i2chal_close;
   m_bno085.read      = bsp_bno_hal_i2c_read;
   m_bno085.write     = bsp_bno_hal_i2c_write;
   m_bno085.getTimeUs = bsp_bno_hal_get_time_us;
@@ -96,7 +99,7 @@ static int bsp_bno_hal_i2c_write(sh2_Hal_t *self, uint8_t *buf, unsigned len)
 
 static uint32_t bsp_bno_hal_get_time_us(sh2_Hal_t *self)
 {
-  uint32_t sys_tick = app_timer_cnt_get();
+  uint32_t sys_tick = app_timer_cnt_get() * 1000;
 
   return sys_tick;
 }
@@ -116,6 +119,16 @@ static void sensorHandler(void *cookie, sh2_SensorEvent_t *event)
     _sensor_value->timestamp = 0;
     return;
   }
+}
+
+static int i2chal_open(sh2_Hal_t *self)
+{
+
+}
+
+static void i2chal_close(sh2_Hal_t *self)
+{
+
 }
 
 /* End of file -------------------------------------------------------- */
