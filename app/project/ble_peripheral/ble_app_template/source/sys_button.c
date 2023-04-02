@@ -13,6 +13,7 @@
 #include "sys_button.h"
 #include "nrfx_systick.h"
 #include "damos_ram.h"
+#include "sys_logger_flash.h"
 
 /* Private enumerate/structure ---------------------------------------------- */
 /* Private Constants -------------------------------------------------------- */

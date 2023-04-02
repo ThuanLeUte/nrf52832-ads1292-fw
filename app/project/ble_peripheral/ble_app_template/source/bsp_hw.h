@@ -143,6 +143,9 @@ void bsp_gpio_write(uint8_t pin , uint8_t state);
 
 void bsp_power_on_device(bool enable);
 
+int bsp_i2c_read_raw(uint8_t slave_addr, uint8_t *p_data, uint32_t len);
+int bsp_i2c_write_raw(uint8_t slave_addr, uint8_t *p_data, uint32_t len);
+
 /* -------------------------------------------------------------------------- */
 #ifdef __cplusplus
 } // extern "C"

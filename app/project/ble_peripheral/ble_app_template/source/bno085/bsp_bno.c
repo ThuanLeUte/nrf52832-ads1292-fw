@@ -27,6 +27,7 @@ static int bsp_bno_hal_i2c_read(sh2_Hal_t *self, uint8_t *buf, unsigned len, uin
 static int bsp_bno_hal_i2c_write(sh2_Hal_t *self, uint8_t *buf, unsigned len);
 static uint32_t bsp_bno_hal_get_time_us(sh2_Hal_t *self);
 static void hal_callback(void *cookie, sh2_AsyncEvent_t *pEvent);
+static void sensorHandler(void *cookie, sh2_SensorEvent_t *event);
 
 /* Function definitions ----------------------------------------------- */
 base_status_t bsp_bno_init(void)
@@ -65,16 +66,39 @@ base_status_t bsp_bno_init(void)
 /* Private function definitions ---------------------------------------- */
 static int bsp_bno_hal_i2c_read(sh2_Hal_t *self, uint8_t *buf, unsigned len, uint32_t *t_us)
 {
+  uint8_t header[4];
+  uint16_t packet_size;
+
+  if (NRF_SUCCESS != bsp_i2c_read_raw(BNO085_I2C_ADDR, header, 4))
+  {
+    return 0;
+  }
+
+  // Determine amount to read
+  packet_size = (uint16_t)header[0] | (uint16_t)header[1] << 8;
+  
+  // Unset the "continue" bit
+  packet_size &= ~0x8000;
+
+  if (NRF_SUCCESS != bsp_i2c_read_raw(BNO085_I2C_ADDR, buf, len))
+    return 0;
+
+  return len;
 }
 
 static int bsp_bno_hal_i2c_write(sh2_Hal_t *self, uint8_t *buf, unsigned len)
 {
+  if (NRF_SUCCESS != bsp_i2c_write_raw(BNO085_I2C_ADDR, buf, len))
+    return 0;
 
+  return len;
 }
 
 static uint32_t bsp_bno_hal_get_time_us(sh2_Hal_t *self)
 {
+  uint32_t sys_tick = app_timer_cnt_get();
 
+  return sys_tick;
 }
 
 static void hal_callback(void *cookie, sh2_AsyncEvent_t *pEvent)

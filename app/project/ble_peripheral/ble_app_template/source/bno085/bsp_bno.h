@@ -22,6 +22,7 @@ extern "C" {
 #include "sh2.h"
 #include "sh2_SensorValue.h"
 #include "sh2_err.h"
+#include "bsp_hw.h"
 
 /* Public defines ----------------------------------------------------- */
 #define BNO085_I2C_ADDR     (0x4A)
