@@ -1,5 +1,22 @@
 <!DOCTYPE CrossStudio_Project_File>
 <solution Name="ble_app_template_pca10040_s132" target="8" version="2">
+  <configuration
+    Name="Common"
+    c_user_include_directories="../../../"
+    linker_section_placement_macros="FLASH_PH_START=0x0;FLASH_PH_SIZE=0x80000;RAM_PH_START=0x20000000;RAM_PH_SIZE=0x10000;FLASH_START=0x26000;FLASH_SIZE=0x5a000;RAM_START=0x20002bd0;RAM_SIZE=0xd430" />
+  <configuration
+    Name="Debug"
+    c_preprocessor_definitions="DEBUG; DEBUG_NRF"
+    c_user_include_directories="../../../../../../components/ble/ble_link_ctx_manager;../../../../../../components/libraries/uart;../../../source"
+    gcc_optimization_level="None" />
+  <configuration
+    Name="Release"
+    c_preprocessor_definitions="NDEBUG;SYSTICK_ENABLED"
+    c_user_include_directories="../../../../../../components/ble/ble_link_ctx_manager;../../../../../../components/libraries/uart;../../../source;../../../source/ads1292;../../../source/flash;../../../source/one_button;../../../source/bno085"
+    gcc_optimization_level="None"
+    link_time_optimization="No"
+    linker_section_placement_file="$(StudioDir)/targets/section_placement.xml"
+    linker_section_placement_macros="FLASH_START=0x26000;FLASH_SIZE=0x5a000;RAM_START=0x20002ad8;RAM_SIZE=0xd528" />
   <project Name="ble_app_template_pca10040_s132">
     <configuration
       Name="Common"
@@ -33,16 +50,94 @@
       macros="CMSIS_CONFIG_TOOL=../../../../../../external_tools/cmsisconfig/CMSIS_Configuration_Wizard.jar"
       project_directory=""
       project_type="Executable" />
+    <configuration
+      Name="Release"
+      c_preprocessor_definitions="CONFIG_NFCT_PINS_AS_GPIOS = 1" />
+    <folder Name="Application">
+      <file file_name="../../../source/ads1292/ads1292r.c" />
+      <file file_name="../../../source/ble_acs.c" />
+      <file file_name="../../../source/ble_ecg.c" />
+      <file file_name="../../../source/ble_gys.c" />
+      <file file_name="../../../source/ble_mgs.c" />
+      <file file_name="../../../source/ads1292/bsp_afe.c" />
+      <file file_name="../../../source/bsp_hw.c" />
+      <file file_name="../../../source/bsp_imu.c" />
+      <file file_name="../../../source/flash/bsp_nand_flash.c" />
+      <file file_name="../../../source/damos_ram.c" />
+      <file file_name="../../../source/ads1292/ecg_res_algo.c" />
+      <file file_name="../../../main.c" />
+      <file file_name="../../../source/mpu9250.c" />
+      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_systick.c" />
+      <file file_name="../../../source/one_button/one_button.c" />
+      <file file_name="../../../source/ads1292/platform.c" />
+      <file file_name="../config/sdk_config.h" />
+      <file file_name="../../../source/sys_bm.c" />
+      <file file_name="../../../source/sys_button.c" />
+      <file file_name="../../../source/sys_logger_flash.c" />
+      <file file_name="../../../source/flash/w25n01.c" />
+    </folder>
+    <folder Name="Board Definition">
+      <file file_name="../../../../../../components/boards/boards.c" />
+    </folder>
+    <folder Name="Board Support">
+      <file file_name="../../../../../../components/libraries/bsp/bsp.c" />
+      <file file_name="../../../../../../components/libraries/bsp/bsp_btn_ble.c" />
+    </folder>
+    <folder Name="None">
+      <file file_name="../../../../../../modules/nrfx/mdk/ses_startup_nrf52.s" />
+      <file file_name="../../../../../../modules/nrfx/mdk/ses_startup_nrf_common.s" />
+      <file file_name="../../../../../../modules/nrfx/mdk/system_nrf52.c" />
+    </folder>
     <folder Name="Segger Startup Files">
       <file file_name="$(StudioDir)/source/thumb_crt0.s" />
     </folder>
-    <folder Name="nRF_Log">
-      <file file_name="../../../../../../components/libraries/log/src/nrf_log_backend_rtt.c" />
-      <file file_name="../../../../../../components/libraries/log/src/nrf_log_backend_serial.c" />
-      <file file_name="../../../../../../components/libraries/log/src/nrf_log_backend_uart.c" />
-      <file file_name="../../../../../../components/libraries/log/src/nrf_log_default_backends.c" />
-      <file file_name="../../../../../../components/libraries/log/src/nrf_log_frontend.c" />
-      <file file_name="../../../../../../components/libraries/log/src/nrf_log_str_formatter.c" />
+    <folder Name="UTF8/UTF16 converter">
+      <file file_name="../../../../../../external/utf_converter/utf.c" />
+    </folder>
+    <folder Name="nRF_BLE">
+      <file file_name="../../../../../../components/ble/peer_manager/auth_status_tracker.c" />
+      <file file_name="../../../../../../components/ble/common/ble_advdata.c" />
+      <file file_name="../../../../../../components/ble/ble_advertising/ble_advertising.c" />
+      <file file_name="../../../../../../components/ble/common/ble_conn_params.c" />
+      <file file_name="../../../../../../components/ble/common/ble_conn_state.c" />
+      <file file_name="../../../../../../components/ble/ble_link_ctx_manager/ble_link_ctx_manager.c" />
+      <file file_name="../../../../../../components/ble/common/ble_srv_common.c" />
+      <file file_name="../../../../../../components/ble/peer_manager/gatt_cache_manager.c" />
+      <file file_name="../../../../../../components/ble/peer_manager/gatts_cache_manager.c" />
+      <file file_name="../../../../../../components/ble/peer_manager/id_manager.c" />
+      <file file_name="../../../../../../components/ble/nrf_ble_gatt/nrf_ble_gatt.c" />
+      <file file_name="../../../../../../components/ble/nrf_ble_qwr/nrf_ble_qwr.c" />
+      <file file_name="../../../../../../components/ble/peer_manager/peer_data_storage.c" />
+      <file file_name="../../../../../../components/ble/peer_manager/peer_database.c" />
+      <file file_name="../../../../../../components/ble/peer_manager/peer_id.c" />
+      <file file_name="../../../../../../components/ble/peer_manager/peer_manager.c" />
+      <file file_name="../../../../../../components/ble/peer_manager/peer_manager_handler.c" />
+      <file file_name="../../../../../../components/ble/peer_manager/pm_buffer.c" />
+      <file file_name="../../../../../../components/ble/peer_manager/security_dispatcher.c" />
+      <file file_name="../../../../../../components/ble/peer_manager/security_manager.c" />
+    </folder>
+    <folder Name="nRF_BLE_Services">
+      <file file_name="../../../../../../components/ble/ble_services/ble_bas/ble_bas.c" />
+      <file file_name="../../../../../../components/ble/ble_services/ble_dis/ble_dis.c" />
+      <file file_name="../../../../../../components/ble/ble_services/ble_nus/ble_nus.c" />
+    </folder>
+    <folder Name="nRF_Drivers">
+      <file file_name="../../../../../../integration/nrfx/legacy/nrf_drv_clock.c" />
+      <file file_name="../../../../../../integration/nrfx/legacy/nrf_drv_ppi.c" />
+      <file file_name="../../../../../../integration/nrfx/legacy/nrf_drv_spi.c" />
+      <file file_name="../../../../../../integration/nrfx/legacy/nrf_drv_twi.c" />
+      <file file_name="../../../../../../integration/nrfx/legacy/nrf_drv_uart.c" />
+      <file file_name="../../../../../../modules/nrfx/soc/nrfx_atomic.c" />
+      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_clock.c" />
+      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_gpiote.c" />
+      <file file_name="../../../../../../modules/nrfx/drivers/src/prs/nrfx_prs.c" />
+      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_saadc.c" />
+      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_spi.c" />
+      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_spim.c" />
+      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_timer.c" />
+      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_twi.c" />
+      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_uart.c" />
+      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_uarte.c" />
     </folder>
     <folder Name="nRF_Libraries">
       <file file_name="../../../../../../components/libraries/button/app_button.c" />
@@ -51,6 +146,7 @@
       <file file_name="../../../../../../components/libraries/util/app_error_weak.c" />
       <file file_name="../../../../../../components/libraries/scheduler/app_scheduler.c" />
       <file file_name="../../../../../../components/libraries/timer/app_timer2.c" />
+      <file file_name="../../../../../../components/libraries/uart/app_uart.c" />
       <file file_name="../../../../../../components/libraries/util/app_util_platform.c" />
       <file file_name="../../../../../../components/libraries/crc16/crc16.c" />
       <file file_name="../../../../../../components/libraries/timer/drv_rtc.c" />
@@ -72,122 +168,31 @@
       <file file_name="../../../../../../components/libraries/sortlist/nrf_sortlist.c" />
       <file file_name="../../../../../../components/libraries/strerror/nrf_strerror.c" />
       <file file_name="../../../../../../components/libraries/sensorsim/sensorsim.c" />
-      <file file_name="../../../../../../components/libraries/uart/app_uart.c" />
     </folder>
-    <folder Name="None">
-      <file file_name="../../../../../../modules/nrfx/mdk/ses_startup_nrf52.s" />
-      <file file_name="../../../../../../modules/nrfx/mdk/ses_startup_nrf_common.s" />
-      <file file_name="../../../../../../modules/nrfx/mdk/system_nrf52.c" />
-    </folder>
-    <folder Name="Board Definition">
-      <file file_name="../../../../../../components/boards/boards.c" />
-    </folder>
-    <folder Name="nRF_Drivers">
-      <file file_name="../../../../../../integration/nrfx/legacy/nrf_drv_clock.c" />
-      <file file_name="../../../../../../integration/nrfx/legacy/nrf_drv_uart.c" />
-      <file file_name="../../../../../../modules/nrfx/soc/nrfx_atomic.c" />
-      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_clock.c" />
-      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_gpiote.c" />
-      <file file_name="../../../../../../modules/nrfx/drivers/src/prs/nrfx_prs.c" />
-      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_uart.c" />
-      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_uarte.c" />
-      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_twi.c" />
-      <file file_name="../../../../../../integration/nrfx/legacy/nrf_drv_twi.c" />
-      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_saadc.c" />
-      <file file_name="../../../../../../integration/nrfx/legacy/nrf_drv_ppi.c" />
-      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_timer.c" />
-      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_spim.c" />
-      <file file_name="../../../../../../integration/nrfx/legacy/nrf_drv_spi.c" />
-      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_spi.c" />
-    </folder>
-    <folder Name="Board Support">
-      <file file_name="../../../../../../components/libraries/bsp/bsp.c" />
-      <file file_name="../../../../../../components/libraries/bsp/bsp_btn_ble.c" />
-    </folder>
-    <folder Name="Application">
-      <file file_name="../../../source/ble_acs.c" />
-      <file file_name="../../../source/ble_gys.c" />
-      <file file_name="../../../source/ble_mgs.c" />
-      <file file_name="../../../source/bsp_imu.c" />
-      <file file_name="../../../source/sys_bm.c" />
-      <file file_name="../../../source/bsp_hw.c" />
-      <file file_name="../config/sdk_config.h" />
-      <file file_name="../../../source/mpu9250.c" />
-      <file file_name="../../../main.c" />
-      <file file_name="../../../source/ads1292/ads1292r.c" />
-      <file file_name="../../../source/ads1292/bsp_afe.c" />
-      <file file_name="../../../source/ads1292/ecg_res_algo.c" />
-      <file file_name="../../../source/ads1292/platform.c" />
-      <file file_name="../../../source/flash/bsp_nand_flash.c" />
-      <file file_name="../../../source/flash/w25n01.c" />
-      <file file_name="../../../source/sys_logger_flash.c" />
-      <file file_name="../../../source/ble_ecg.c" />
-      <file file_name="../../../source/damos_ram.c" />
-      <file file_name="../../../source/one_button/one_button.c" />
-      <file file_name="../../../source/sys_button.c" />
-      <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_systick.c" />
+    <folder Name="nRF_Log">
+      <file file_name="../../../../../../components/libraries/log/src/nrf_log_backend_rtt.c" />
+      <file file_name="../../../../../../components/libraries/log/src/nrf_log_backend_serial.c" />
+      <file file_name="../../../../../../components/libraries/log/src/nrf_log_backend_uart.c" />
+      <file file_name="../../../../../../components/libraries/log/src/nrf_log_default_backends.c" />
+      <file file_name="../../../../../../components/libraries/log/src/nrf_log_frontend.c" />
+      <file file_name="../../../../../../components/libraries/log/src/nrf_log_str_formatter.c" />
     </folder>
     <folder Name="nRF_Segger_RTT">
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT.c" />
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT_Syscalls_SES.c" />
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT_printf.c" />
     </folder>
-    <folder Name="nRF_BLE">
-      <file file_name="../../../../../../components/ble/peer_manager/auth_status_tracker.c" />
-      <file file_name="../../../../../../components/ble/common/ble_advdata.c" />
-      <file file_name="../../../../../../components/ble/ble_advertising/ble_advertising.c" />
-      <file file_name="../../../../../../components/ble/common/ble_conn_params.c" />
-      <file file_name="../../../../../../components/ble/common/ble_conn_state.c" />
-      <file file_name="../../../../../../components/ble/common/ble_srv_common.c" />
-      <file file_name="../../../../../../components/ble/peer_manager/gatt_cache_manager.c" />
-      <file file_name="../../../../../../components/ble/peer_manager/gatts_cache_manager.c" />
-      <file file_name="../../../../../../components/ble/peer_manager/id_manager.c" />
-      <file file_name="../../../../../../components/ble/nrf_ble_gatt/nrf_ble_gatt.c" />
-      <file file_name="../../../../../../components/ble/nrf_ble_qwr/nrf_ble_qwr.c" />
-      <file file_name="../../../../../../components/ble/peer_manager/peer_data_storage.c" />
-      <file file_name="../../../../../../components/ble/peer_manager/peer_database.c" />
-      <file file_name="../../../../../../components/ble/peer_manager/peer_id.c" />
-      <file file_name="../../../../../../components/ble/peer_manager/peer_manager.c" />
-      <file file_name="../../../../../../components/ble/peer_manager/peer_manager_handler.c" />
-      <file file_name="../../../../../../components/ble/peer_manager/pm_buffer.c" />
-      <file file_name="../../../../../../components/ble/peer_manager/security_dispatcher.c" />
-      <file file_name="../../../../../../components/ble/peer_manager/security_manager.c" />
-      <file file_name="../../../../../../components/ble/ble_link_ctx_manager/ble_link_ctx_manager.c" />
-    </folder>
-    <folder Name="UTF8/UTF16 converter">
-      <file file_name="../../../../../../external/utf_converter/utf.c" />
-    </folder>
     <folder Name="nRF_SoftDevice">
       <file file_name="../../../../../../components/softdevice/common/nrf_sdh.c" />
-      <file file_name="../../../../../../components/softdevice/common/nrf_sdh_soc.c" />
       <file file_name="../../../../../../components/softdevice/common/nrf_sdh_ble.c" />
+      <file file_name="../../../../../../components/softdevice/common/nrf_sdh_soc.c" />
     </folder>
-    <folder Name="nRF_BLE_Services">
-      <file file_name="../../../../../../components/ble/ble_services/ble_nus/ble_nus.c" />
-      <file file_name="../../../../../../components/ble/ble_services/ble_bas/ble_bas.c" />
-      <file file_name="../../../../../../components/ble/ble_services/ble_dis/ble_dis.c" />
-    </folder>
-    <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_ppi.c" />
-    <configuration
-      Name="Release"
-      c_preprocessor_definitions="CONFIG_NFCT_PINS_AS_GPIOS = 1" />
     <file file_name="../../../source/ble_sts.c" />
+    <file file_name="../../../source/bno085/bsp_bno.c" />
+    <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_ppi.c" />
+    <file file_name="../../../source/bno085/sh2.c" />
+    <file file_name="../../../source/bno085/sh2_SensorValue.c" />
+    <file file_name="../../../source/bno085/sh2_util.c" />
+    <file file_name="../../../source/bno085/shtp.c" />
   </project>
-  <configuration
-    Name="Release"
-    c_preprocessor_definitions="NDEBUG;SYSTICK_ENABLED"
-    c_user_include_directories="../../../../../../components/ble/ble_link_ctx_manager;../../../../../../components/libraries/uart;../../../source;../../../source/ads1292;../../../source/flash;../../../source/one_button"
-    gcc_optimization_level="None"
-    link_time_optimization="No"
-    linker_section_placement_file="$(StudioDir)/targets/section_placement.xml"
-    linker_section_placement_macros="FLASH_START=0x26000;FLASH_SIZE=0x5a000;RAM_START=0x20002ad8;RAM_SIZE=0xd528" />
-  <configuration
-    Name="Debug"
-    c_preprocessor_definitions="DEBUG; DEBUG_NRF"
-    c_user_include_directories="../../../../../../components/ble/ble_link_ctx_manager;../../../../../../components/libraries/uart;../../../source"
-    gcc_optimization_level="None" />
-  <configuration
-    Name="Common"
-    c_user_include_directories="../../../"
-    linker_section_placement_macros="FLASH_PH_START=0x0;FLASH_PH_SIZE=0x80000;RAM_PH_START=0x20000000;RAM_PH_SIZE=0x10000;FLASH_START=0x26000;FLASH_SIZE=0x5a000;RAM_START=0x20002bd0;RAM_SIZE=0xd430" />
 </solution>

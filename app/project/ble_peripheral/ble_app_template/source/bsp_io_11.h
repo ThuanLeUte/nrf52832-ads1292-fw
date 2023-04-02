@@ -26,8 +26,8 @@ extern "C" {
 /* Public defines ----------------------------------------------------- */
                                     // Schematic
 // PIN NAME PORT 0 ``````````````````````````````
-#define IO_I2C1_SCL             (27)    // SCL signal pin
-#define IO_I2C1_SDA             (26)    // SDA signal pin
+#define IO_I2C1_SCL             (05)    // SCL signal pin
+#define IO_I2C1_SDA             (04)    // SDA signal pin
 
 #define IO_AFE_START            (30)    // AFE START
 #define IO_AFE_RST              (19)    // AFE RST
