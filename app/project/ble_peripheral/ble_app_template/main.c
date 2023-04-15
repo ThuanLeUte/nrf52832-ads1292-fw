@@ -152,100 +152,11 @@ void setReports(void)
   {
     NRF_LOG_INFO("Could not enable accelerometer");
   }
-  if (!bno085_enable_report(SH2_GYROSCOPE_CALIBRATED, 10000))
-  {
-    NRF_LOG_INFO("Could not enable gyroscope");
-  }
-  if (!bno085_enable_report(SH2_MAGNETIC_FIELD_CALIBRATED, 10000))
-  {
-    NRF_LOG_INFO("Could not enable magnetic field calibrated");
-  }
-  if (!bno085_enable_report(SH2_LINEAR_ACCELERATION, 10000))
-  {
-    NRF_LOG_INFO("Could not enable linear acceleration");
-  }
-  if (!bno085_enable_report(SH2_GRAVITY, 10000))
-  {
-    NRF_LOG_INFO("Could not enable gravity vector");
-  }
-  if (!bno085_enable_report(SH2_ROTATION_VECTOR, 10000))
-  {
-    NRF_LOG_INFO("Could not enable rotation vector");
-  }
-  if (!bno085_enable_report(SH2_GEOMAGNETIC_ROTATION_VECTOR, 10000))
-  {
-    NRF_LOG_INFO("Could not enable geomagnetic rotation vector");
-  }
-  if (!bno085_enable_report(SH2_GAME_ROTATION_VECTOR, 10000))
-  {
-    NRF_LOG_INFO("Could not enable game rotation vector");
-  }
-  if (!bno085_enable_report(SH2_STEP_COUNTER, 10000))
-  {
-    NRF_LOG_INFO("Could not enable step counter");
-  }
-  if (!bno085_enable_report(SH2_STABILITY_CLASSIFIER, 10000))
-  {
-    NRF_LOG_INFO("Could not enable stability classifier");
-  }
+
   if (!bno085_enable_report(SH2_RAW_ACCELEROMETER, 10000))
   {
-    NRF_LOG_INFO("Could not enable raw accelerometer");
+    NRF_LOG_INFO("Could not enable accelerometer");
   }
-  if (!bno085_enable_report(SH2_RAW_GYROSCOPE, 10000))
-  {
-    NRF_LOG_INFO("Could not enable raw gyroscope");
-  }
-  if (!bno085_enable_report(SH2_RAW_MAGNETOMETER, 10000))
-  {
-    NRF_LOG_INFO("Could not enable raw magnetometer");
-  }
-  if (!bno085_enable_report(SH2_SHAKE_DETECTOR, 10000))
-  {
-    NRF_LOG_INFO("Could not enable shake detector");
-  }
-  if (!bno085_enable_report(SH2_PERSONAL_ACTIVITY_CLASSIFIER, 10000))
-  {
-    NRF_LOG_INFO("Could not enable personal activity classifier");
-  }
-}
-
-void printActivity(uint8_t activity_id)
-{
-  switch (activity_id)
-  {
-  case PAC_UNKNOWN:
-    NRF_LOG_INFO("Unknown");
-    break;
-  case PAC_IN_VEHICLE:
-    NRF_LOG_INFO("In Vehicle");
-    break;
-  case PAC_ON_BICYCLE:
-    NRF_LOG_INFO("On Bicycle");
-    break;
-  case PAC_ON_FOOT:
-    NRF_LOG_INFO("On Foot");
-    break;
-  case PAC_STILL:
-    NRF_LOG_INFO("Still");
-    break;
-  case PAC_TILTING:
-    NRF_LOG_INFO("Tilting");
-    break;
-  case PAC_WALKING:
-    NRF_LOG_INFO("Walking");
-    break;
-  case PAC_RUNNING:
-    NRF_LOG_INFO("Running");
-    break;
-  case PAC_ON_STAIRS:
-    NRF_LOG_INFO("On Stairs");
-    break;
-  default:
-    NRF_LOG_INFO("NOT LISTED");
-  }
-  NRF_LOG_INFO(" (%d", activity_id);
-  NRF_LOG_INFO(")");
 }
 
 /* Function definitions ----------------------------------------------- */
@@ -297,153 +208,60 @@ int main(void)
       setReports();
     }
 
-    if (!bno085_get_sensor_event(&sensor_value))
+    if (bno085_get_sensor_event(&sensor_value))
     {
-      //return 0;
-    }
-
-    switch (sensor_value.sensorId)
-    {
-    case SH2_ACCELEROMETER:
-      NRF_LOG_INFO("Accelerometer - x: %d", sensor_value.un.accelerometer.x);
-      NRF_LOG_INFO(" y: %d", sensor_value.un.accelerometer.y);
-      NRF_LOG_INFO(" z: %d", sensor_value.un.accelerometer.z);
-      break;
-    case SH2_GYROSCOPE_CALIBRATED:
-      NRF_LOG_INFO("Gyro - x: %d", sensor_value.un.gyroscope.x);
-      NRF_LOG_INFO(" y: %d", sensor_value.un.gyroscope.y);
-      NRF_LOG_INFO(" z: %d", sensor_value.un.gyroscope.z);
-      break;
-    case SH2_MAGNETIC_FIELD_CALIBRATED:
-      NRF_LOG_INFO("Magnetic Field - x: %d", sensor_value.un.magneticField.x);
-      NRF_LOG_INFO(" y: %d", sensor_value.un.magneticField.y);
-      NRF_LOG_INFO(" z: %d", sensor_value.un.magneticField.z);
-      break;
-    case SH2_LINEAR_ACCELERATION:
-      NRF_LOG_INFO("Linear Acceration - x: %d", sensor_value.un.linearAcceleration.x);
-      NRF_LOG_INFO(" y: %d", sensor_value.un.linearAcceleration.y);
-      NRF_LOG_INFO(" z: %d", sensor_value.un.linearAcceleration.z);
-      break;
-    case SH2_GRAVITY:
-      NRF_LOG_INFO("Gravity - x: , %d", sensor_value.un.gravity.x);
-      NRF_LOG_INFO(" y: , %d", sensor_value.un.gravity.y);
-      NRF_LOG_INFO(" z: , %d", sensor_value.un.gravity.z);
-      break;
-    case SH2_ROTATION_VECTOR:
-      NRF_LOG_INFO("Rotation Vector - r: %d", sensor_value.un.rotationVector.real);
-      NRF_LOG_INFO(" i: %ld", sensor_value.un.rotationVector.i);
-      NRF_LOG_INFO(" j: %ld", sensor_value.un.rotationVector.j);
-      NRF_LOG_INFO(" k: %ld", sensor_value.un.rotationVector.k);
-      break;
-    case SH2_GEOMAGNETIC_ROTATION_VECTOR:
-      NRF_LOG_INFO("Geo-Magnetic Rotation Vector - r: ");
-      // NRF_LOG_INFO(sensor_value.un.geoMagRotationVector.real);
-      NRF_LOG_INFO(" i: ");
-      // NRF_LOG_INFO(sensor_value.un.geoMagRotationVector.i);
-      NRF_LOG_INFO(" j: ");
-      // NRF_LOG_INFO(sensor_value.un.geoMagRotationVector.j);
-      NRF_LOG_INFO(" k: ");
-      // NRF_LOG_INFO(sensor_value.un.geoMagRotationVector.k);
-      break;
-
-    case SH2_GAME_ROTATION_VECTOR:
-      NRF_LOG_INFO("Game Rotation Vector - r: ");
-      // NRF_LOG_INFO(sensor_value.un.gameRotationVector.real);
-      NRF_LOG_INFO(" i: ");
-      // NRF_LOG_INFO(sensor_value.un.gameRotationVector.i);
-      NRF_LOG_INFO(" j: ");
-      // NRF_LOG_INFO(sensor_value.un.gameRotationVector.j);
-      NRF_LOG_INFO(" k: ");
-      // NRF_LOG_INFO(sensor_value.un.gameRotationVector.k);
-      break;
-
-    case SH2_STEP_COUNTER:
-      NRF_LOG_INFO("Step Counter - steps: ");
-      // NRF_LOG_INFO(sensor_value.un.stepCounter.steps);
-      NRF_LOG_INFO(" latency: ");
-      // NRF_LOG_INFO(sensor_value.un.stepCounter.latency);
-      break;
-
-    case SH2_STABILITY_CLASSIFIER:
-    {
-      NRF_LOG_INFO("Stability Classification: ");
-      sh2_StabilityClassifier_t stability = sensor_value.un.stabilityClassifier;
-      switch (stability.classification)
+      switch (sensor_value.sensorId)
       {
-      case STABILITY_CLASSIFIER_UNKNOWN:
-        NRF_LOG_INFO("Unknown");
+      case SH2_ACCELEROMETER:
+        NRF_LOG_INFO("Accelerometer:");
+        NRF_LOG_PROCESS();
+        NRF_LOG_INFO(" x: " NRF_LOG_FLOAT_MARKER, NRF_LOG_FLOAT(sensor_value.un.accelerometer.x))
+        NRF_LOG_PROCESS();
+        NRF_LOG_INFO(" y: " NRF_LOG_FLOAT_MARKER, NRF_LOG_FLOAT(sensor_value.un.accelerometer.y))
+        NRF_LOG_PROCESS();
+        NRF_LOG_INFO(" z: " NRF_LOG_FLOAT_MARKER, NRF_LOG_FLOAT(sensor_value.un.accelerometer.z))
+        NRF_LOG_PROCESS();
+        NRF_LOG_INFO("++++++++++++++++++++++++++++++++++++");
+        NRF_LOG_PROCESS();
         break;
-      case STABILITY_CLASSIFIER_ON_TABLE:
-        NRF_LOG_INFO("On Table");
-        break;
-      case STABILITY_CLASSIFIER_STATIONARY:
-        NRF_LOG_INFO("Stationary");
-        break;
-      case STABILITY_CLASSIFIER_STABLE:
-        NRF_LOG_INFO("Stable");
-        break;
-      case STABILITY_CLASSIFIER_MOTION:
-        NRF_LOG_INFO("In Motion");
+
+      //case SH2_RAW_ACCELEROMETER:
+      //  NRF_LOG_INFO("Raw Accelerometer:");
+      //  NRF_LOG_PROCESS();
+      //  NRF_LOG_INFO(" x: %d", sensor_value.un.rawAccelerometer.x);
+      //  NRF_LOG_PROCESS();
+      //  NRF_LOG_INFO(" y: %d", sensor_value.un.rawAccelerometer.y);
+      //  NRF_LOG_PROCESS();
+      //  NRF_LOG_INFO(" z: %d", sensor_value.un.rawAccelerometer.z);
+      //  NRF_LOG_PROCESS();
+      //  NRF_LOG_INFO("++++++++++++++++++++++++++++++++++++");
+      //  NRF_LOG_PROCESS();
+      //  break;
+
+      //case SH2_RAW_GYROSCOPE:
+      //  NRF_LOG_INFO("Raw Gyro:");
+      //  NRF_LOG_PROCESS();
+      //  NRF_LOG_INFO(" x: %d", sensor_value.un.rawGyroscope.x);
+      //  NRF_LOG_PROCESS();
+      //  NRF_LOG_INFO(" y: %d", sensor_value.un.rawGyroscope.y);
+      //  NRF_LOG_PROCESS();
+      //  NRF_LOG_INFO(" z: %d", sensor_value.un.rawGyroscope.z);
+      //  NRF_LOG_PROCESS();
+      //  NRF_LOG_INFO("++++++++++++++++++++++++++++++++++++");
+      //  NRF_LOG_PROCESS();
+      //  break;
+
+      //case SH2_RAW_MAGNETOMETER:
+      //  NRF_LOG_INFO("Raw Magnetic Field:");
+      //  NRF_LOG_PROCESS();
+      //  NRF_LOG_INFO(" y: %d", sensor_value.un.rawMagnetometer.y);
+      //  NRF_LOG_PROCESS();
+      //  NRF_LOG_INFO(" z: %d", sensor_value.un.rawMagnetometer.z);
+      //  NRF_LOG_PROCESS();
+      //  NRF_LOG_INFO("++++++++++++++++++++++++++++++++++++");
+      //  NRF_LOG_PROCESS();
         break;
       }
-      break;
-    }
-
-    case SH2_RAW_ACCELEROMETER:
-      NRF_LOG_INFO("Raw Accelerometer - x: %d", sensor_value.un.rawAccelerometer.x);
-      NRF_LOG_INFO(" y: %d", sensor_value.un.rawAccelerometer.y);
-      NRF_LOG_INFO(" z: %d", sensor_value.un.rawAccelerometer.z);
-      break;
-    case SH2_RAW_GYROSCOPE:
-      NRF_LOG_INFO("Raw Gyro - x: %d", sensor_value.un.rawGyroscope.x);
-      NRF_LOG_INFO(" y: %d", sensor_value.un.rawGyroscope.y);
-      NRF_LOG_INFO(" z: %d", sensor_value.un.rawGyroscope.z);
-      break;
-    case SH2_RAW_MAGNETOMETER:
-      NRF_LOG_INFO("Raw Magnetic Field - x: %d", sensor_value.un.rawMagnetometer.x);
-      NRF_LOG_INFO(" y: %d", sensor_value.un.rawMagnetometer.y);
-      NRF_LOG_INFO(" z: %d", sensor_value.un.rawMagnetometer.z);
-      break;
-
-    case SH2_SHAKE_DETECTOR:
-    {
-      NRF_LOG_INFO("Shake Detector - shake detected on axis: ");
-      sh2_ShakeDetector_t detection = sensor_value.un.shakeDetector;
-      switch (detection.shake)
-      {
-      case SHAKE_X:
-        NRF_LOG_INFO("X");
-        break;
-      case SHAKE_Y:
-        NRF_LOG_INFO("Y");
-        break;
-      case SHAKE_Z:
-        NRF_LOG_INFO("Z");
-        break;
-      default:
-        NRF_LOG_INFO("None");
-        break;
-      }
-    }
-
-    case SH2_PERSONAL_ACTIVITY_CLASSIFIER:
-    {
-      sh2_PersonalActivityClassifier_t activity = sensor_value.un.personalActivityClassifier;
-
-      NRF_LOG_INFO("Activity classification - Most likely: ");
-      printActivity(activity.mostLikelyState);
-
-      NRF_LOG_INFO("");
-      NRF_LOG_INFO("Confidences:");
-
-      // If PAC_OPTION_COUNT is ever > 10, we'll need to care about page
-      for (uint8_t i = 0; i < PAC_OPTION_COUNT; i++)
-      {
-        printActivity(i);
-        NRF_LOG_INFO(": ");
-        // NRF_LOG_INFO(activity.confidence[i]);
-      }
-    }
     }
   }
 }
