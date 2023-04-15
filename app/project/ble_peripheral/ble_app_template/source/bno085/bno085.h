@@ -18,15 +18,22 @@
 extern "C" {
 #endif
 
+#define _CONFIG_ARDUINO_PLATFORM  (1)
+
 /* Includes ----------------------------------------------------------- */
-#include "Arduino.h"
 #include "sh2.h"
 #include "sh2_SensorValue.h"
 #include "sh2_err.h"
+
+#ifdef _CONFIG_ARDUINO_PLATFORM
+#include "Arduino.h"
 #include <Adafruit_BusIO_Register.h>
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
+#else
+
+#endif // _CONFIG_ARDUINO_PLATFORM
 
 /* Public defines ----------------------------------------------------- */
 #define BNO08x_I2C_ADDR_DEFAULT (0x4A) // The default I2C address
