@@ -74,8 +74,6 @@ bool bsp_i2c_write_bno(uint8_t slave_addr, uint8_t *p_data, uint32_t len)
 
 bool bsp_i2c_read_bno(uint8_t slave_addr, uint8_t *p_data, uint32_t len)
 {
-  // nrf_drv_twi_tx(&m_twi, slave_addr, NULL, 0, true);
-
   if (NRF_SUCCESS != nrf_drv_twi_rx(&m_twi, slave_addr, p_data, len))
     return false;
 

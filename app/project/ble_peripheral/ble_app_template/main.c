@@ -166,7 +166,7 @@ int main(void)
 
   //sys_button_init();
   //bsp_nand_flash_init();
-  bsp_imu_init();
+  //bsp_imu_init();
   //bsp_afe_init();
 
   //sys_logger_flash_init();
@@ -951,7 +951,7 @@ static void led_blink_timeout_handler(void * p_context)
 static void sensors_meas_timeout_handler(void * p_context)
 {
   UNUSED_PARAMETER(p_context);
-  sensors_value_update();
+  // sensors_value_update();
 }
 
 /**

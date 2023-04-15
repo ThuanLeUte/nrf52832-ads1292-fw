@@ -307,7 +307,7 @@ static int txProcess(shtp_t *pShtp, uint8_t chan, const uint8_t* pData, uint32_t
 
         // Transmit (try repeatedly while HAL write returns 0)
         status = pShtp->pHal->write(pShtp->pHal, pShtp->outTransfer, lenField);
-        while (status == 0)
+        //while (status == 0)
         {
             shtp_service(pShtp);
             status = pShtp->pHal->write(pShtp->pHal, pShtp->outTransfer, lenField);
