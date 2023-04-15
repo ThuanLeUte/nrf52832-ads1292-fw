@@ -72,6 +72,10 @@
       <file file_name="../../../source/one_button/one_button.c" />
       <file file_name="../../../source/ads1292/platform.c" />
       <file file_name="../config/sdk_config.h" />
+      <file file_name="../../../source/bno085/sh2.c" />
+      <file file_name="../../../source/bno085/sh2_SensorValue.c" />
+      <file file_name="../../../source/bno085/sh2_util.c" />
+      <file file_name="../../../source/bno085/shtp.c" />
       <file file_name="../../../source/sys_bm.c" />
       <file file_name="../../../source/sys_button.c" />
       <file file_name="../../../source/sys_logger_flash.c" />
@@ -190,9 +194,5 @@
     </folder>
     <file file_name="../../../source/ble_sts.c" />
     <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_ppi.c" />
-    <file file_name="../../../source/bno085/sh2.c" />
-    <file file_name="../../../source/bno085/sh2_SensorValue.c" />
-    <file file_name="../../../source/bno085/sh2_util.c" />
-    <file file_name="../../../source/bno085/shtp.c" />
   </project>
 </solution>

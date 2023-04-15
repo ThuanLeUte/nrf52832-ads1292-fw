@@ -77,7 +77,7 @@ bool_t;
   } while (0)
 
 /* Public variables --------------------------------------------------- */
-extern uint32_t g_systick;
+extern volatile uint64_t g_systick;
 
 /* Public function prototypes ----------------------------------------- */
 /**

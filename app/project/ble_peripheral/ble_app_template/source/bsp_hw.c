@@ -27,7 +27,7 @@ static nrf_drv_spi_t m_spi_2 = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE_2);
 
 /* Private macros ----------------------------------------------------- */
 /* Public variables --------------------------------------------------- */
-uint32_t g_systick = 0;
+uint64_t volatile g_systick = 0;
 
 /* Private variables -------------------------------------------------- */
 static volatile bool_t data_ready = BS_FALSE;
@@ -74,7 +74,7 @@ bool bsp_i2c_write_bno(uint8_t slave_addr, uint8_t *p_data, uint32_t len)
 
 bool bsp_i2c_read_bno(uint8_t slave_addr, uint8_t *p_data, uint32_t len)
 {
-  nrf_drv_twi_tx(&m_twi, slave_addr, NULL, 0, true);
+  // nrf_drv_twi_tx(&m_twi, slave_addr, NULL, 0, true);
 
   if (NRF_SUCCESS != nrf_drv_twi_rx(&m_twi, slave_addr, p_data, len))
     return false;

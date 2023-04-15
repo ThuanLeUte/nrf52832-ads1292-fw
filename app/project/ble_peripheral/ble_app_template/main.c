@@ -60,7 +60,7 @@
 
 #define SENSORS_MEAS_INTERVAL           APP_TIMER_TICKS(2000)                      /**< Sensors measurement interval (ticks). */
 #define BATT_LEVEL_MEAS_INTERVAL        APP_TIMER_TICKS(20000)                     /**< Battery level measurement interval (ticks). */
-#define LED_BLINK_INTERVAL              APP_TIMER_TICKS(1)                     /**< Battery level measurement interval (ticks). */
+#define LED_BLINK_INTERVAL              APP_TIMER_TICKS(2000)                     /**< Battery level measurement interval (ticks). */
 
 #define DEVICE_NAME                     "ECG-Device"                                  /**< Name of device. Will be included in the advertising data. */
 
@@ -166,21 +166,16 @@ int main(void)
   application_timers_start();
 
   bsp_hw_init();
-
-  application_timers_start();
   
-  bno085_init();
+  // bno085_init();
 
-  while (1)
-  {
-  }
   
-  sys_button_init();
-  bsp_nand_flash_init();
-  bsp_imu_init();
-  bsp_afe_init();
+  //sys_button_init();
+  //bsp_nand_flash_init();
+  //bsp_imu_init();
+  //bsp_afe_init();
 
-  sys_logger_flash_init();
+  //sys_logger_flash_init();
 
   advertising_start();
 
@@ -190,42 +185,6 @@ int main(void)
   for (;;)
   {
     NRF_LOG_PROCESS();
-
-    if (g_device.mode == SYS_MODE_RECORD_DATA)
-    {
-      if (sys_logger_flash_is_reading_record())
-      {
-        // Read record from the flash
-        sys_logger_flash_read(g_device.record.id_read);
-
-        // Reset trigger
-        memset(&g_device.record, 0, sizeof(g_device.record));
-      }
-      else if (sys_logger_flash_is_writing_record())
-      {
-        // Write record to the flash
-        sys_logger_flash_write();
-
-        // Reset trigger
-        memset(&g_device.record, 0, sizeof(g_device.record));
-      }
-      else
-      {
-        // Do not thing
-      }
-    }
-    else // SYS_MODE_STREAM_DATA
-    {
-      if (bsp_afe_get_ecg(&ecg_data) == BS_OK)
-      {
-        NRF_LOG_RAW_INFO("%d\n", ecg_data.raw_data);
-
-        ble_ecg_update(&m_ecg, (int16_t)ecg_data.raw_data, BLE_CONN_HANDLE_ALL, BLE_ECG_RAW_DATA_CHAR);
-        ble_ecg_update(&m_ecg, (int16_t)ecg_data.heart_rate, BLE_CONN_HANDLE_ALL, BLE_ECG_HEART_RATE_CHAR);
-      }
-    }
-
-    
   }
 }
 
@@ -980,7 +939,7 @@ static void battery_level_meas_timeout_handler(void * p_context)
  */
 static void led_blink_timeout_handler(void * p_context)
 {
-  g_systick++;
+  // g_systick += 10;
 }
 
 /**
