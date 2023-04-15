@@ -77,6 +77,8 @@ bool_t;
   } while (0)
 
 /* Public variables --------------------------------------------------- */
+extern uint32_t g_systick;
+
 /* Public function prototypes ----------------------------------------- */
 /**
  * @brief         Board support package init
@@ -138,13 +140,14 @@ base_status_t bsp_spi_1_transmit_receive(uint8_t *tx_data, uint8_t *rx_data, uin
 base_status_t bsp_spi_2_transmit_receive(uint8_t *tx_data, uint8_t *rx_data, uint16_t len);
 
 void bsp_delay_ms(uint32_t ms);
+void delay(uint32_t ms);
 
 void bsp_gpio_write(uint8_t pin , uint8_t state);
 
 void bsp_power_on_device(bool enable);
 
-int bsp_i2c_read_raw(uint8_t slave_addr, uint8_t *p_data, uint32_t len);
-int bsp_i2c_write_raw(uint8_t slave_addr, uint8_t *p_data, uint32_t len);
+bool bsp_i2c_read_bno(uint8_t slave_addr, uint8_t *p_data, uint32_t len);
+bool bsp_i2c_write_bno(uint8_t slave_addr, uint8_t *p_data, uint32_t len);
 
 /* -------------------------------------------------------------------------- */
 #ifdef __cplusplus

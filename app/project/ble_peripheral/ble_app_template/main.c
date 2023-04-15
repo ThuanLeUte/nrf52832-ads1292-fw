@@ -46,7 +46,7 @@
 #include "sys_logger_flash.h"
 #include "sys_button.h"
 #include "damos_ram.h"
-#include "bsp_bno.h"
+#include "bno085.h"
 
 #if defined(UART_PRESENT)
 #include "nrf_uart.h"
@@ -60,7 +60,7 @@
 
 #define SENSORS_MEAS_INTERVAL           APP_TIMER_TICKS(2000)                      /**< Sensors measurement interval (ticks). */
 #define BATT_LEVEL_MEAS_INTERVAL        APP_TIMER_TICKS(20000)                     /**< Battery level measurement interval (ticks). */
-#define LED_BLINK_INTERVAL              APP_TIMER_TICKS(500)                     /**< Battery level measurement interval (ticks). */
+#define LED_BLINK_INTERVAL              APP_TIMER_TICKS(1)                     /**< Battery level measurement interval (ticks). */
 
 #define DEVICE_NAME                     "ECG-Device"                                  /**< Name of device. Will be included in the advertising data. */
 
@@ -162,6 +162,9 @@ int main(void)
   advertising_init();
   conn_params_init();
 
+  // Start execution.
+  application_timers_start();
+
   bsp_hw_init();
 
   
@@ -179,8 +182,6 @@ int main(void)
 
   sys_logger_flash_init();
 
-  // Start execution.
-  application_timers_start();
   advertising_start();
 
   // Set default mode to record data
@@ -979,21 +980,7 @@ static void battery_level_meas_timeout_handler(void * p_context)
  */
 static void led_blink_timeout_handler(void * p_context)
 {
-  static bool led_status = false;
-
-  if ((!g_device.led_blink_enable) && (led_status == true))
-    return;
-
-  if (led_status)
-  {
-    bsp_gpio_write(IO_LED_1, 1); // LED off
-    led_status = false;
-  }
-  else
-  {
-    bsp_gpio_write(IO_LED_1, 0); // LED on
-    led_status = true;
-  }
+  g_systick++;
 }
 
 /**

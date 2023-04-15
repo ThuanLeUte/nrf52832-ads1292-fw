@@ -27,6 +27,8 @@ static nrf_drv_spi_t m_spi_2 = NRF_DRV_SPI_INSTANCE(SPI_INSTANCE_2);
 
 /* Private macros ----------------------------------------------------- */
 /* Public variables --------------------------------------------------- */
+uint32_t g_systick = 0;
+
 /* Private variables -------------------------------------------------- */
 static volatile bool_t data_ready = BS_FALSE;
 
@@ -62,17 +64,30 @@ int bsp_i2c_read(uint8_t slave_addr, uint8_t reg_addr, uint8_t *p_data, uint32_t
   return nrf_drv_twi_rx(&m_twi, slave_addr, p_data, len);
 }
 
-int bsp_i2c_write_raw(uint8_t slave_addr, uint8_t *p_data, uint32_t len)
+bool bsp_i2c_write_bno(uint8_t slave_addr, uint8_t *p_data, uint32_t len)
 {
-  return nrf_drv_twi_tx(&m_twi, slave_addr, p_data, len, false);
+  if (NRF_SUCCESS != nrf_drv_twi_tx(&m_twi, slave_addr, p_data, len, false))
+    return false;
+
+  return true;
 }
 
-int bsp_i2c_read_raw(uint8_t slave_addr, uint8_t *p_data, uint32_t len)
+bool bsp_i2c_read_bno(uint8_t slave_addr, uint8_t *p_data, uint32_t len)
 {
-  return nrf_drv_twi_rx(&m_twi, slave_addr, p_data, len);
+  nrf_drv_twi_tx(&m_twi, slave_addr, NULL, 0, true);
+
+  if (NRF_SUCCESS != nrf_drv_twi_rx(&m_twi, slave_addr, p_data, len))
+    return false;
+
+  return true;
 }
 
 void bsp_delay_ms(uint32_t ms)
+{
+  nrf_delay_ms(ms);
+}
+
+void delay(uint32_t ms)
 {
   nrf_delay_ms(ms);
 }

@@ -18,14 +18,14 @@
 extern "C" {
 #endif
 
-#define _CONFIG_ARDUINO_PLATFORM  (1)
+#define _CONFIG_ARDUINO_PLATFORM  (0)
 
 /* Includes ----------------------------------------------------------- */
 #include "sh2.h"
 #include "sh2_SensorValue.h"
 #include "sh2_err.h"
 
-#ifdef _CONFIG_ARDUINO_PLATFORM
+#if (_CONFIG_ARDUINO_PLATFORM)
 #include "Arduino.h"
 #include <Adafruit_BusIO_Register.h>
 #include <Adafruit_I2CDevice.h>

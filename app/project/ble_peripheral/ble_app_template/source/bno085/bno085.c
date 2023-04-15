@@ -13,13 +13,13 @@
  */
 
 /* Includes ----------------------------------------------------------- */
-#define _CONFIG_ARDUINO_PLATFORM  (1)
+#define _CONFIG_ARDUINO_PLATFORM  (0)
 
-#ifdef _CONFIG_ARDUINO_PLATFORM
+#if (_CONFIG_ARDUINO_PLATFORM)
 #include "Arduino.h"
 #include <Wire.h>
 #else
-#include "bsp.h"
+#include "bsp_hw.h"
 #endif // _CONFIG_ARDUINO_PLATFORM
 
 #include "bno085.h"
@@ -35,15 +35,15 @@ static sh2_Hal_t hal;            // The struct representing the SH2 Hardware Abs
 static sh2_SensorValue_t *sensor_value = NULL;
 static bool reset_occurred = false;
 
-#ifdef _CONFIG_ARDUINO_PLATFORM
+#if (_CONFIG_ARDUINO_PLATFORM)
 static Adafruit_I2CDevice *i2c_dev = NULL; // Pointer to I2C bus interface
 #endif
 
 /* Private function prototypes ---------------------------------------- */
-#ifdef _CONFIG_ARDUINO_PLATFORM
+#if (_CONFIG_ARDUINO_PLATFORM)
 static bool bno085_begin_i2c(uint8_t i2c_addr, TwoWire *wire, int32_t sensor_id);
 #else
-
+static bool bno085_begin_i2c(void);
 #endif // _CONFIG_ARDUINO_PLATFORM
 
 static int  bno085_i2c_write(sh2_Hal_t *self, uint8_t *data, unsigned len);
@@ -60,10 +60,10 @@ bool bno085_init(void)
 {
   int status;
 
-#ifdef _CONFIG_ARDUINO_PLATFORM
+#if (_CONFIG_ARDUINO_PLATFORM)
   bno085_begin_i2c(BNO08x_I2C_ADDR_DEFAULT, &Wire, 0);
 #else
-
+  bno085_begin_i2c();
 #endif // _CONFIG_ARDUINO_PLATFORM
 
   // Open SH2 interface (also registers non-sensor event handler.)
@@ -137,7 +137,7 @@ bool bno085_was_reset(void)
 }
 
 /* Private function definitions --------------------------------------- */
-#ifdef _CONFIG_ARDUINO_PLATFORM
+#if (_CONFIG_ARDUINO_PLATFORM)
 bool bno085_begin_i2c(uint8_t i2c_address, TwoWire *wire, int32_t sensor_id)
 {
   if (i2c_dev)
@@ -162,7 +162,16 @@ bool bno085_begin_i2c(uint8_t i2c_address, TwoWire *wire, int32_t sensor_id)
   return true;
 }
 #else
+static bool bno085_begin_i2c(void)
+{
+  hal.open = bno085_i2c_open;
+  hal.close = bno085_i2c_close;
+  hal.read = bno085_i2c_read;
+  hal.write = bno085_i2c_write;
+  hal.getTimeUs = hal_get_time_us;
 
+  return true;
+}
 #endif // _CONFIG_ARDUINO_PLATFORM
 
 static int bno085_i2c_open(sh2_Hal_t *self)
@@ -172,10 +181,10 @@ static int bno085_i2c_open(sh2_Hal_t *self)
 
   for (uint8_t attempts = 0; attempts < 5; attempts++)
   {
-#ifdef _CONFIG_ARDUINO_PLATFORM
+#if (_CONFIG_ARDUINO_PLATFORM)
     if (i2c_dev->write(softreset_pkt, 5))
 #else
-
+    if (bsp_i2c_write_bno(BNO08x_I2C_ADDR_DEFAULT, softreset_pkt, 5))
 #endif // _CONFIG_ARDUINO_PLATFORM
     {
       success = true;
@@ -199,10 +208,10 @@ static void bno085_i2c_close(sh2_Hal_t *self)
 static int bno085_i2c_read(sh2_Hal_t *self, uint8_t *data, unsigned len, uint32_t *t_us)
 {
   uint8_t header[4];
-#ifdef _CONFIG_ARDUINO_PLATFORM
+#if (_CONFIG_ARDUINO_PLATFORM)
   if (!i2c_dev->read(header, 4))
 #else
-
+  if (!bsp_i2c_read_bno(BNO08x_I2C_ADDR_DEFAULT, header, 4))
 #endif // _CONFIG_ARDUINO_PLATFORM
   {
     return 0;
@@ -214,7 +223,11 @@ static int bno085_i2c_read(sh2_Hal_t *self, uint8_t *data, unsigned len, uint32_
   // Unset the "continue" bit
   packet_size &= ~0x8000;
 
+#if (_CONFIG_ARDUINO_PLATFORM)
   size_t i2c_buffer_max = i2c_dev->maxBufferSize();
+#else
+  size_t i2c_buffer_max = 255;
+#endif // _CONFIG_ARDUINO_PLATFORM
 
   if (packet_size > len)
   {
@@ -240,10 +253,10 @@ static int bno085_i2c_read(sh2_Hal_t *self, uint8_t *data, unsigned len, uint32_
       read_size = min(i2c_buffer_max, (size_t)cargo_remaining + 4);
     }
 
-#ifdef _CONFIG_ARDUINO_PLATFORM
+#if (_CONFIG_ARDUINO_PLATFORM)
     if (!i2c_dev->read(i2c_buffer, read_size))
 #else
-
+  if (!bsp_i2c_read_bno(BNO08x_I2C_ADDR_DEFAULT, i2c_buffer, read_size))
 #endif // _CONFIG_ARDUINO_PLATFORM
     {
       return 0;
@@ -277,13 +290,14 @@ static int bno085_i2c_read(sh2_Hal_t *self, uint8_t *data, unsigned len, uint32_
 
 static int bno085_i2c_write(sh2_Hal_t *self, uint8_t *data, unsigned len)
 {
-#ifdef _CONFIG_ARDUINO_PLATFORM
+#if (_CONFIG_ARDUINO_PLATFORM)
   size_t i2c_buffer_max = i2c_dev->maxBufferSize();
   uint16_t write_size = min(i2c_buffer_max, len);
   if (!i2c_dev->write(data, write_size))
 #else
+  size_t i2c_buffer_max = 255;
   uint16_t write_size = min(i2c_buffer_max, len);
-
+  if (bsp_i2c_write_bno(BNO08x_I2C_ADDR_DEFAULT, i2c_buffer_max, len))
 #endif // _CONFIG_ARDUINO_PLATFORM
   {
     return 0;
@@ -294,7 +308,11 @@ static int bno085_i2c_write(sh2_Hal_t *self, uint8_t *data, unsigned len)
 
 static uint32_t hal_get_time_us(sh2_Hal_t *self)
 {
+#if (_CONFIG_ARDUINO_PLATFORM)
   uint32_t t = millis() * 1000;
+#else
+  uint32_t t = g_systick * 1000;
+#endif // _CONFIG_ARDUINO_PLATFORM
   return t;
 }
 
@@ -314,7 +332,7 @@ static void bno085_sensor_handler(void *cookie, sh2_SensorEvent_t *event)
   rc = sh2_decodeSensorEvent(sensor_value, event);
   if (rc != SH2_OK)
   {
-    Serial.println("BNO08x - Error decoding sensor event");
+    // Serial.println("BNO08x - Error decoding sensor event");
     sensor_value->timestamp = 0;
     return;
   }
