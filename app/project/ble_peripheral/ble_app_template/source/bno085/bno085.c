@@ -246,11 +246,11 @@ static int bno085_i2c_read(sh2_Hal_t *self, uint8_t *data, unsigned len, uint32_
   {
     if (first_read)
     {
-      read_size = min(i2c_buffer_max, (size_t)cargo_remaining);
+      read_size = MIN(i2c_buffer_max, (size_t)cargo_remaining);
     }
     else
     {
-      read_size = min(i2c_buffer_max, (size_t)cargo_remaining + 4);
+      read_size = MIN(i2c_buffer_max, (size_t)cargo_remaining + 4);
     }
 
 #if (_CONFIG_ARDUINO_PLATFORM)
@@ -292,12 +292,12 @@ static int bno085_i2c_write(sh2_Hal_t *self, uint8_t *data, unsigned len)
 {
 #if (_CONFIG_ARDUINO_PLATFORM)
   size_t i2c_buffer_max = i2c_dev->maxBufferSize();
-  uint16_t write_size = min(i2c_buffer_max, len);
+  uint16_t write_size = MIN(i2c_buffer_max, len);
   if (!i2c_dev->write(data, write_size))
 #else
   size_t i2c_buffer_max = 255;
-  uint16_t write_size = min(i2c_buffer_max, len);
-  if (bsp_i2c_write_bno(BNO08x_I2C_ADDR_DEFAULT, i2c_buffer_max, len))
+  uint16_t write_size = MIN(i2c_buffer_max, len);
+  if (bsp_i2c_write_bno(BNO08x_I2C_ADDR_DEFAULT, data, len))
 #endif // _CONFIG_ARDUINO_PLATFORM
   {
     return 0;

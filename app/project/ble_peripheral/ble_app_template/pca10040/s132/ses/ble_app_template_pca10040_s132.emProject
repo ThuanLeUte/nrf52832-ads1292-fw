@@ -59,6 +59,7 @@
       <file file_name="../../../source/ble_ecg.c" />
       <file file_name="../../../source/ble_gys.c" />
       <file file_name="../../../source/ble_mgs.c" />
+      <file file_name="../../../source/bno085/bno085.c" />
       <file file_name="../../../source/ads1292/bsp_afe.c" />
       <file file_name="../../../source/bsp_hw.c" />
       <file file_name="../../../source/bsp_imu.c" />
@@ -188,7 +189,6 @@
       <file file_name="../../../../../../components/softdevice/common/nrf_sdh_soc.c" />
     </folder>
     <file file_name="../../../source/ble_sts.c" />
-    <file file_name="../../../source/bno085/bsp_bno.c" />
     <file file_name="../../../../../../modules/nrfx/drivers/src/nrfx_ppi.c" />
     <file file_name="../../../source/bno085/sh2.c" />
     <file file_name="../../../source/bno085/sh2_SensorValue.c" />

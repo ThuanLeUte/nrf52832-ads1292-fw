@@ -38,7 +38,6 @@
 #include "ble_gys.h"
 #include "ble_ecg.h"
 #include "ble_sts.h"
-#include "bsp_hw.h"
 #include "bsp_imu.h"
 #include "bsp_afe.h"
 #include "bsp_nand_flash.h"
@@ -47,6 +46,7 @@
 #include "sys_button.h"
 #include "damos_ram.h"
 #include "bno085.h"
+#include "bsp_hw.h"
 
 #if defined(UART_PRESENT)
 #include "nrf_uart.h"
@@ -167,9 +167,9 @@ int main(void)
 
   bsp_hw_init();
 
-  
   application_timers_start();
-  bsp_bno_init();
+  
+  bno085_init();
 
   while (1)
   {

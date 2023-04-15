@@ -33,8 +33,6 @@
   <ProjectSessionItem path="ble_app_template_pca10040_s132;ble_app_template_pca10040_s132;Board Support"/>
   <ProjectSessionItem path="ble_app_template_pca10040_s132;ble_app_template_pca10040_s132;None"/>
   <ProjectSessionItem path="ble_app_template_pca10040_s132;ble_app_template_pca10040_s132;nRF_BLE_Services"/>
-  <ProjectSessionItem path="ble_app_template_pca10040_s132;ble_app_template_pca10040_s132;nRF_Libraries"/>
-  <ProjectSessionItem path="ble_app_template_pca10040_s132;ble_app_template_pca10040_s132;nRF_SoftDevice"/>
   <ProjectSessionItem path="ble_app_template_pca10040_s132;ble_app_template_pca10040_s132;Segger Startup Files"/>
   <ProjectSessionItem path="ble_app_template_pca10040_s132;ble_app_template_pca10040_s132;UTF8/UTF16 converter"/>
  </Project>
@@ -78,7 +76,7 @@
  </Watch4>
  <Files>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="55" useTextEdit="1" path="../../../../../../components/libraries/util/sdk_common.h" left="0" top="34" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="150" useTextEdit="1" path="../../../main.c" left="0" top="145" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="167" useTextEdit="1" path="../../../main.c" left="0" selected="1" top="147" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="71" useTextEdit="1" path="../../../../../../components/ble/ble_services/ble_nus/ble_nus.h" left="0" top="50" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="71" useTextEdit="1" path="../../../../../../modules/nrfx/drivers/include/nrfx_timer.h" left="0" top="53" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="12020" useTextEdit="1" path="../config/sdk_config.h" left="0" top="11994" codecName="Default"/>
@@ -96,12 +94,12 @@
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="62" useTextEdit="1" openedFrom="C:/Users/Admin/Desktop/nrf52832-ads1292-fw/app/project/ble_peripheral/ble_app_template/source/flash/bsp_nand_flash.c" path="../../../source/flash/w25n01.c" left="0" top="51" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="31" useTextEdit="1" openedFrom="C:/Users/Admin/Desktop/nrf52832-ads1292-fw/app/project/ble_peripheral/ble_app_template/source/flash/w25n01.c" path="../../../source/flash/w25n01.h" left="0" top="31" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="240" useTextEdit="1" path="../../../source/sys_logger_flash.c" left="0" top="222" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="19" y="24" useTextEdit="1" path="../../../source/bno085/bsp_bno.h" left="0" top="11" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="57" useTextEdit="1" path="../../../source/bno085/bsp_bno.c" left="0" top="30" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="12" y="39" useTextEdit="1" path="../../../source/ble_sts.c" left="0" top="27" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="29" y="15" useTextEdit="1" path="../../../source/sys_button.c" left="0" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="13" y="496" useTextEdit="1" openedFrom="D:/01_Projects/nrf52832-ads1292-fw/app/project/ble_peripheral/ble_app_template/source/bno085/bsp_bno.c" path="../../../source/bno085/sh2.c" left="0" top="474" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="801" useTextEdit="1" openedFrom="D:/01_Projects/nrf52832-ads1292-fw/app/project/ble_peripheral/ble_app_template/source/bno085/sh2.c" path="../../../source/bno085/shtp.c" left="0" selected="1" top="790" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="801" useTextEdit="1" openedFrom="D:/01_Projects/nrf52832-ads1292-fw/app/project/ble_peripheral/ble_app_template/source/bno085/sh2.c" path="../../../source/bno085/shtp.c" left="0" top="790" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="21" useTextEdit="1" path="../../../source/bno085/bno085.c" left="0" top="21" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="52" y="149" useTextEdit="1" path="../../../source/bsp_hw.h" left="0" top="138" codecName="Default"/>
  </Files>
- <EMStudioWindow activeProject="ble_app_template_pca10040_s132" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Release" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="D:/01_Projects/nrf52832-ads1292-fw/app/project/ble_peripheral/ble_app_template/source/bno085" debugSearchPath="" autoConnectCapabilities="3711"/>
+ <EMStudioWindow activeProject="ble_app_template_pca10040_s132" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Release" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="D:/01_Projects/nrf52832-ads1292-fw/app/project/ble_peripheral/ble_app_template/source/bno085" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>
