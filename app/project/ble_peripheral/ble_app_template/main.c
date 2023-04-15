@@ -60,7 +60,7 @@
 
 #define SENSORS_MEAS_INTERVAL           APP_TIMER_TICKS(2000)                      /**< Sensors measurement interval (ticks). */
 #define BATT_LEVEL_MEAS_INTERVAL        APP_TIMER_TICKS(20000)                     /**< Battery level measurement interval (ticks). */
-#define LED_BLINK_INTERVAL              APP_TIMER_TICKS(2000)                     /**< Battery level measurement interval (ticks). */
+#define LED_BLINK_INTERVAL              APP_TIMER_TICKS(1)                     /**< Battery level measurement interval (ticks). */
 
 #define DEVICE_NAME                     "ECG-Device"                                  /**< Name of device. Will be included in the advertising data. */
 
@@ -162,22 +162,19 @@ int main(void)
   advertising_init();
   conn_params_init();
 
-  // Start execution.
-  application_timers_start();
-
   bsp_hw_init();
-  
-  // bno085_init();
 
-  
   //sys_button_init();
   //bsp_nand_flash_init();
-  //bsp_imu_init();
+  bsp_imu_init();
   //bsp_afe_init();
 
   //sys_logger_flash_init();
 
+  // Start execution.
+  application_timers_start();
   advertising_start();
+  bno085_init();
 
   // Set default mode to record data
   g_device.mode = SYS_MODE_RECORD_DATA;
@@ -939,7 +936,7 @@ static void battery_level_meas_timeout_handler(void * p_context)
  */
 static void led_blink_timeout_handler(void * p_context)
 {
-  // g_systick += 10;
+  g_systick += 1;
 }
 
 /**
