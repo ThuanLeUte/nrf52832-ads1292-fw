@@ -201,7 +201,7 @@ int main(void)
   {
     NRF_LOG_PROCESS();
 
-    delay(500);
+    delay(100);
 
     if (bno085_was_reset())
     {
