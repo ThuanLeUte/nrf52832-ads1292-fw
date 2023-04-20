@@ -148,12 +148,12 @@ static void application_timers_start(void);
 void setReports(void)
 {
   NRF_LOG_INFO("Setting desired reports");
-  if (!bno085_enable_report(SH2_ACCELEROMETER, 10000))
+  if (!bno085_enable_report(SH2_ACCELEROMETER, 1000))
   {
     NRF_LOG_INFO("Could not enable accelerometer");
   }
 
-  if (!bno085_enable_report(SH2_RAW_ACCELEROMETER, 10000))
+  if (!bno085_enable_report(SH2_RAW_ACCELEROMETER, 1000))
   {
     NRF_LOG_INFO("Could not enable accelerometer");
   }
